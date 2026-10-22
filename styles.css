@@ -140,6 +140,8 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .finish-card.is-active { border-color: var(--ink); }
 .finish-card__name { font-weight: 700; font-size: 16px; line-height: 24px; }
 .finish-card__desc { font-family: var(--verlag); font-size: 12px; line-height: 16px; color: var(--muted); }
+/* Name and description sit 2px apart; the tag keeps the card's 6px gap */
+.finish-card__name + .finish-card__desc { margin-top: -4px; }
 .tag { font-family: var(--verlag); font-weight: 500; font-size: 12px; line-height: 16px; padding: 3px 10px; border-radius: 48px; background: var(--tag); white-space: nowrap; }
 
 .sizes { display: flex; flex-direction: column; gap: 4px; }
