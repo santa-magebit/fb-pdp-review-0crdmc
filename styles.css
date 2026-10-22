@@ -863,7 +863,8 @@ body.notice-open { overflow: hidden; }
   .reds__image { flex: none; height: 220px; }
   .reds__card { width: auto; padding: 24px 20px; gap: 24px; }
   .reds__intro { font-family: var(--verlag); line-height: 26px; }
-  .reds__kicker { font-family: var(--verlag); font-weight: 500; font-size: 13px; line-height: 16px; letter-spacing: 1.56px; text-transform: uppercase; color: var(--muted); }
+  /* Sentence case, like desktop: no all-caps labels anywhere (Figma 148:800) */
+  .reds__kicker { font-family: var(--verlag); font-weight: 700; font-size: 16px; line-height: 24px; color: var(--ink); }
 
   /* Why choose: chapters (149:772) */
   .chapters { padding: 32px 0; }
