@@ -394,8 +394,10 @@ function renderCalc() {
   Object.entries(calcLists).forEach(([kind, list]) => {
     list.querySelectorAll('.calc__row').forEach((row) => {
       const a = rowArea(row);
-      // Area shows only once there is one; openings read as a deduction
-      row.querySelector('.calc__tag').textContent = a ? `${kind === 'opening' ? '−' : ''}${fmtArea(a)}` : '';
+      // Openings read as a deduction; an empty row shows a grey 0 m²
+      const tag = row.querySelector('.calc__tag');
+      tag.textContent = `${a && kind === 'opening' ? '−' : ''}${fmtArea(a)}`;
+      tag.classList.toggle('is-empty', !a);
       if (kind === 'wall') walls += a; else openings += a;
     });
   });
@@ -422,6 +424,7 @@ function renderCalc() {
 function renumber(kind) {
   const rows = [...calcLists[kind].querySelectorAll('.calc__row')];
   rows.forEach((row, i) => {
+    row.querySelector('.calc__row-name').textContent = kind === 'opening' && rows.length === 1 ? 'Window' : `${calcNames[kind]} ${i + 1}`;
     row.querySelectorAll('input').forEach((input) => {
       input.setAttribute('aria-label', `${calcNames[kind]} ${i + 1} ${input.dataset.dim === 'w' ? 'width' : 'height'} in ${calcUnit}`);
     });
