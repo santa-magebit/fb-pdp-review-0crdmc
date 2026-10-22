@@ -1,8 +1,40 @@
-// Interactions for the PDP: gallery, finish choice + finish drawer, fact strip, quantity steppers, primer picker,
-// favourite, chapters accordion, carousels.
+// Interactions for the PDP: gallery + gallery popup, finish choice + finish drawer, fact strip, quantity steppers,
+// paint calculator, primer picker, favourite, chapters accordion, carousels, sticky strip, prototype notice and the
+// colour preview switcher.
 
 const money = (n) => `$${n.toFixed(2)}`;
 const esc = (s) => s.replace(/&/g, '&amp;');
+const mobile = window.matchMedia('(max-width: 767px)');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+// Overlays (finish drawer, calculator, gallery popup, prototype notice) open and close the same way: inert while
+// closed, the body stops scrolling while open, and focus goes back to where it was on close. The body class differs
+// (drawer-open / notice-open) because the notice can open on top of a drawer and must not release the drawer's lock.
+const returnFocus = new WeakMap();
+function openOverlay(el, bodyClass, target) {
+  returnFocus.set(el, document.activeElement);
+  el.inert = false;
+  el.setAttribute('aria-hidden', 'false');
+  el.classList.add('is-open');
+  document.body.classList.add(bodyClass);
+  target.focus({ preventScroll: true });
+}
+function closeOverlay(el, bodyClass) {
+  el.classList.remove('is-open');
+  el.setAttribute('aria-hidden', 'true');
+  el.inert = true;
+  document.body.classList.remove(bodyClass);
+  const back = returnFocus.get(el);
+  if (back) back.focus({ preventScroll: true });
+}
+// Keeps Tab inside an open overlay: wraps from its last focusable control to the first and back
+function trapTab(e, el, selector) {
+  const focusable = [...el.querySelectorAll(selector)].filter((f) => !f.disabled && f.tabIndex !== -1 && f.offsetParent);
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+}
 
 // Gallery thumbnails swap the main image
 const galleryMain = document.getElementById('gallery-main');
@@ -90,7 +122,6 @@ const FINISHES = [
     sizes: '750ml, 2.5L',
   },
 ];
-// Every row shares one style (the user dropped Figma's per-row differences as a mistake).
 const byId = (id) => FINISHES.find((f) => f.id === id);
 // "Chalky matt for walls & ceilings" -> look "Chalky matt", use on "Walls & ceilings"
 const lookOf = (f) => (/^for /i.test(f.desc) ? f.desc : f.desc.split(' for ')[0]);
@@ -102,8 +133,7 @@ const fact = (id) => document.getElementById(id);
 
 function renderFactStrip(f) {
   fact('fact-name').textContent = f.name;
-  fact('fact-text').textContent = f.text || '';
-  fact('fact-text').hidden = !f.text;
+  fact('fact-text').textContent = f.text;
   fact('fact-sheen').textContent = `${f.sheen}%`;
   fact('fact-look').textContent = lookOf(f);
   fact('fact-use').textContent = useOf(f);
@@ -126,20 +156,18 @@ function setFinish(id) {
     c.setAttribute('aria-checked', String(c === card));
   });
   renderFactStrip(f);
-  if (typeof updateTotal === 'function' && steppers) updateTotal();
+  updateTotal(); // the sticky strip's summary names the finish
 }
 finishCards.forEach((card) => card.addEventListener('click', () => setFinish(card.dataset.finish)));
 
 // Drawer list
 const drawer = document.getElementById('finish-drawer');
-const list = document.getElementById('finish-list');
+const finishList = document.getElementById('finish-list');
 const selectBtn = document.getElementById('finish-select');
 let pending = currentFinish;
-let lastFocus = null;
 
 const infoPanel = (f) => {
-  if (!f.text) return '';
-  const points = (f.suitable || []).map((s) => `<p class="finish-info__point"><img src="assets/icons/bullet.svg" width="5" height="5" alt="">${esc(s)}</p>`).join('');
+  const points = f.suitable.map((s) => `<p class="finish-info__point"><img src="assets/icons/bullet.svg" width="5" height="5" alt="">${esc(s)}</p>`).join('');
   return `
     <div class="finish-info" id="info-${f.id}" hidden>
       <p class="finish-info__text">${esc(f.text)}</p>
@@ -148,7 +176,7 @@ const infoPanel = (f) => {
     </div>`;
 };
 
-list.innerHTML = FINISHES.map((f) => `
+finishList.innerHTML = FINISHES.map((f) => `
   <div class="finish-item" data-id="${f.id}" data-group="${f.group}">
     <div class="finish-row">
       <button class="finish-option" type="button" role="radio" aria-checked="false">
@@ -161,11 +189,11 @@ list.innerHTML = FINISHES.map((f) => `
       <button class="finish-info-toggle" type="button" aria-expanded="false" aria-controls="info-${f.id}"><span>Show info</span><img class="chev-lg" src="assets/icons/chevron-down.svg" width="24" height="24" alt=""><img class="chev-sm" src="assets/icons/chevron-down-16.svg" width="16" height="16" alt=""></button>
     </div>${infoPanel(f)}
   </div>`).join('');
-const items = [...list.querySelectorAll('.finish-item')];
+const finishItems = [...finishList.querySelectorAll('.finish-item')];
 
 function markPending(id) {
   pending = id;
-  items.forEach((item) => {
+  finishItems.forEach((item) => {
     const on = item.dataset.id === id;
     item.classList.toggle('is-selected', on);
     const opt = item.querySelector('.finish-option');
@@ -177,7 +205,6 @@ function markPending(id) {
 
 function toggleInfo(item, open) {
   const btn = item.querySelector('.finish-info-toggle');
-  if (!btn) return;
   btn.setAttribute('aria-expanded', String(open));
   btn.querySelector('span').textContent = open ? 'Hide info' : 'Show info';
   // 24px chevron swaps to Figma's "up" asset; the 16px one (Exterior rows, mobile sheet) is flipped as in Figma
@@ -186,7 +213,7 @@ function toggleInfo(item, open) {
   item.querySelector('.finish-info').hidden = !open;
 }
 
-items.forEach((item) => {
+finishItems.forEach((item) => {
   item.querySelector('.finish-row').addEventListener('click', (e) => {
     const toggle = e.target.closest('.finish-info-toggle');
     if (toggle) toggleInfo(item, toggle.getAttribute('aria-expanded') !== 'true');
@@ -195,9 +222,9 @@ items.forEach((item) => {
 });
 
 // Arrow keys move through the visible options, like a native radio group
-list.addEventListener('keydown', (e) => {
+finishList.addEventListener('keydown', (e) => {
   if (!['ArrowDown', 'ArrowUp'].includes(e.key)) return;
-  const visible = items.filter((i) => !i.hidden).map((i) => i.querySelector('.finish-option'));
+  const visible = finishItems.filter((i) => !i.hidden).map((i) => i.querySelector('.finish-option'));
   const i = visible.indexOf(document.activeElement);
   if (i < 0) return;
   e.preventDefault();
@@ -206,48 +233,31 @@ list.addEventListener('keydown', (e) => {
   next.focus();
 });
 
-const tabs = [...drawer.querySelectorAll('.drawer__tab')];
+const drawerTabs = [...drawer.querySelectorAll('.drawer__tab')];
 function applyFilter(group) {
-  tabs.forEach((t) => {
+  drawerTabs.forEach((t) => {
     const on = t.dataset.filter === group;
     t.classList.toggle('is-active', on);
     t.setAttribute('aria-selected', String(on));
   });
-  items.forEach((item) => { item.hidden = group !== 'all' && item.dataset.group !== group; });
-  list.scrollTop = 0;
+  finishItems.forEach((item) => { item.hidden = group !== 'all' && item.dataset.group !== group; });
+  finishList.scrollTop = 0;
 }
-tabs.forEach((t) => t.addEventListener('click', () => applyFilter(t.dataset.filter)));
+drawerTabs.forEach((t) => t.addEventListener('click', () => applyFilter(t.dataset.filter)));
 
 function openDrawer() {
-  lastFocus = document.activeElement;
   applyFilter('all');
-  items.forEach((item) => toggleInfo(item, false));
+  finishItems.forEach((item) => toggleInfo(item, false));
   markPending(currentFinish);
-  drawer.inert = false;
-  drawer.setAttribute('aria-hidden', 'false');
-  drawer.classList.add('is-open');
-  document.body.classList.add('drawer-open');
-  drawer.querySelector('.drawer__panel').focus({ preventScroll: true });
+  openOverlay(drawer, 'drawer-open', drawer.querySelector('.drawer__panel'));
 }
-function closeDrawer() {
-  drawer.classList.remove('is-open');
-  drawer.setAttribute('aria-hidden', 'true');
-  drawer.inert = true;
-  document.body.classList.remove('drawer-open');
-  if (lastFocus) lastFocus.focus({ preventScroll: true });
-}
+const closeDrawer = () => closeOverlay(drawer, 'drawer-open');
 document.querySelectorAll('[data-open-finishes]').forEach((b) => b.addEventListener('click', openDrawer));
 drawer.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeDrawer));
 selectBtn.addEventListener('click', () => { setFinish(pending); closeDrawer(); });
 drawer.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') { closeDrawer(); return; }
-  if (e.key !== 'Tab') return;
-  // Keep focus inside the open drawer
-  const focusable = [...drawer.querySelectorAll('button, a[href]')].filter((b) => b.tabIndex !== -1 && b.offsetParent);
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
-  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  if (e.key === 'Escape') closeDrawer();
+  else if (e.key === 'Tab') trapTab(e, drawer, 'button, a[href]');
 });
 // index.html#finishes opens the drawer straight away (handy for sharing the slide-out)
 if (location.hash === '#finishes') openDrawer();
@@ -276,22 +286,32 @@ function hideTip() {
   tip.hidden = true;
 }
 addEventListener('scroll', hideTip, { passive: true });
-const steppers = [...document.querySelectorAll('.stepper')];
+// Pack sizes as the size rows describe them (size, "Covers approx." m², price). The coverage line, the sticky strip
+// and the paint calculator all read from here, so the buy box is the one source.
+const packs = [...document.querySelectorAll('.stepper')].map((stepper) => {
+  const row = stepper.closest('.size-row');
+  return {
+    stepper,
+    size: row.querySelector('.size-row__size').textContent,
+    covers: parseFloat(row.querySelector('.size-row__cover').textContent.match(/\d+(?:\.\d+)?/)[0]),
+    price: Number(stepper.dataset.price),
+  };
+});
+const qtyOf = (p) => parseInt(p.stepper.querySelector('.stepper__value').value, 10) || 0;
 const addButton = document.getElementById('add-to-basket');
 // Total coverage line (Figma 287:603): sums quantity × the "Covers approx." m² of each size row
 const coverage = document.getElementById('coverage');
 const coverageText = coverage.querySelector('.coverage__text');
-const coverOf = (s) => parseFloat((s.closest('.size-row').querySelector('.size-row__cover').textContent.match(/\d+(?:\.\d+)?/) || [0])[0]);
 
 function updateTotal() {
   let total = 0;
   let covers = 0;
-  steppers.forEach((s) => {
-    const qty = parseInt(s.querySelector('.stepper__value').value, 10) || 0;
-    s.classList.toggle('is-active', qty > 0);
-    s.querySelector('[data-step="-1"]').disabled = qty === 0;
-    total += qty * Number(s.dataset.price);
-    covers += qty * coverOf(s);
+  packs.forEach((p) => {
+    const qty = qtyOf(p);
+    p.stepper.classList.toggle('is-active', qty > 0);
+    p.stepper.querySelector('[data-step="-1"]').disabled = qty === 0;
+    total += qty * p.price;
+    covers += qty * p.covers;
   });
   coverage.classList.toggle('is-empty', covers === 0);
   coverageText.innerHTML = covers > 0 ? `Your selection covers approx. <strong>${covers}&nbsp;m²</strong>` : 'Choose a pack size to see how much it covers';
@@ -305,16 +325,16 @@ function updateTotal() {
 const stripSumD = document.getElementById('strip-sum-d');
 const stripSumM = document.getElementById('strip-sum-m');
 function updateBasketBar(total) {
-  const tins = steppers.reduce((n, s) => n + (parseInt(s.querySelector('.stepper__value').value, 10) || 0), 0);
+  const tins = packs.reduce((n, p) => n + qtyOf(p), 0);
   const finish = byId(currentFinish).name;
   const tinsText = `${tins} tin${tins === 1 ? '' : 's'}, ${money(total)}`;
   stripSumD.textContent = tins ? `${finish}, ${tinsText}` : `${finish}, no size chosen`;
   stripSumM.textContent = tins ? tinsText : 'No size chosen';
 }
 
-steppers.forEach((s) => {
-  const input = s.querySelector('.stepper__value');
-  s.querySelectorAll('.stepper__btn').forEach((btn) => {
+packs.forEach(({ stepper }) => {
+  const input = stepper.querySelector('.stepper__value');
+  stepper.querySelectorAll('.stepper__btn').forEach((btn) => {
     btn.addEventListener('click', () => {
       input.value = Math.min(99, Math.max(0, (parseInt(input.value, 10) || 0) + Number(btn.dataset.step)));
       updateTotal();
@@ -332,8 +352,8 @@ steppers.forEach((s) => {
 updateTotal();
 
 // ---------- Paint calculator drawer (Figma 274:603, notes 274:753) ----------
-// Walls minus windows & doors, 1 coat. Tins are the cheapest mix of the PDP pack sizes that covers the area,
-// read from the size rows (size, "Covers approx." m² and price), so the calculator follows the buy box.
+// Walls minus windows & doors, 1 coat. Tins are the cheapest mix of the buy box's pack sizes (packs, above) that
+// covers the area.
 const calc = document.getElementById('calc-drawer');
 const calcRowTpl = document.getElementById('calc-row');
 const calcLists = { wall: document.getElementById('calc-walls'), opening: document.getElementById('calc-openings') };
@@ -343,17 +363,7 @@ const calcHint = document.getElementById('calc-hint');
 const calcTins = document.getElementById('calc-tins');
 const calcTotal = document.getElementById('calc-total');
 const calcBuy = document.getElementById('calc-buy');
-const packs = steppers.map((s) => {
-  const row = s.closest('.size-row');
-  return {
-    stepper: s,
-    size: row.querySelector('.size-row__size').textContent,
-    covers: parseFloat(row.querySelector('.size-row__cover').textContent.match(/\d+(\.\d+)?/)[0]),
-    price: Number(s.dataset.price),
-  };
-});
 let calcUnit = 'm';
-let calcLastFocus = null;
 let calcTinQty = [];
 
 const fmtArea = (a) => `${Number(a.toFixed(2))} m²`;
@@ -399,7 +409,7 @@ function renderCalc() {
   calcArea.classList.toggle('has-value', area > 0);
   calcHint.textContent = area > 0 ? 'Based on 1 coat' : 'Add your walls to calculate';
   // Until something is measured, the pack sizes already chosen on the page are carried in
-  calcTinQty = area > 0 ? cheapestMix(area) : packs.map((p) => parseInt(p.stepper.querySelector('.stepper__value').value, 10) || 0);
+  calcTinQty = area > 0 ? cheapestMix(area) : packs.map(qtyOf);
   let total = 0;
   calcTins.innerHTML = packs
     .map((p, i) => {
@@ -475,23 +485,11 @@ singleSelect(unitBtns, (btn) => {
 });
 
 function openCalc() {
-  calcLastFocus = document.activeElement;
   renderCalc();
-  calc.inert = false;
-  calc.setAttribute('aria-hidden', 'false');
-  calc.classList.add('is-open');
-  document.body.classList.add('drawer-open');
   // Figma's "on open" state has Wall 1's width focused; on phones that would pop the keyboard, so focus the panel
-  const target = matchMedia('(min-width: 768px)').matches ? calcLists.wall.querySelector('input') : calc.querySelector('.drawer__panel');
-  target.focus({ preventScroll: true });
+  openOverlay(calc, 'drawer-open', mobile.matches ? calc.querySelector('.drawer__panel') : calcLists.wall.querySelector('input'));
 }
-function closeCalc() {
-  calc.classList.remove('is-open');
-  calc.setAttribute('aria-hidden', 'true');
-  calc.inert = true;
-  document.body.classList.remove('drawer-open');
-  if (calcLastFocus) calcLastFocus.focus({ preventScroll: true });
-}
+const closeCalc = () => closeOverlay(calc, 'drawer-open');
 document.querySelectorAll('[data-open-calc]').forEach((b) => b.addEventListener('click', openCalc));
 calc.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeCalc));
 // Add to Basket puts the listed tins in the buy box and closes the drawer
@@ -502,13 +500,8 @@ calcBuy.addEventListener('click', () => {
   closeCalc();
 });
 calc.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') { closeCalc(); return; }
-  if (e.key !== 'Tab') return;
-  const focusable = [...calc.querySelectorAll('button, a[href], input')].filter((b) => !b.disabled && b.offsetParent);
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
-  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  if (e.key === 'Escape') closeCalc();
+  else if (e.key === 'Tab') trapTab(e, calc, 'button, a[href], input');
 });
 // index.html#calculator opens the calculator straight away
 if (location.hash === '#calculator') openCalc();
@@ -552,12 +545,11 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   };
   prev.addEventListener('click', () => goTo(index - 1));
   next.addEventListener('click', () => goTo(index + 1));
+  carousel.addEventListener('carousel:reset', () => goTo(0));
   goTo(0, false);
 });
 
 // ---------- Mobile only (Figma 147:585) ----------
-const mobile = window.matchMedia('(max-width: 767px)');
-
 // "Read more" under the description: clamped to six lines on mobile (CSS only clamps below 768px)
 const descBody = document.querySelector('.pdp-desc__body');
 const readMore = document.querySelector('.m-readmore');
@@ -586,7 +578,6 @@ mobile.addEventListener('change', updateSticky);
 updateSticky(); // a reload can restore the page part-way down
 // "Choose finish & size" never adds to basket: it scrolls back to the order card and focuses the chosen finish,
 // clear of the mobile sticky header (56px) when that's showing
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 document.getElementById('strip-go').addEventListener('click', () => {
   const card = document.querySelector('.order-card');
   const offset = mobile.matches ? 56 + 16 : 24;
@@ -611,37 +602,17 @@ footerToggles.forEach((b) => b.addEventListener('click', () => {
 }));
 syncFooterToggles();
 mobile.addEventListener('change', syncFooterToggles);
-updateSticky();
 
 // ---------- Prototype notice (Figma 281:603 / 283:606) ----------
 // Anything that looks clickable but isn't designed in this preview (href="#" links, [data-proto] buttons,
 // chapters without copy, the buy box's Add to Basket) opens the notice instead of doing nothing.
 const notice = document.getElementById('proto-notice');
-let noticeLastFocus = null;
-function openNotice() {
-  noticeLastFocus = document.activeElement;
-  notice.inert = false;
-  notice.setAttribute('aria-hidden', 'false');
-  notice.classList.add('is-open');
-  document.body.classList.add('notice-open');
-  notice.querySelector('.notice__back').focus({ preventScroll: true });
-}
-function closeNotice() {
-  notice.classList.remove('is-open');
-  notice.setAttribute('aria-hidden', 'true');
-  notice.inert = true;
-  document.body.classList.remove('notice-open');
-  if (noticeLastFocus) noticeLastFocus.focus({ preventScroll: true });
-}
+const openNotice = () => openOverlay(notice, 'notice-open', notice.querySelector('.notice__back'));
+const closeNotice = () => closeOverlay(notice, 'notice-open');
 notice.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeNotice));
 notice.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') { closeNotice(); return; }
-  if (e.key !== 'Tab') return;
-  const focusable = [...notice.querySelectorAll('button')];
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
-  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  if (e.key === 'Escape') closeNotice();
+  else if (e.key === 'Tab') trapTab(e, notice, 'button');
 });
 document.addEventListener('click', (e) => {
   const el = e.target.closest('a[href="#"], [data-proto], .chapter__head:not([aria-controls])');
@@ -681,10 +652,11 @@ const lbEmpty = document.getElementById('lb-empty');
 const lbThumbs = document.getElementById('lb-thumbs');
 const lbPhoto = document.getElementById('lb-photo');
 const lbTabBar = lightbox.querySelector('.lb-tabs');
+const lbPos = document.getElementById('lb-pos');
+const lbRoomName = document.getElementById('lb-room');
 let lbPaintName = 'Incarnadine';
 let lbRoom = 'all';
 let lbIndex = 0;
-let lbLastFocus = null;
 const lbItems = () => GALLERY.filter((p) => lbRoom === 'all' || p.room === lbRoom);
 // Bottom fade (Figma 293:603) goes away once the grid is scrolled to its last row, or when nothing scrolls
 const lbScroller = lightbox.querySelector('.lb-grid__scroll');
@@ -738,8 +710,8 @@ function showPhoto(i) {
   const p = items[lbIndex];
   lbPhoto.src = p.src;
   lbPhoto.alt = `${lbPaintName} in a ${p.room.toLowerCase()}`;
-  document.getElementById('lb-pos').textContent = `${lbIndex + 1} / ${items.length}`;
-  document.getElementById('lb-room').textContent = p.room;
+  lbPos.textContent = `${lbIndex + 1} / ${items.length}`;
+  lbRoomName.textContent = p.room;
   lbThumbs.innerHTML = items
     .map((t, j) => `<button class="lb-thumb${j === lbIndex ? ' is-active' : ''}" type="button" data-i="${j}" aria-label="Photo ${j + 1}"${j === lbIndex ? ' aria-current="true"' : ''}><img src="${t.src}" alt=""></button>`)
     .join('');
@@ -757,7 +729,7 @@ function showGrid() {
   lbGrid.hidden = false;
   lbBox.classList.remove('is-photo');
   const tile = lbPhotos.querySelector(`[data-i="${lbIndex}"]`);
-  (tile || lbBox).focus({ preventScroll: false });
+  (tile || lbBox).focus();
   updateLbFade();
 }
 lightbox.querySelector('.lb-view__back').addEventListener('click', showGrid);
@@ -775,35 +747,19 @@ stage.addEventListener('pointerup', (e) => {
 });
 
 function openGallery(photoSrc) {
-  lbLastFocus = document.activeElement;
   setRoom('all');
-  lightbox.inert = false;
-  lightbox.setAttribute('aria-hidden', 'false');
-  lightbox.classList.add('is-open');
-  document.body.classList.add('drawer-open');
-  // --sb (scrollbar width) lives on .lb-grid so both the scroll padding and the fade can use it
+  // Always opens on the grid, so --sb (the scrollbar width .lb-grid's padding and fade share) is measured while the
+  // grid shows; a photo on the page then goes straight on to its photo view
+  lbView.hidden = true;
+  lbGrid.hidden = false;
+  lbBox.classList.remove('is-photo');
+  openOverlay(lightbox, 'drawer-open', lbBox);
   lbGrid.style.setProperty('--sb', `${Math.min(lbScroller.offsetWidth - lbScroller.clientWidth, 20)}px`);
   updateLbFade();
-  if (photoSrc) {
-    showPhoto(Math.max(0, lbItems().findIndex((p) => photoSrc.endsWith(p.src))));
-  } else {
-    lbView.hidden = true;
-    lbGrid.hidden = false;
-    lbBox.classList.remove('is-photo');
-    lbBox.focus({ preventScroll: true });
-  }
+  if (photoSrc) showPhoto(Math.max(0, lbItems().findIndex((p) => photoSrc.endsWith(p.src))));
 }
-function closeGallery() {
-  lightbox.classList.remove('is-open');
-  lightbox.setAttribute('aria-hidden', 'true');
-  lightbox.inert = true;
-  document.body.classList.remove('drawer-open');
-  if (lbLastFocus) lbLastFocus.focus({ preventScroll: true });
-}
-document.querySelectorAll('[data-open-gallery]').forEach((b) => b.addEventListener('click', (e) => {
-  e.stopPropagation();
-  openGallery();
-}));
+const closeGallery = () => closeOverlay(lightbox, 'drawer-open');
+document.querySelectorAll('[data-open-gallery]').forEach((b) => b.addEventListener('click', () => openGallery()));
 // A photo on the page opens the photo view at that photo
 galleryMain.addEventListener('click', () => openGallery(galleryMain.src));
 galleryMain.addEventListener('keydown', (e) => {
@@ -813,14 +769,9 @@ document.querySelectorAll('.m-gallery [data-photo]').forEach((b) => b.addEventLi
 lightbox.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeGallery));
 lightbox.addEventListener('keydown', (e) => {
   const inPhoto = !lbView.hidden;
-  if (e.key === 'Escape') { if (inPhoto) showGrid(); else closeGallery(); return; }
-  if (inPhoto && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { e.preventDefault(); showPhoto(lbIndex + (e.key === 'ArrowRight' ? 1 : -1)); return; }
-  if (e.key !== 'Tab') return;
-  const focusable = [...lightbox.querySelectorAll('button')].filter((b) => b.offsetParent);
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
-  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  if (e.key === 'Escape') { if (inPhoto) showGrid(); else closeGallery(); }
+  else if (inPhoto && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { e.preventDefault(); showPhoto(lbIndex + (e.key === 'ArrowRight' ? 1 : -1)); }
+  else if (e.key === 'Tab') trapTab(e, lightbox, 'button');
 });
 // index.html#gallery opens the grid straight away
 if (location.hash === '#gallery') openGallery();
@@ -828,7 +779,7 @@ if (location.hash === '#gallery') openGallery();
 // ---------- Colour preview switcher (demo tool, not part of the Figma frame) ----------
 // Buttons and bands always take the paint. Text on it stays white while it reads at 4.5:1 (WCAG AA), otherwise it
 // goes to ink, as the live site does for pale colours such as Teresa's Green.
-const INK = '#45484b';
+const INK = getComputedStyle(document.documentElement).getPropertyValue('--ink').trim();
 const WHITE = '#ffffff';
 const luminance = (hex) => {
   const n = parseInt(hex.slice(1), 16);
@@ -917,7 +868,8 @@ function applyContent(id) {
     t.dataset.photo = g.hero[i];
     t.querySelector('img').src = g.hero[i];
   });
-  document.querySelectorAll('[data-carousel] .carousel__track').forEach((track) => { track.scrollLeft = 0; });
+  // Back to the first card, with each carousel's counter and arrows following
+  document.querySelectorAll('[data-carousel]').forEach((c) => c.dispatchEvent(new Event('carousel:reset')));
 }
 
 const pswitch = document.getElementById('pswitch');
