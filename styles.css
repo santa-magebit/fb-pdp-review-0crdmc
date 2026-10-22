@@ -494,6 +494,32 @@ body.drawer-open { overflow: hidden; }
 .calc__help { display: flex; align-items: center; gap: 6px; font-weight: 500; font-size: 14px; line-height: 20px; text-decoration: underline; }
 .calc__unit:focus-visible, .calc__add:focus-visible, .calc__remove:focus-visible, .calc__buy:focus-visible, .calc__help:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
+/* ---------- Prototype notice (281:603 desktop, 283:606 mobile) ----------
+   Centred over everything, drawers included; Figma's drop shadow left off (no shadows except the mobile sticky header). */
+body.notice-open { overflow: hidden; }
+.notice { position: fixed; inset: 0; z-index: 110; display: flex; align-items: center; justify-content: center; padding: 24px; visibility: hidden; transition: visibility 0s .2s; }
+.notice.is-open { visibility: visible; transition: none; }
+.notice__scrim { position: absolute; inset: 0; background: rgba(0, 0, 0, .5); opacity: 0; transition: opacity .2s ease; }
+.notice.is-open .notice__scrim { opacity: 1; }
+.notice__box {
+  position: relative; width: 480px; max-width: 100%; max-height: 100%; overflow-y: auto; display: flex; flex-direction: column; align-items: center; gap: 24px;
+  padding: 40px 40px 32px; border-radius: 12px; background: #fff; color: var(--ink); font-family: var(--inter); text-align: center; outline: none;
+  opacity: 0; transform: translateY(8px) scale(.98); transition: opacity .2s ease, transform .2s ease;
+}
+.notice.is-open .notice__box { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .notice, .notice__scrim, .notice__box { transition: none; }
+}
+.notice__close { position: absolute; top: 16px; right: 16px; }
+.notice__art { width: 220px; height: 147px; object-fit: cover; object-position: bottom; }
+.notice__message { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.notice__title { margin: 0; font-weight: 400; font-size: 28px; line-height: 36px; }
+.notice__text { margin: 0; font-size: 16px; line-height: 24px; color: var(--muted); }
+.notice__action { width: 100%; padding-top: 8px; }
+.notice__back { width: 100%; height: 52px; padding: 0 32px; border-radius: 48px; background: var(--ink); font-weight: 500; font-size: 16px; line-height: 24px; color: #fff; }
+.notice__credit { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 14px; line-height: 24px; color: var(--muted); }
+.notice__back:focus-visible, .notice__close:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
 /* ---------- Footer (113:5292) ---------- */
 .footer { background: var(--ink); padding: 80px 0 40px; color: #fff; }
 .footer__inner { display: flex; flex-direction: column; gap: 40px; }
@@ -868,6 +894,12 @@ body.drawer-open { overflow: hidden; }
   .finish-info__text { line-height: 20px; }
   .drawer__footer { gap: 12px; padding: 20px 20px 24px; }
   .drawer__select { height: 52px; }
+  /* Prototype notice, mobile (283:606) */
+  .notice__box { width: 342px; padding: 48px 24px 24px; }
+  .notice__close { top: 12px; right: 12px; }
+  .notice__art { width: 180px; height: 120px; }
+  .notice__title { font-size: 24px; line-height: 32px; }
+
   /* Paint calculator: no mobile frame yet, so it follows the finish sheet's spacing */
   .calc__header { padding: 16px 20px 20px; }
   .calc__title { white-space: normal; }

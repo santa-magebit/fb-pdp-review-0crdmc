@@ -563,3 +563,45 @@ function updateSticky() {
 window.addEventListener('scroll', updateSticky, { passive: true });
 mobile.addEventListener('change', updateSticky);
 updateSticky();
+
+// ---------- Prototype notice (Figma 281:603 / 283:606) ----------
+// Anything that looks clickable but isn't designed in this preview (href="#" links, [data-proto] buttons,
+// chapters without copy, the buy box's Add to Basket) opens the notice instead of doing nothing.
+const notice = document.getElementById('proto-notice');
+let noticeLastFocus = null;
+function openNotice() {
+  noticeLastFocus = document.activeElement;
+  notice.inert = false;
+  notice.setAttribute('aria-hidden', 'false');
+  notice.classList.add('is-open');
+  document.body.classList.add('notice-open');
+  notice.querySelector('.notice__back').focus({ preventScroll: true });
+}
+function closeNotice() {
+  notice.classList.remove('is-open');
+  notice.setAttribute('aria-hidden', 'true');
+  notice.inert = true;
+  document.body.classList.remove('notice-open');
+  if (noticeLastFocus) noticeLastFocus.focus({ preventScroll: true });
+}
+notice.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeNotice));
+notice.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { closeNotice(); return; }
+  if (e.key !== 'Tab') return;
+  const focusable = [...notice.querySelectorAll('button')];
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('a[href="#"], [data-proto], .chapter__head:not([aria-controls])');
+  if (!el) return;
+  e.preventDefault();
+  openNotice();
+});
+// Adding to the basket isn't part of the preview either (the mobile basket bar clicks this same button)
+addButton.closest('form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  openNotice();
+});
