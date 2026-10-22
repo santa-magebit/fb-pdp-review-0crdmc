@@ -10,7 +10,7 @@
   <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="icon" href="assets/favicon-48.png" type="image/png" sizes="48x48">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=20261022204657">
+  <link rel="stylesheet" href="styles.css?v=20261022205708">
 </head>
 <body>
 <!-- Built from Figma file zBK5BOgn7VGEptzhet1s41, frame "PDP" 32:1690 (section "PDP - wip" 56:4766).
@@ -721,6 +721,7 @@
           <h4 class="calc__h">Walls</h4>
           <p class="calc__note">Measure the width and height of each wall.</p>
         </div>
+        <div class="calc__cols" aria-hidden="true"><span>Width</span><span>Height</span></div>
         <div class="calc__rows" id="calc-walls"></div>
         <button class="calc__add" type="button" data-add="wall"><img src="assets/icons/calc-add.svg" width="22" height="22" alt="">Add a wall</button>
       </section>
@@ -730,6 +731,7 @@
           <h4 class="calc__h">Windows &amp; doors <span class="calc__optional">(optional)</span></h4>
           <p class="calc__note">We take these off the total so you don’t buy more than you need.</p>
         </div>
+        <div class="calc__cols" aria-hidden="true"><span>Width</span><span>Height</span></div>
         <div class="calc__rows" id="calc-openings"></div>
         <button class="calc__add" type="button" data-add="opening"><img src="assets/icons/calc-add.svg" width="22" height="22" alt="">Add a window or door</button>
       </section>
@@ -757,16 +759,11 @@
 
 <template id="calc-row">
   <div class="calc__row">
-    <div class="calc__row-head">
-      <span class="calc__row-name"></span>
-      <span class="calc__tag">0 m²</span>
-      <button class="calc__remove" type="button"><img src="assets/icons/calc-remove.svg" width="20" height="20" alt=""></button>
-    </div>
-    <div class="calc__fields">
-      <label class="calc__field"><span>Width</span><span class="calc__input"><input type="text" inputmode="decimal" placeholder="0.00" data-dim="w"><span class="calc__unit-label">m</span></span></label>
-      <span class="calc__x" aria-hidden="true">×</span>
-      <label class="calc__field"><span>Height</span><span class="calc__input"><input type="text" inputmode="decimal" placeholder="0.00" data-dim="h"><span class="calc__unit-label">m</span></span></label>
-    </div>
+    <label class="calc__field"><span class="calc__input"><input type="text" inputmode="decimal" placeholder="0.00" data-dim="w"><span class="calc__unit-label">m</span></span></label>
+    <span class="calc__x" aria-hidden="true">×</span>
+    <label class="calc__field"><span class="calc__input"><input type="text" inputmode="decimal" placeholder="0.00" data-dim="h"><span class="calc__unit-label">m</span></span></label>
+    <span class="calc__tag"></span>
+    <button class="calc__remove" type="button"><img src="assets/icons/calc-remove.svg" width="20" height="20" alt=""></button>
   </div>
 </template>
 
@@ -835,6 +832,6 @@
 <!-- Tooltip for Add to Basket buttons pressed before a quantity is chosen -->
 <div class="tip" id="tip" role="status" aria-live="polite" hidden></div>
 
-<script src="main.js?v=20261022204657"></script>
+<script src="main.js?v=20261022205708"></script>
 </body>
 </html>

@@ -394,7 +394,8 @@ function renderCalc() {
   Object.entries(calcLists).forEach(([kind, list]) => {
     list.querySelectorAll('.calc__row').forEach((row) => {
       const a = rowArea(row);
-      row.querySelector('.calc__tag').textContent = fmtArea(a);
+      // Area shows only once there is one; openings read as a deduction
+      row.querySelector('.calc__tag').textContent = a ? `${kind === 'opening' ? '−' : ''}${fmtArea(a)}` : '';
       if (kind === 'wall') walls += a; else openings += a;
     });
   });
@@ -421,7 +422,6 @@ function renderCalc() {
 function renumber(kind) {
   const rows = [...calcLists[kind].querySelectorAll('.calc__row')];
   rows.forEach((row, i) => {
-    row.querySelector('.calc__row-name').textContent = `${calcNames[kind]} ${i + 1}`;
     row.querySelectorAll('input').forEach((input) => {
       input.setAttribute('aria-label', `${calcNames[kind]} ${i + 1} ${input.dataset.dim === 'w' ? 'width' : 'height'} in ${calcUnit}`);
     });
