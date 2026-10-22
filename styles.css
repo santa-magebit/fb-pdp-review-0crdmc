@@ -243,12 +243,11 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 }
 .primer-types { display: flex; gap: 6px; }
 .primer-type {
-  flex: none; display: inline-flex; flex-direction: column; align-items: center; padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px; background: #fff;
-  font-family: var(--verlag); font-weight: 500; font-size: 13px; line-height: 18px; white-space: nowrap; text-align: center;
+  flex: none; padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px; background: #fff;
+  font-size: 13px; line-height: 18px; color: var(--muted); white-space: nowrap; text-align: center;
 }
-.primer-type.is-active { border-color: var(--ink); font-weight: 600; }
-/* buttons hug their label; the hidden bold copy reserves the active width so nothing shifts on select */
-.primer-type::after { content: attr(data-label); height: 0; overflow: hidden; visibility: hidden; font-weight: 600; }
+/* active states change colour only, never weight, so nothing shifts */
+.primer-type.is-active { border-color: var(--ink); color: var(--ink); }
 
 /* ---------- Colour schemes (119:421 / 201:8282) ---------- */
 .schemes { padding: 80px 0; }
@@ -407,8 +406,8 @@ body.drawer-open { overflow: hidden; }
 .drawer__close { width: 44px; height: 44px; flex: none; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 22px; }
 .drawer__tabs { display: flex; align-items: flex-end; gap: 16px; border-bottom: 1px solid var(--line); }
 /* Figma's 2px underline sits inside the 44px tab, so every tab reserves it */
-.drawer__tab { height: 44px; min-width: 72px; padding: 0 8px 10px; display: flex; align-items: flex-end; justify-content: center; border-bottom: 2px solid transparent; white-space: nowrap; }
-.drawer__tab.is-active { border-bottom-color: var(--ink); }
+.drawer__tab { height: 44px; min-width: 72px; padding: 0 8px 10px; display: flex; align-items: flex-end; justify-content: center; border-bottom: 2px solid transparent; color: var(--muted); white-space: nowrap; }
+.drawer__tab.is-active { border-bottom-color: var(--ink); color: var(--ink); }
 .drawer__list { flex: 1; min-height: 0; overflow-y: scroll; scrollbar-gutter: stable; display: flex; flex-direction: column; gap: 8px; padding: 0 32px 24px; }
 .finish-item { flex: none; border: 1px solid var(--border); border-radius: 8px; }
 .finish-item.is-selected { border-color: var(--ink); background: var(--cream); }
@@ -447,7 +446,7 @@ body.drawer-open { overflow: hidden; }
 .calc__unit { position: relative; isolation: isolate; flex: 1; display: grid; place-items: center; font-size: 14px; line-height: 20px; color: var(--muted); }
 .calc__unit::before { content: ""; position: absolute; z-index: -1; inset: 4px 0 4px 4px; border-radius: 48px; }
 .calc__unit:last-child::before { inset: 4px 4px 4px 0; }
-.calc__unit.is-active { font-weight: 500; color: var(--ink); }
+.calc__unit.is-active { color: var(--ink); }
 .calc__unit.is-active::before { background: #fff; }
 .calc__card { flex: none; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; padding: 20px; border: 1px solid var(--border); border-radius: 12px; }
 .calc__card-head { display: flex; flex-direction: column; gap: 4px; }
@@ -535,7 +534,7 @@ body.notice-open { overflow: hidden; }
 .lb-tabs { display: flex; align-items: flex-end; gap: 8px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
 .lb-tabs::-webkit-scrollbar { display: none; }
 .lb-tab { flex: none; height: 44px; min-width: 72px; padding: 0 8px 12px; display: flex; align-items: flex-end; justify-content: center; border-bottom: 2px solid transparent; font-size: 15px; line-height: 22px; color: var(--muted); white-space: nowrap; }
-.lb-tab.is-active { border-bottom-color: var(--ink); font-weight: 700; color: var(--ink); }
+.lb-tab.is-active { border-bottom-color: var(--ink); color: var(--ink); }
 /* the always-on scrollbar sits inside the 32px side padding (--sb is its width), so tiles keep Figma's 368px */
 .lb-grid__scroll { flex: 1; min-height: 0; overflow-y: scroll; scrollbar-gutter: stable; padding: 24px calc(32px - var(--sb, 0px)) 32px 32px; }
 .lb-grid__photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
