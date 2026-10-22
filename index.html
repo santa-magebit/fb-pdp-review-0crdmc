@@ -10,7 +10,7 @@
   <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="icon" href="assets/favicon-48.png" type="image/png" sizes="48x48">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=20261022212830">
+  <link rel="stylesheet" href="styles.css?v=20261022213943">
 </head>
 <body>
 <!-- Built from Figma file zBK5BOgn7VGEptzhet1s41, frame "PDP" 32:1690 (section "PDP - wip" 56:4766).
@@ -97,20 +97,20 @@
         <img src="assets/icons/chevron-breadcrumb.svg" width="24" height="24" alt="">
         <a href="#">Paint</a>
         <img src="assets/icons/chevron-breadcrumb.svg" width="24" height="24" alt="">
-        <span aria-current="page">Incarnadine</span>
+        <span aria-current="page" data-slot="name">Incarnadine</span>
       </nav>
       <div class="pdp-title" data-figma="32:1750">
-        <p class="pdp-title__no">No. 248</p>
-        <h1 class="pdp-title__name">Incarnadine</h1>
+        <p class="pdp-title__no" data-slot="no">No. 248</p>
+        <h1 class="pdp-title__name" data-slot="name">Incarnadine</h1>
       </div>
     </div>
   </section>
 
   <section class="m-hero m-only" data-figma="303:615">
     <nav class="m-breadcrumb" aria-label="Breadcrumb">
-      <a href="#">Home</a><img src="assets/icons/m-crumb.svg" width="24" height="24" alt=""><a href="#">Paint</a><img src="assets/icons/m-crumb.svg" width="24" height="24" alt=""><span aria-current="page">Incarnadine</span>
+      <a href="#">Home</a><img src="assets/icons/m-crumb.svg" width="24" height="24" alt=""><a href="#">Paint</a><img src="assets/icons/m-crumb.svg" width="24" height="24" alt=""><span aria-current="page" data-slot="name">Incarnadine</span>
     </nav>
-    <div class="m-hero__title"><p>No. 248</p><h1>Incarnadine</h1></div>
+    <div class="m-hero__title"><p data-slot="no">No. 248</p><h1 data-slot="name">Incarnadine</h1></div>
     <div class="m-gallery" data-figma="302:1968">
       <button class="m-gallery__main" type="button" data-photo="assets/img/gallery-3.jpg" aria-label="Open photo"><img src="assets/img/gallery-3.jpg" alt="Incarnadine on the walls and bookshelves of a living room"></button>
       <div class="m-gallery__thumbs">
@@ -141,8 +141,8 @@
       <div class="pdp-content" data-figma="56:3532">
         <div class="pdp-info" data-figma="51:3333">
           <div class="pdp-desc" data-figma="56:3580">
-            <h2 class="label">A classic crimson</h2>
-            <div class="pdp-desc__body">
+            <h2 class="label" data-slot="desc-title">A classic crimson</h2>
+            <div class="pdp-desc__body" data-slot="desc-body">
               <p>Our richest crimson originally takes its name from Latin, but is now a much used term for crimsons and reds. Similar to the deep glossy red used by David Hicks at Barons Court in the 1970s, Incarnadine is unashamedly classic and glamorous.</p>
               <p>It can be used to sumptuous effect in halls when offset with Tanner's Brown on woodwork, or feel more edgy and graphic when paired with a bright white.</p>
             </div>
@@ -241,7 +241,7 @@
             </div>
             <div class="sample" data-figma="68:748">
               <div class="sample__row">
-                <div class="sample__swatch"><span>No. 248</span></div>
+                <div class="sample__swatch"><span data-slot="no">No. 248</span></div>
                 <div class="sample__text">
                   <p class="sample__title">See it on your wall first</p>
                   <p class="sample__desc">Colour changes with the light in every room. Try it virtually now, or check it with a 100 ml sample pot.</p>
@@ -276,7 +276,7 @@
     <div class="wrap">
       <h2 class="section-title" data-figma="106:651">Colour Story</h2>
       <div class="story__body" data-figma="106:654">
-        <button class="story__film" type="button" data-proto aria-label="Play the Incarnadine colour story film" data-figma="106:656">
+        <button class="story__film" type="button" data-proto aria-label="Play the Incarnadine colour story film" data-figma="106:656" data-slot="story-film">
           <img class="story__poster" src="assets/img/colour-story-film.png" alt="">
           <img class="story__play" src="assets/icons/play.svg" width="80" height="80" alt="">
         </button>
@@ -285,7 +285,7 @@
           <h3 class="pairs-card__title">Pairs with</h3>
           <div class="pairs-card__group">
             <p class="pairs-card__label">Complementary white:</p>
-            <div class="pairing">
+            <div class="pairing" data-slot="white">
               <div class="pairing__img"><img src="assets/img/pair-dimity.png" alt="Dimity No. 2008 sample pot"></div>
               <div class="pairing__content">
                 <div class="pairing__text">
@@ -302,10 +302,10 @@
           <div class="pairs-card__group pairs-card__group--ruled">
             <p class="pairs-card__label">Recommended primer &amp; undercoat:</p>
             <div class="pairing">
-              <div class="pairing__img"><img src="assets/img/pair-dark-tones.png" alt="Dark Tones primer tin"></div>
+              <div class="pairing__img" data-slot="primer-img"><img src="assets/img/pair-dark-tones.png" alt="Dark Tones primer tin"></div>
               <div class="pairing__content">
                 <div class="pairing__top">
-                  <div class="pairing__text">
+                  <div class="pairing__text" data-slot="primer-text">
                     <p class="pairing__name">Dark Tones</p>
                     <p class="pairing__desc">The crucial foundation for a rich, even and longer lasting finish.</p>
                   </div>
@@ -331,21 +331,21 @@
     <div class="wrap">
       <h2 class="section-title">Colour Schemes</h2>
       <div class="schemes__row" data-figma="201:8282">
-        <div class="scheme">
+        <div class="scheme" data-slot="scheme-1">
           <div class="scheme__room" style="--accent:#d1dadb; --trim:#c3c1bb" aria-hidden="true"><i></i><i></i><i></i></div>
           <ul class="scheme__colours">
             <li><span class="scheme__swatch" style="background:#c3c1bb"></span><span class="scheme__text"><span>No.242</span><span><b>Pavilion Gray</b> (Trim)</span></span></li>
             <li><span class="scheme__swatch" style="background:#d1dadb"></span><span class="scheme__text"><span>No.235</span><span><b>Borrowed Light</b> (Accent)</span></span></li>
           </ul>
         </div>
-        <div class="scheme">
+        <div class="scheme" data-slot="scheme-2">
           <div class="scheme__room" style="--accent:#465172; --trim:#3d3c3c" aria-hidden="true"><i></i><i></i><i></i></div>
           <ul class="scheme__colours">
             <li><span class="scheme__swatch" style="background:#3d3c3c"></span><span class="scheme__text"><span>No.256</span><span><b>Pitch Black</b> (Trim)</span></span></li>
             <li><span class="scheme__swatch" style="background:#465172"></span><span class="scheme__text"><span>No.253</span><span><b>Drawing Room Blue</b> (Accent)</span></span></li>
           </ul>
         </div>
-        <div class="scheme">
+        <div class="scheme" data-slot="scheme-3">
           <div class="scheme__room" style="--accent:#f6f6f2; --trim:#dbdbda" aria-hidden="true"><i></i><i></i><i></i></div>
           <ul class="scheme__colours">
             <li><span class="scheme__swatch" style="background:#dbdbda"></span><span class="scheme__text"><span>No.2011</span><span><b>Blackened</b> (Trim)</span></span></li>
@@ -369,15 +369,15 @@
 
   <section class="reds" data-figma="113:5091">
     <div class="wrap">
-      <h2 class="section-title section-title--on-paint">Sample Our Favourite Reds</h2>
+      <h2 class="section-title section-title--on-paint" data-slot="set-title">Sample Our Favourite Reds</h2>
       <div class="reds__body">
-        <div class="reds__image"><img src="assets/img/favourite-reds.png" alt="A brush dipped in a tin of red paint"></div>
+        <div class="reds__image" data-slot="set-image"><img src="assets/img/favourite-reds.png" alt="A brush dipped in a tin of red paint"></div>
         <div class="reds__card">
           <div class="reds__content">
-            <p class="reds__intro">The best way to experience our colours before taking the plunge is with a true-to-colour paint sample. To help you narrow down your shortlist of shades, we've curated three of our most popular red shades to help you find your perfect match.</p>
+            <p class="reds__intro" data-slot="set-intro">The best way to experience our colours before taking the plunge is with a true-to-colour paint sample. To help you narrow down your shortlist of shades, we've curated three of our most popular red shades to help you find your perfect match.</p>
             <div class="reds__set">
               <p class="reds__kicker">In this set</p>
-              <ul class="reds__list">
+              <ul class="reds__list" data-slot="set-list">
                 <li><span class="reds__swatch" style="background:#9a4a42"></span><span class="reds__text"><span>No. 42</span><span><b>Picture Gallery Red</b> (100 ml)</span></span></li>
                 <li><span class="reds__swatch" style="background:#a8333a"></span><span class="reds__text"><span>No. 217</span><span><b>Rectory Red</b> (100 ml)</span></span></li>
                 <li><span class="reds__swatch" style="background:#6f2a2e"></span><span class="reds__text"><span>No. 297</span><span><b>Preference Red</b> (100 ml)</span></span></li>
@@ -463,22 +463,22 @@
       <h2 class="section-title section-title--32">Similar Colors</h2>
       <div class="carousel" data-carousel>
         <div class="similar__track carousel__track">
-          <a class="swatch-card" href="#">
+          <a class="swatch-card" href="#" data-slot="similar-1">
             <span class="swatch-card__img"><img src="assets/img/naperon.png" alt=""></span>
             <span class="swatch-card__name">Naperon</span>
             <span class="swatch-card__no">No. 315</span>
           </a>
-          <a class="swatch-card" href="#">
+          <a class="swatch-card" href="#" data-slot="similar-2">
             <span class="swatch-card__img"><img src="assets/img/marmelo.png" alt=""></span>
             <span class="swatch-card__name">Marmelo</span>
             <span class="swatch-card__no">No. 316</span>
           </a>
-          <a class="swatch-card" href="#">
+          <a class="swatch-card" href="#" data-slot="similar-3">
             <span class="swatch-card__img"><img src="assets/img/incarnadine.png" alt=""></span>
             <span class="swatch-card__name">Incarnadine</span>
             <span class="swatch-card__no">No. 248</span>
           </a>
-          <a class="swatch-card" href="#">
+          <a class="swatch-card" href="#" data-slot="similar-4">
             <span class="swatch-card__img"><img src="assets/img/etruscan-red.png" alt=""></span>
             <span class="swatch-card__name">Etruscan Red</span>
             <span class="swatch-card__no">No. 56</span>
@@ -498,13 +498,13 @@
 
   <section class="inspo" data-figma="191:757">
     <div class="wrap">
-      <h2 class="section-title section-title--32">Red inspiration for your home</h2>
+      <h2 class="section-title section-title--32" data-slot="inspo-title">Red inspiration for your home</h2>
       <div class="carousel" data-carousel>
         <div class="inspo__track carousel__track">
-          <a class="inspo-card" href="#"><img src="assets/img/gallery-1.png" alt=""><span class="inspo-card__fade"></span><span class="inspo-card__overlay"><span class="inspo-card__title">Red Living Rooms</span><span class="inspo-card__btn">Discover More</span></span><span class="inspo-card__credit">@username</span></a>
-          <a class="inspo-card" href="#"><img src="assets/img/gallery-2.jpg" alt=""><span class="inspo-card__fade"></span><span class="inspo-card__overlay"><span class="inspo-card__title">Red Bedrooms</span><span class="inspo-card__btn">Discover More</span></span><span class="inspo-card__credit">@username</span></a>
-          <a class="inspo-card" href="#"><img src="assets/img/gallery-3.jpg" alt=""><span class="inspo-card__fade"></span><span class="inspo-card__overlay"><span class="inspo-card__title">Red Hallways</span><span class="inspo-card__btn">Discover More</span></span><span class="inspo-card__credit">@username</span></a>
-          <a class="inspo-card" href="#"><img src="assets/img/red-kitchens.jpg" alt=""><span class="inspo-card__fade"></span><span class="inspo-card__overlay"><span class="inspo-card__title">Red Kitchens</span><span class="inspo-card__btn">Discover More</span></span><span class="inspo-card__credit">@username</span></a>
+          <a class="inspo-card" href="#" data-slot="inspo-1"><img src="assets/img/gallery-1.png" alt=""><span class="inspo-card__fade"></span><span class="inspo-card__overlay"><span class="inspo-card__title">Red Living Rooms</span><span class="inspo-card__btn">Discover More</span></span><span class="inspo-card__credit">@username</span></a>
+          <a class="inspo-card" href="#" data-slot="inspo-2"><img src="assets/img/gallery-2.jpg" alt=""><span class="inspo-card__fade"></span><span class="inspo-card__overlay"><span class="inspo-card__title">Red Bedrooms</span><span class="inspo-card__btn">Discover More</span></span><span class="inspo-card__credit">@username</span></a>
+          <a class="inspo-card" href="#" data-slot="inspo-3"><img src="assets/img/gallery-3.jpg" alt=""><span class="inspo-card__fade"></span><span class="inspo-card__overlay"><span class="inspo-card__title">Red Hallways</span><span class="inspo-card__btn">Discover More</span></span><span class="inspo-card__credit">@username</span></a>
+          <a class="inspo-card" href="#" data-slot="inspo-4"><img src="assets/img/red-kitchens.jpg" alt=""><span class="inspo-card__fade"></span><span class="inspo-card__overlay"><span class="inspo-card__title">Red Kitchens</span><span class="inspo-card__btn">Discover More</span></span><span class="inspo-card__credit">@username</span></a>
         </div>
         <div class="carousel-nav carousel-nav--inter" data-figma="191:744">
           <div class="carousel-nav__progress"><span class="carousel__bar" style="width:461px"></span></div>
@@ -521,7 +521,7 @@
     <div class="wrap">
       <h2 class="section-title section-title--32">Colour Schemes</h2>
       <div class="crosslinks__cards" data-figma="203:700">
-        <a class="crosslink" href="#">
+        <a class="crosslink" href="#" data-slot="crosslink-1">
           <img src="assets/img/red-colours.jpg" alt="">
           <span class="crosslink__fade"></span>
           <span class="crosslink__overlay">
@@ -529,7 +529,7 @@
             <span class="crosslink__btn">Red Paint Colours</span>
           </span>
         </a>
-        <a class="crosslink" href="#">
+        <a class="crosslink" href="#" data-slot="crosslink-2">
           <img src="assets/img/red-schemes.jpg" alt="">
           <span class="crosslink__fade"></span>
           <span class="crosslink__overlay crosslink__overlay--desc">
@@ -665,10 +665,18 @@
 </footer>
 
 
-<!-- Mobile sticky basket bar, shown once the buy box's Add to Basket scrolls away (Figma 151:2107) -->
-<div class="m-basket-bar m-only" id="m-basket-bar" aria-hidden="true" data-figma="151:2107">
-  <div class="m-basket-bar__selection"><span id="m-basket-summary">Estate Emulsion, 2.5 L × 1</span><b id="m-basket-total">$140.00</b></div>
-  <button class="m-basket-bar__btn" type="button" id="m-basket-add" tabindex="-1">Add to Basket</button>
+<!-- Sticky strip, shown once the order card's Add to Basket scrolls away (Figma 340:958). It sums up the selection
+     and its button scrolls back to the order card; it never adds to basket. Pinned to the top on desktop, the bottom on mobile. -->
+<div class="strip" id="strip" aria-hidden="true" data-figma="340:964 / 340:1023">
+  <div class="wrap strip__inner">
+    <span class="strip__chip" aria-hidden="true"></span>
+    <div class="strip__text">
+      <p class="strip__name"><span data-slot="name">Incarnadine</span><span class="d-only"> <span data-slot="no">No. 248</span></span></p>
+      <p class="strip__summary" aria-live="polite"><span class="d-only" id="strip-sum-d">Estate Emulsion, no size chosen</span><span class="m-only" id="strip-sum-m">No size chosen</span></p>
+    </div>
+    <button class="fav strip__fav d-only" type="button" aria-pressed="false" aria-label="Add to favourites" tabindex="-1"><svg class="fav__icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5013 12.5717L12.0013 19.9997L4.50128 12.5717C4.00658 12.0903 3.61692 11.5117 3.35683 10.8723C3.09673 10.2329 2.97184 9.54664 2.99002 8.85662C3.00819 8.1666 3.16904 7.48782 3.46244 6.86303C3.75583 6.23823 4.17541 5.68094 4.69476 5.22627C5.21411 4.77159 5.82198 4.42938 6.48009 4.22117C7.1382 4.01296 7.83228 3.94327 8.51865 4.01649C9.20501 4.08971 9.86878 4.30425 10.4682 4.64659C11.0675 4.98894 11.5895 5.45169 12.0013 6.00569C12.4148 5.45571 12.9374 4.99701 13.5364 4.65829C14.1353 4.31958 14.7978 4.10814 15.4822 4.03721C16.1666 3.96628 16.8584 4.03739 17.5141 4.24608C18.1697 4.45477 18.7753 4.79656 19.2928 5.25005C19.8104 5.70354 20.2287 6.25897 20.5217 6.88158C20.8147 7.50419 20.976 8.18057 20.9956 8.8684C21.0152 9.55622 20.8925 10.2407 20.6354 10.8789C20.3783 11.5172 19.9922 12.0955 19.5013 12.5777" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="btn btn--primary strip__btn" type="button" id="strip-go" tabindex="-1">Choose finish &amp; size</button>
+  </div>
 </div>
 
 <!-- "See all 9 finishes" slide-out, Figma 124:578 (scrim from overlay spec 122:2576) -->
@@ -773,7 +781,7 @@
     <section class="lb-grid" data-figma="255:603">
       <div class="lb-grid__header">
         <div class="lb-grid__title-row">
-          <h2 class="lb-grid__title" id="lightbox-title">Incarnadine in real homes</h2>
+          <h2 class="lb-grid__title" id="lightbox-title"><span data-slot="name">Incarnadine</span> in real homes</h2>
           <button class="drawer__close" type="button" data-close aria-label="Close"><img src="assets/icons/gallery-x.svg" width="20" height="20" alt=""></button>
         </div>
         <div class="lb-tabs" role="tablist" aria-label="Filter photos by room">
@@ -803,10 +811,14 @@
         <div class="lb-view__photo"><img id="lb-photo" src="" alt=""></div>
         <button class="lb-view__nav" type="button" data-dir="1" aria-label="Next photo"><img src="assets/icons/gallery-next.svg" width="24" height="24" alt=""></button>
       </div>
-      <div class="lb-view__bottom">
-        <div class="lb-view__thumbs" id="lb-thumbs"></div>
-        <div class="lb-view__shop">
-          <button class="lb-sample" type="button" data-proto><span class="lb-sample__swatch"></span><span class="lb-sample__text"><span>Incarnadine No. 248</span><strong>Order a sample $9.95</strong></span></button>
+      <div class="lb-view__bottom" data-figma="304:617">
+        <div class="lb-strip" id="lb-strip">
+          <div class="lb-view__thumbs" id="lb-thumbs"></div>
+        </div>
+        <div class="lb-card">
+          <span class="lb-card__chip" aria-hidden="true"><span data-slot="no">No. 248</span></span>
+          <span class="lb-card__text"><strong data-slot="name">Incarnadine</strong><span>Sample pot $9.95</span></span>
+          <button class="lb-card__btn" type="button" data-proto>Order sample</button>
         </div>
       </div>
     </section>
@@ -831,6 +843,113 @@
 <!-- Tooltip for Add to Basket buttons pressed before a quantity is chosen -->
 <div class="tip" id="tip" role="status" aria-live="polite" hidden></div>
 
-<script src="main.js?v=20261022212830"></script>
+<!-- Colour preview switcher: a demo tool for the client, not part of the Figma frame. Swaps the paint colour and the
+     colour's own content so the contrast rules show on a pale colour too. Incarnadine's content is what's on the page;
+     the other colour's content lives in its <template> below, one child per data-slot on the page. -->
+<aside class="pswitch" id="pswitch" aria-label="Colour preview, for demo purposes only">
+  <button class="pswitch__pill" type="button" id="pswitch-open" aria-expanded="false" aria-controls="pswitch-panel"><span class="pswitch__dot"></span>Colour preview<span class="pswitch__tag">Demo</span></button>
+  <div class="pswitch__panel" id="pswitch-panel">
+    <div class="pswitch__head">
+      <div>
+        <p class="pswitch__title">Colour preview</p>
+        <p class="pswitch__note">For demo purposes only</p>
+      </div>
+      <button class="pswitch__close" type="button" id="pswitch-close" aria-label="Minimise colour preview"><img src="assets/icons/close.svg" width="16" height="16" alt=""></button>
+    </div>
+    <div class="pswitch__options" role="radiogroup" aria-label="Paint colour">
+      <button class="pswitch__option is-active" type="button" role="radio" aria-checked="true" data-paint="#9c4547" data-colour="incarnadine"><span class="pswitch__swatch" style="background:#9c4547"></span><span class="pswitch__label"><b>Incarnadine</b><span>No. 248</span></span></button>
+      <button class="pswitch__option" type="button" role="radio" aria-checked="false" data-paint="#bdccc2" data-colour="teresas-green"><span class="pswitch__swatch" style="background:#bdccc2"></span><span class="pswitch__label"><b>Teresa's Green</b><span>No. 236</span></span></button>
+    </div>
+  </div>
+</aside>
+
+<!-- Teresa's Green No. 236: copy, photos and colours from farrow-ball.com/paint/teresas-green (October 2026).
+     The live page has no colour story film, so a room photo from its gallery stands in. -->
+<template id="paint-teresas-green" data-name="Teresa's Green" data-title="Teresa's Green No. 236 | Farrow &amp; Ball">
+  <i data-slot="name">Teresa's Green</i>
+  <i data-slot="no">No. 236</i>
+  <i data-slot="desc-title">A fresh aqua tone</i>
+  <div data-slot="desc-body">
+    <p>This mid aqua is named after a much valued, early member of our creative team - and yes, the pun is intended! Teresa's Green owes its freshness to a rich blue base and its warmth to soft green undertones. In the middle of our range of aquas, Teresa’s Green has a calming and therapeutic effect, but still feels cheerful when combined with delicate shades like White Tie.</p>
+  </div>
+  <div data-slot="story-film" aria-label="Teresa's Green on the walls of a living room">
+    <img class="story__poster" src="assets/img/teresas-green/gallery-living-1.jpg" alt="">
+  </div>
+  <div data-slot="white">
+    <div class="pairing__img"><img src="assets/img/teresas-green/pair-school-house-white.png" alt="School House White No. 291 sample pot"></div>
+    <div class="pairing__content">
+      <div class="pairing__text">
+        <p class="pairing__name">School House White No. 291</p>
+        <p class="pairing__desc">School House White is pared back, timeless and familiar without the cool undertones of the more contemporary neutral groups.</p>
+      </div>
+      <div class="pairing__buy">
+        <div class="pairing__price"><span>$9.95</span><span>100 ml sample</span></div>
+        <button class="pairing__add" type="button" data-proto><img src="assets/icons/plus-18.svg" width="18" height="18" alt="">Add</button>
+      </div>
+    </div>
+  </div>
+  <div data-slot="primer-img"><img src="assets/img/teresas-green/pair-mid-tones.png" alt="Mid Tones primer tin"></div>
+  <div data-slot="primer-text">
+    <p class="pairing__name">Mid Tones</p>
+    <p class="pairing__desc">The crucial foundation for a rich, even and longer lasting finish.</p>
+  </div>
+  <div data-slot="scheme-1">
+    <div class="scheme__room" style="--accent:#acbeb3; --trim:#58686a" aria-hidden="true"><i></i><i></i><i></i></div>
+    <ul class="scheme__colours">
+      <li><span class="scheme__swatch" style="background:#58686a"></span><span class="scheme__text"><span>No.289</span><span><b>Inchyra Blue</b> (Trim)</span></span></li>
+      <li><span class="scheme__swatch" style="background:#acbeb3"></span><span class="scheme__text"><span>No.84</span><span><b>Green Blue</b> (Accent)</span></span></li>
+    </ul>
+  </div>
+  <div data-slot="scheme-2">
+    <div class="scheme__room" style="--accent:#e0e6dd; --trim:#d5dad1" aria-hidden="true"><i></i><i></i><i></i></div>
+    <ul class="scheme__colours">
+      <li><span class="scheme__swatch" style="background:#d5dad1"></span><span class="scheme__text"><span>No.204</span><span><b>Pale Powder</b> (Trim)</span></span></li>
+      <li><span class="scheme__swatch" style="background:#e0e6dd"></span><span class="scheme__text"><span>No.252</span><span><b>Pavilion Blue</b> (Accent)</span></span></li>
+    </ul>
+  </div>
+  <div data-slot="scheme-3">
+    <div class="scheme__room" style="--accent:#efe9d8; --trim:#e9e7d8" aria-hidden="true"><i></i><i></i><i></i></div>
+    <ul class="scheme__colours">
+      <li><span class="scheme__swatch" style="background:#e9e7d8"></span><span class="scheme__text"><span>No.2010</span><span><b>James White</b> (Trim)</span></span></li>
+      <li><span class="scheme__swatch" style="background:#efe9d8"></span><span class="scheme__text"><span>No.2002</span><span><b>White Tie</b> (Accent)</span></span></li>
+    </ul>
+  </div>
+  <i data-slot="set-title">Sample Our Favourite Greens</i>
+  <div data-slot="set-image"><img src="assets/img/teresas-green/favourite-greens.jpg" alt="Open sample pots of green paint on a blue painted table"></div>
+  <i data-slot="set-intro">The best way to experience our colours before taking the plunge is with a true-to-colour paint sample. To help you narrow down your shortlist of shades, we've curated three of our most popular green shades to help you find your perfect match.</i>
+  <ul data-slot="set-list">
+    <li><span class="reds__swatch" style="background:#b0af9b"></span><span class="reds__text"><span>No. 18</span><span><b>French Gray</b> (100 ml)</span></span></li>
+    <li><span class="reds__swatch" style="background:#6f7b71"></span><span class="reds__text"><span>No. 47</span><span><b>Green Smoke</b> (100 ml)</span></span></li>
+    <li><span class="reds__swatch" style="background:#464d4a"></span><span class="reds__text"><span>No. 93</span><span><b>Studio Green</b> (100 ml)</span></span></li>
+  </ul>
+  <div data-slot="similar-1"><span class="swatch-card__img"><img src="assets/img/teresas-green/ballroom-blue.jpg" alt=""></span><span class="swatch-card__name">Ballroom Blue</span><span class="swatch-card__no">No. 24</span></div>
+  <div data-slot="similar-2"><span class="swatch-card__img"><img src="assets/img/teresas-green/dix-blue.jpg" alt=""></span><span class="swatch-card__name">Dix Blue</span><span class="swatch-card__no">No. 82</span></div>
+  <div data-slot="similar-3"><span class="swatch-card__img"><img src="assets/img/teresas-green/powder-blue.jpg" alt=""></span><span class="swatch-card__name">Powder Blue</span><span class="swatch-card__no">No. 23</span></div>
+  <div data-slot="similar-4"><span class="swatch-card__img"><img src="assets/img/teresas-green/pavilion-blue.jpg" alt=""></span><span class="swatch-card__name">Pavilion Blue</span><span class="swatch-card__no">No. 252</span></div>
+  <i data-slot="inspo-title">Green inspiration for your home</i>
+  <div data-slot="inspo-1"><img src="assets/img/teresas-green/green-living-rooms.jpg" alt=""><span class="inspo-card__fade"></span><span class="inspo-card__overlay"><span class="inspo-card__title">Green Living Rooms</span><span class="inspo-card__btn">Discover More</span></span><span class="inspo-card__credit">@username</span></div>
+  <div data-slot="inspo-2"><img src="assets/img/teresas-green/green-bedrooms.jpg" alt=""><span class="inspo-card__fade"></span><span class="inspo-card__overlay"><span class="inspo-card__title">Green Bedrooms</span><span class="inspo-card__btn">Discover More</span></span><span class="inspo-card__credit">@username</span></div>
+  <div data-slot="inspo-3"><img src="assets/img/teresas-green/green-kitchens.jpg" alt=""><span class="inspo-card__fade"></span><span class="inspo-card__overlay"><span class="inspo-card__title">Green Kitchens</span><span class="inspo-card__btn">Discover More</span></span><span class="inspo-card__credit">@username</span></div>
+  <div data-slot="inspo-4"><img src="assets/img/teresas-green/green-bathrooms.jpg" alt=""><span class="inspo-card__fade"></span><span class="inspo-card__overlay"><span class="inspo-card__title">Green Bathrooms</span><span class="inspo-card__btn">Discover More</span></span><span class="inspo-card__credit">@username</span></div>
+  <div data-slot="crosslink-1">
+    <img src="assets/img/teresas-green/green-colours.jpg" alt="">
+    <span class="crosslink__fade"></span>
+    <span class="crosslink__overlay">
+      <span class="crosslink__title">View All Green Paint Colours</span>
+      <span class="crosslink__btn">Green Paint Colours</span>
+    </span>
+  </div>
+  <div data-slot="crosslink-2">
+    <img src="assets/img/teresas-green/green-schemes.jpg" alt="">
+    <span class="crosslink__fade"></span>
+    <span class="crosslink__overlay crosslink__overlay--desc">
+      <span class="crosslink__title">Discover Green Paint Schemes</span>
+      <span class="crosslink__desc">Find inspiration for your project and view beautiful images of green paint schemes in real homes.</span>
+      <span class="crosslink__btn">Green Paint Schemes</span>
+    </span>
+  </div>
+</template>
+
+<script src="main.js?v=20261022213943"></script>
 </body>
 </html>

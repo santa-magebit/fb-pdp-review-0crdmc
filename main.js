@@ -301,23 +301,16 @@ function updateTotal() {
   updateBasketBar(total);
 }
 
-// Mobile sticky basket bar (Figma 151:2107): finish, sizes × qty, and the running total
-const basketSummary = document.getElementById('m-basket-summary');
-const basketTotal = document.getElementById('m-basket-total');
-const basketAdd = document.getElementById('m-basket-add');
+// Sticky strip summary (Figma 340:958): desktop "Finish, N tins, $total"; mobile drops the finish
+const stripSumD = document.getElementById('strip-sum-d');
+const stripSumM = document.getElementById('strip-sum-m');
 function updateBasketBar(total) {
-  const parts = steppers
-    .map((s) => [s.closest('.size-row').querySelector('.size-row__size').textContent, parseInt(s.querySelector('.stepper__value').value, 10) || 0])
-    .filter(([, qty]) => qty > 0)
-    .map(([size, qty]) => `${size} × ${qty}`);
-  basketSummary.textContent = `${byId(currentFinish).name}, ${parts.length ? parts.join(', ') : 'Choose a pack size'}`;
-  basketTotal.textContent = money(total);
-  basketAdd.setAttribute('aria-disabled', String(total === 0));
+  const tins = steppers.reduce((n, s) => n + (parseInt(s.querySelector('.stepper__value').value, 10) || 0), 0);
+  const finish = byId(currentFinish).name;
+  const tinsText = `${tins} tin${tins === 1 ? '' : 's'}, ${money(total)}`;
+  stripSumD.textContent = tins ? `${finish}, ${tinsText}` : `${finish}, no size chosen`;
+  stripSumM.textContent = tins ? tinsText : 'No size chosen';
 }
-basketAdd.addEventListener('click', () => {
-  if (basketAdd.getAttribute('aria-disabled') === 'true') showTip(basketAdd, QTY_TIP);
-  else addButton.click();
-});
 
 steppers.forEach((s) => {
   const input = s.querySelector('.stepper__value');
@@ -520,11 +513,12 @@ calc.addEventListener('keydown', (e) => {
 // index.html#calculator opens the calculator straight away
 if (location.hash === '#calculator') openCalc();
 
-// Favourite toggle
-const fav = document.querySelector('.fav');
-fav.addEventListener('click', () => {
-  fav.setAttribute('aria-pressed', String(fav.getAttribute('aria-pressed') !== 'true'));
-});
+// Favourite toggle: the order card's heart and the sticky strip's heart share one state
+const favs = [...document.querySelectorAll('.fav')];
+favs.forEach((fav) => fav.addEventListener('click', () => {
+  const on = fav.getAttribute('aria-pressed') !== 'true';
+  favs.forEach((f) => f.setAttribute('aria-pressed', String(on)));
+}));
 
 // Chapters accordion: only chapters with copy in the design (aria-controls) can open
 document.querySelectorAll('.chapter__head[aria-controls]').forEach((head) => {
@@ -574,22 +568,32 @@ readMore.addEventListener('click', () => {
   readMore.textContent = open ? 'Read less' : 'Read more';
 });
 
-// Sticky compact header and basket bar (Figma 151:1423)
+// Sticky compact header (mobile, Figma 151:1423) and the sticky strip (both breakpoints, Figma 340:958)
 const stickyHeader = document.querySelector('.m-sticky-header');
 const mHeader = document.querySelector('.m-header');
-const basketBar = document.getElementById('m-basket-bar');
+const strip = document.getElementById('strip');
 function setVisible(el, on) {
   el.classList.toggle('is-visible', on);
   el.setAttribute('aria-hidden', String(!on));
   el.querySelectorAll('button').forEach((b) => { b.tabIndex = on ? 0 : -1; });
 }
 function updateSticky() {
-  if (!mobile.matches) { setVisible(stickyHeader, false); setVisible(basketBar, false); return; }
-  setVisible(stickyHeader, mHeader.getBoundingClientRect().bottom < 0);
-  setVisible(basketBar, addButton.getBoundingClientRect().bottom < 0);
+  setVisible(stickyHeader, mobile.matches && mHeader.getBoundingClientRect().bottom < 0);
+  setVisible(strip, addButton.getBoundingClientRect().bottom < 0);
 }
 window.addEventListener('scroll', updateSticky, { passive: true });
 mobile.addEventListener('change', updateSticky);
+updateSticky(); // a reload can restore the page part-way down
+// "Choose finish & size" never adds to basket: it scrolls back to the order card and focuses the chosen finish,
+// clear of the mobile sticky header (56px) when that's showing
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+document.getElementById('strip-go').addEventListener('click', () => {
+  const card = document.querySelector('.order-card');
+  const offset = mobile.matches ? 56 + 16 : 24;
+  window.scrollTo({ top: card.getBoundingClientRect().top + window.scrollY - offset, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+  const first = card.querySelector('.finish-card.is-active') || card.querySelector('button, input');
+  if (first) first.focus({ preventScroll: true });
+});
 
 // Footer link groups are dropdowns on mobile only; on desktop the titles are plain labels
 const footerToggles = [...document.querySelectorAll('.footer__col-title')];
@@ -656,7 +660,8 @@ addButton.closest('form').addEventListener('submit', (e) => {
 // Photos as drawn in the grid frame (its last row repeats the first while more photos are to come).
 // Room tabs filter the grid; the photo view walks the filtered set with ← →, swipe and thumbnails,
 // and Esc or "All photos" goes back to the grid with the filter kept.
-const GALLERY = [
+// The colour preview switcher swaps this list, the room tabs and the colour name for its other colour.
+let GALLERY = [
   { src: 'assets/img/gallery-1.png', room: 'Bedroom' },
   { src: 'assets/img/gallery-2.jpg', room: 'Living Room' },
   { src: 'assets/img/gallery-3.jpg', room: 'Living Room' },
@@ -675,7 +680,8 @@ const lbPhotos = document.getElementById('lb-photos');
 const lbEmpty = document.getElementById('lb-empty');
 const lbThumbs = document.getElementById('lb-thumbs');
 const lbPhoto = document.getElementById('lb-photo');
-const lbTabs = [...lightbox.querySelectorAll('.lb-tab')];
+const lbTabBar = lightbox.querySelector('.lb-tabs');
+let lbPaintName = 'Incarnadine';
 let lbRoom = 'all';
 let lbIndex = 0;
 let lbLastFocus = null;
@@ -687,6 +693,20 @@ function updateLbFade() {
 }
 lbScroller.addEventListener('scroll', updateLbFade, { passive: true });
 addEventListener('resize', updateLbFade);
+// Photo view thumbnail strip (Figma 304:617): edge fades only while there is more to scroll that way
+const lbStrip = document.getElementById('lb-strip');
+function updateStripFade() {
+  const max = lbThumbs.scrollWidth - lbThumbs.clientWidth;
+  lbStrip.classList.toggle('has-before', max > 4 && lbThumbs.scrollLeft > 4);
+  lbStrip.classList.toggle('has-after', max > 4 && lbThumbs.scrollLeft < max - 4);
+}
+function centreActiveThumb() {
+  const a = lbThumbs.querySelector('.is-active');
+  if (a) lbThumbs.scrollLeft = a.offsetLeft - (lbThumbs.clientWidth - a.offsetWidth) / 2;
+  updateStripFade();
+}
+lbThumbs.addEventListener('scroll', updateStripFade, { passive: true });
+addEventListener('resize', updateStripFade);
 
 function renderGrid() {
   const items = lbItems();
@@ -701,27 +721,30 @@ function renderGrid() {
 }
 function setRoom(room) {
   lbRoom = room;
-  lbTabs.forEach((t) => {
+  lbTabBar.querySelectorAll('.lb-tab').forEach((t) => {
     t.classList.toggle('is-active', t.dataset.room === room);
     t.setAttribute('aria-selected', String(t.dataset.room === room));
   });
   renderGrid();
 }
-lbTabs.forEach((tab) => tab.addEventListener('click', () => setRoom(tab.dataset.room)));
+lbTabBar.addEventListener('click', (e) => {
+  const tab = e.target.closest('.lb-tab');
+  if (tab) setRoom(tab.dataset.room);
+});
 
 function showPhoto(i) {
   const items = lbItems();
   lbIndex = (i + items.length) % items.length;
   const p = items[lbIndex];
   lbPhoto.src = p.src;
-  lbPhoto.alt = `Incarnadine in a ${p.room.toLowerCase()}`;
+  lbPhoto.alt = `${lbPaintName} in a ${p.room.toLowerCase()}`;
   document.getElementById('lb-pos').textContent = `${lbIndex + 1} / ${items.length}`;
   document.getElementById('lb-room').textContent = p.room;
   lbThumbs.innerHTML = items
     .map((t, j) => `<button class="lb-thumb${j === lbIndex ? ' is-active' : ''}" type="button" data-i="${j}" aria-label="Photo ${j + 1}"${j === lbIndex ? ' aria-current="true"' : ''}><img src="${t.src}" alt=""></button>`)
     .join('');
   lbThumbs.querySelectorAll('.lb-thumb').forEach((t) => t.addEventListener('click', () => showPhoto(Number(t.dataset.i))));
-  lbThumbs.querySelector('.is-active').scrollIntoView({ block: 'nearest', inline: 'center' });
+  requestAnimationFrame(centreActiveThumb);
   if (lbView.hidden) {
     lbGrid.hidden = true;
     lbView.hidden = false;
@@ -801,3 +824,120 @@ lightbox.addEventListener('keydown', (e) => {
 });
 // index.html#gallery opens the grid straight away
 if (location.hash === '#gallery') openGallery();
+
+// ---------- Colour preview switcher (demo tool, not part of the Figma frame) ----------
+// Buttons and bands always take the paint. Text on it stays white while it reads at 4.5:1 (WCAG AA), otherwise it
+// goes to ink, as the live site does for pale colours such as Teresa's Green.
+const INK = '#45484b';
+const WHITE = '#ffffff';
+const luminance = (hex) => {
+  const n = parseInt(hex.slice(1), 16);
+  return [n >> 16, (n >> 8) & 255, n & 255]
+    .map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; })
+    .reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
+};
+const contrast = (a, b) => {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+};
+function applyPaint(paint) {
+  const onWhite = contrast(paint, WHITE);
+  const lightText = onWhite >= 4.5 || onWhite >= contrast(paint, INK);
+  const root = document.documentElement.style;
+  root.setProperty('--paint', paint);
+  root.setProperty('--on-paint', lightText ? WHITE : INK);
+  root.setProperty('--on-paint-soft', lightText ? 'var(--silver)' : INK);
+  document.documentElement.dataset.paintTone = lightText ? 'dark' : 'light';
+}
+
+// Content: every [data-slot] on the page takes the matching child of the colour's <template>. Incarnadine is what
+// the page ships with, so its slots, photos and room tabs are kept as they are on load.
+const GALLERIES = {
+  incarnadine: {
+    photos: GALLERY,
+    tabs: lbTabBar.innerHTML,
+    hero: ['assets/img/gallery-3.jpg', 'assets/img/gallery-1.png', 'assets/img/gallery-2.jpg'],
+    heroAlt: galleryMain.alt,
+  },
+  'teresas-green': {
+    photos: [
+      { src: 'assets/img/teresas-green/gallery-living-1.jpg', room: 'Living Room' },
+      { src: 'assets/img/teresas-green/gallery-dining.jpg', room: 'Dining Room' },
+      { src: 'assets/img/teresas-green/gallery-bathroom.jpg', room: 'Bathroom' },
+      { src: 'assets/img/teresas-green/gallery-living-2.jpg', room: 'Living Room' },
+      { src: 'assets/img/teresas-green/gallery-bedroom-1.jpg', room: 'Bedroom' },
+      { src: 'assets/img/teresas-green/gallery-bedroom-2.jpg', room: 'Bedroom' },
+      { src: 'assets/img/teresas-green/gallery-living-3.jpg', room: 'Living Room' },
+      { src: 'assets/img/teresas-green/gallery-kitchen.jpg', room: 'Kitchen' },
+      { src: 'assets/img/teresas-green/gallery-child-1.jpg', room: 'Child Room' },
+      { src: 'assets/img/teresas-green/gallery-child-2.jpg', room: 'Child Room' },
+      { src: 'assets/img/teresas-green/gallery-child-3.jpg', room: 'Child Room' },
+    ],
+    // Room filters as on the live page
+    tabs: ['Bathroom', 'Bedroom', 'Child Room', 'Dining Room', 'Kitchen', 'Living Room'],
+    hero: ['assets/img/teresas-green/gallery-living-1.jpg', 'assets/img/teresas-green/gallery-bathroom.jpg', 'assets/img/teresas-green/gallery-living-2.jpg'],
+    heroAlt: 'Teresa\'s Green on the walls of a living room with a brick gable',
+  },
+};
+const slotEls = [...document.querySelectorAll('[data-slot]')];
+const slotOriginals = {};
+slotEls.forEach((el) => {
+  if (!(el.dataset.slot in slotOriginals)) slotOriginals[el.dataset.slot] = { html: el.innerHTML, label: el.getAttribute('aria-label') };
+});
+const pageTitle = document.title;
+
+function applyContent(id) {
+  const tpl = document.getElementById(`paint-${id}`);
+  slotEls.forEach((el) => {
+    const src = tpl && tpl.content.querySelector(`[data-slot="${el.dataset.slot}"]`);
+    const c = src ? { html: src.innerHTML, label: src.getAttribute('aria-label') } : slotOriginals[el.dataset.slot];
+    el.innerHTML = c.html;
+    if (c.label) el.setAttribute('aria-label', c.label);
+  });
+  document.title = tpl ? tpl.dataset.title : pageTitle;
+  lbPaintName = tpl ? tpl.dataset.name : 'Incarnadine';
+
+  const g = GALLERIES[id];
+  GALLERY = g.photos;
+  lbTabBar.innerHTML = typeof g.tabs === 'string' ? g.tabs : ['All', ...g.tabs]
+    .map((room, i) => `<button class="lb-tab${i ? '' : ' is-active'}" type="button" role="tab" aria-selected="${!i}" data-room="${i ? room : 'all'}">${room}</button>`)
+    .join('');
+  galleryMain.src = g.hero[0];
+  galleryMain.alt = g.heroAlt;
+  document.querySelectorAll('.gallery__thumb').forEach((t, i) => {
+    t.dataset.src = g.hero[i];
+    t.querySelector('img').src = g.hero[i];
+    t.classList.toggle('is-active', i === 0);
+  });
+  const mMain = document.querySelector('.m-gallery__main');
+  mMain.dataset.photo = g.hero[0];
+  mMain.querySelector('img').src = g.hero[0];
+  mMain.querySelector('img').alt = g.heroAlt;
+  document.querySelectorAll('.m-gallery__thumb').forEach((t, i) => {
+    t.dataset.photo = g.hero[i];
+    t.querySelector('img').src = g.hero[i];
+  });
+  document.querySelectorAll('[data-carousel] .carousel__track').forEach((track) => { track.scrollLeft = 0; });
+}
+
+const pswitch = document.getElementById('pswitch');
+const pswitchOptions = [...pswitch.querySelectorAll('.pswitch__option')];
+pswitchOptions.forEach((opt) => opt.addEventListener('click', () => {
+  if (opt.classList.contains('is-active')) return;
+  pswitchOptions.forEach((o) => {
+    o.classList.toggle('is-active', o === opt);
+    o.setAttribute('aria-checked', String(o === opt));
+  });
+  applyPaint(opt.dataset.paint);
+  applyContent(opt.dataset.colour);
+}));
+
+// Starts as a small pill so it stays out of the client's way; opens into the panel
+const pswitchOpen = document.getElementById('pswitch-open');
+function setPswitchOpen(open) {
+  pswitch.classList.toggle('is-open', open);
+  pswitchOpen.setAttribute('aria-expanded', String(open));
+}
+pswitchOpen.addEventListener('click', () => { setPswitchOpen(true); document.getElementById('pswitch-close').focus(); });
+document.getElementById('pswitch-close').addEventListener('click', () => { setPswitchOpen(false); pswitchOpen.focus(); });
+pswitch.addEventListener('keydown', (e) => { if (e.key === 'Escape' && pswitch.classList.contains('is-open')) { setPswitchOpen(false); pswitchOpen.focus(); } });
