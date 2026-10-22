@@ -444,7 +444,7 @@ body.drawer-open { overflow: hidden; }
 .calc__h { margin: 0; font-weight: 600; font-size: 18px; line-height: 26px; }
 /* Unit switch (274:614): 120×44 track, 56×36 segments. Each button fills half the track so the tap target is 60×44; the pill is drawn inside it. */
 .calc__units { display: flex; width: 120px; height: 44px; border-radius: 48px; background: var(--tag); }
-.calc__unit { position: relative; isolation: isolate; flex: 1; display: grid; place-items: center; font-size: 14px; line-height: 20px; color: var(--muted); }
+.calc__unit { position: relative; isolation: isolate; flex: 1; display: grid; place-items: center; font-size: 16px; line-height: 24px; color: var(--muted); }
 .calc__unit::before { content: ""; position: absolute; z-index: -1; inset: 4px 0 4px 4px; border-radius: 48px; }
 .calc__unit:last-child::before { inset: 4px 4px 4px 0; }
 .calc__unit.is-active { color: var(--ink); }
