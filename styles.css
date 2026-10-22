@@ -1112,7 +1112,7 @@ body.notice-open { overflow: hidden; }
 .pswitch.is-open .pswitch__pill { display: none; }
 /* Out of the way while a drawer, the gallery or the prototype notice is open */
 body.drawer-open .pswitch, body.notice-open .pswitch { display: none; }
-.pswitch__panel { display: none; width: 336px; padding: 16px; border-radius: 12px; background: #fff; box-shadow: 0 4px 24px rgba(0, 0, 0, .16); }
+.pswitch__panel { display: none; width: 360px; padding: 16px; border-radius: 12px; background: #fff; box-shadow: 0 4px 24px rgba(0, 0, 0, .16); }
 .pswitch.is-open .pswitch__panel { display: flex; flex-direction: column; gap: 12px; }
 .pswitch__head { display: flex; align-items: flex-start; justify-content: space-between; }
 .pswitch__title { font-weight: 700; font-size: 16px; line-height: 24px; }
@@ -1121,17 +1121,18 @@ body.drawer-open .pswitch, body.notice-open .pswitch { display: none; }
 .pswitch__close { width: 32px; height: 32px; margin: -4px -6px 0 0; display: grid; place-items: center; border-radius: 16px; }
 .pswitch__close:hover { background: var(--cream); }
 .pswitch__options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.pswitch__option { display: flex; align-items: center; gap: 10px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; text-align: left; }
+.pswitch__option { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 8px; border: 1px solid var(--border); border-radius: 8px; text-align: left; }
 .pswitch__option.is-active { border-color: var(--ink); box-shadow: inset 0 0 0 .5px var(--ink); }
-.pswitch__swatch { width: 36px; height: 36px; flex: none; border-radius: 6px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08); }
+.pswitch__swatch { width: 32px; height: 32px; flex: none; border-radius: 6px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08); }
 .pswitch__label { display: flex; flex-direction: column; min-width: 0; }
-.pswitch__label b { font-weight: 700; font-size: 14px; line-height: 18px; }
+.pswitch__label b { font-weight: 700; font-size: 14px; line-height: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pswitch__label span { font-size: 12px; line-height: 16px; color: var(--muted); }
 .pswitch__pill:focus-visible, .pswitch__close:focus-visible, .pswitch__option:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 @media (max-width: 767px) {
   .pswitch { left: 16px; bottom: 16px; transition: bottom .25s ease; }
   .pswitch.is-open { right: 16px; }
   .pswitch__panel { width: auto; }
+  .pswitch__swatch { width: 28px; height: 28px; }
   /* Sits above the sticky strip while it's showing */
   .strip.is-visible ~ .pswitch { bottom: 108px; }
 }
