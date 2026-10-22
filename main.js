@@ -33,11 +33,13 @@ singleSelect([...document.querySelectorAll('.primer-type')], (btn) => {
 });
 
 // ---------- Finishes (order card, fact strip 137:558, drawer 124:578) ----------
-// Copy comes from the Figma file; info/sizes only exist for the finishes the design documents.
+// Copy: Estate and Modern Emulsion text from the Figma file; the other finishes' info, "Suitable for" lists and
+// sizes from the live farrow-ball.com/paint/incarnadine finish selector.
 const FINISHES = [
   {
     id: 'estate-emulsion', group: 'walls', name: 'Estate Emulsion', desc: 'Chalky matt for walls & ceilings', sheen: 2,
     text: 'Estate Emulsion is our classic matt finish for interior walls and ceilings. Its soft, chalky look gives colour real depth and works beautifully in living rooms, bedrooms and dining rooms.',
+    suitable: ['Interior Walls & Ceilings', 'Low-traffic Areas'],
     sizes: '2.5L, 5L',
   },
   {
@@ -46,14 +48,50 @@ const FINISHES = [
     suitable: ['Interior Walls & Ceilings', 'Kitchens', 'Bathrooms'],
     sizes: '2.5L, 5L',
   },
-  { id: 'dead-flat', group: 'walls', name: 'Dead Flat', desc: 'Ultra-matt for walls, wood & metal', sheen: 2 },
-  { id: 'casein-distemper', group: 'walls', name: 'Casein Distemper', desc: 'Traditional finish for walls & ceilings', sheen: 2 },
-  { id: 'flat-eggshell', group: 'wood', name: 'Flat Eggshell', desc: 'Low sheen for interior wood & metal', sheen: 20 },
-  { id: 'modern-eggshell', group: 'wood', name: 'Modern Eggshell', desc: 'Hard-wearing for wood, metal & floors', sheen: 40 },
-  { id: 'full-gloss', group: 'wood', name: 'Full Gloss', desc: 'High shine for wood & metal', sheen: 95 },
-  { id: 'exterior-masonry', group: 'exterior', name: 'Exterior Masonry', desc: 'For exterior walls', sheen: 2 },
-  { id: 'exterior-eggshell', group: 'exterior', name: 'Exterior Eggshell', desc: 'For exterior wood & metal', sheen: 20 },
+  {
+    id: 'dead-flat', group: 'walls', name: 'Dead Flat', desc: 'Ultra-matt for walls, wood & metal', sheen: 2,
+    text: 'Our most matt, multi-surface finish with added toughness. Perfect for busy spaces, including hallways, living and dining rooms, kitchens and bathrooms.',
+    suitable: ['Interior Walls & Ceilings - including kitchens & bathrooms', 'Interior Woodwork', 'Interior Metalwork & Radiators'],
+    sizes: '750ml, 2.5L, 5L',
+  },
+  {
+    id: 'casein-distemper', group: 'walls', name: 'Casein Distemper', desc: 'Traditional finish for walls & ceilings', sheen: 2,
+    text: 'This strengthened distemper is for use on low-traffic walls and ceilings. Casein Distemper offers a very flat matt finish with a breathable, permeable structure.',
+    suitable: ['Specialist Finish', 'Period Properties', 'Interior Plaster & Ceilings'],
+    sizes: '2.5L, 5L',
+  },
+  {
+    id: 'flat-eggshell', group: 'wood', name: 'Flat Eggshell', desc: 'Low sheen for interior wood & metal', sheen: 20,
+    text: 'Flat Eggshell is our low sheen, super-tough finish for interior wood, metal and concrete. Scrubbable, stain-resistant and scuff-resistant, it’s even tough enough for floors and kitchen cabinets.',
+    suitable: ['Interior Wood', 'Interior Metal & Radiators', 'Interior Concrete'],
+    sizes: '750ml, 2.5L, 5L',
+  },
+  {
+    id: 'modern-eggshell', group: 'wood', name: 'Modern Eggshell', desc: 'Hard-wearing for wood, metal & floors', sheen: 40, variant: 'inter',
+    text: 'Modern Eggshell is our mid-sheen, super-tough finish adding lasting colour and protection to interior wood, metal and concrete. It’s even tough enough for floors and kitchen cabinets.',
+    suitable: ['Interior Woodwork', 'Interior Furniture', 'Kitchen Cabinets', 'Interior Metal & Radiators', 'Interior Floors & Concrete'],
+    sizes: '750ml, 2.5L, 5L',
+  },
+  {
+    id: 'full-gloss', group: 'wood', name: 'Full Gloss', desc: 'High shine for wood & metal', sheen: 95, variant: 'inter',
+    text: 'Full Gloss is an ultra-high-gloss water based finish suitable for both interior and exterior wood and metal, as well as bringing a touch of glamour to walls and ceilings. Our highest-shine finish, it’s resistant to water, flaking, peeling, and fading for up to six years.',
+    suitable: ['Interior Walls & Ceilings', 'Interior & Exterior Woodwork', 'Interior & Exterior Metal, Including Radiators', 'Exterior Doors & Furniture'],
+    sizes: '750ml, 2.5L',
+  },
+  {
+    id: 'exterior-masonry', group: 'exterior', name: 'Exterior Masonry', desc: 'For exterior walls', sheen: 2, variant: 'exterior',
+    text: 'For brick, render and concrete, Exterior Masonry brings super matt, long-lasting colour to exterior walls. Its water-resistant formula protects walls, while also offering the highest level of water vapour permeability to allow them to breathe. Applied in line with our Product Advice Sheets, it resists flaking, peeling, and fading for up to 15 years.',
+    suitable: ['Brickwork', 'Exterior Render', 'Exterior Concrete'],
+  },
+  {
+    id: 'exterior-eggshell', group: 'exterior', name: 'Exterior Eggshell', desc: 'For exterior wood & metal', sheen: 20, variant: 'exterior',
+    text: 'Exterior Eggshell brings long-lasting, rich colour to exterior wood and metal. The low sheen finish remains flexible once dry, protecting wood and metal surfaces through changing weather, while preservatives help prevent the growth of algae and fungi. The resin-rich formula resists flaking, peeling, and fading for up to six years.',
+    suitable: ['Exterior Woodwork', 'Window Frames & Shutters', 'Exterior Metal', 'Railings & Metal Guttering'],
+    sizes: '750ml, 2.5L',
+  },
 ];
+// Row styling follows the Figma drawer exactly, including its per-row differences (Inter rows, Exterior rows,
+// tighter title gap on Estate Emulsion) so the design can be reviewed as drawn.
 const byId = (id) => FINISHES.find((f) => f.id === id);
 // "Chalky matt for walls & ceilings" -> look "Chalky matt", use on "Walls & ceilings"
 const lookOf = (f) => (/^for /i.test(f.desc) ? f.desc : f.desc.split(' for ')[0]);
@@ -111,7 +149,7 @@ const infoPanel = (f) => {
 };
 
 list.innerHTML = FINISHES.map((f) => `
-  <div class="finish-item" data-id="${f.id}" data-group="${f.group}">
+  <div class="finish-item${f.variant ? ` finish-item--${f.variant}` : ''}${f.id === 'estate-emulsion' ? ' finish-item--tight' : ''}" data-id="${f.id}" data-group="${f.group}">
     <div class="finish-row">
       <button class="finish-option" type="button" role="radio" aria-checked="false">
         <span class="finish-option__radio" aria-hidden="true"></span>
@@ -120,7 +158,9 @@ list.innerHTML = FINISHES.map((f) => `
           <span class="finish-option__desc">${esc(f.desc)}</span>
         </span>
       </button>
-      ${f.text ? `<button class="finish-info-toggle" type="button" aria-expanded="false" aria-controls="info-${f.id}"><span>Show info</span><img src="assets/icons/chevron-down.svg" width="24" height="24" alt=""></button>` : ''}
+      <button class="finish-info-toggle" type="button" aria-expanded="false" aria-controls="info-${f.id}"><span>Show info</span>${f.variant === 'exterior'
+        ? '<img class="finish-info-toggle__small" src="assets/icons/chevron-down-16.svg" width="16" height="16" alt="">'
+        : '<img src="assets/icons/chevron-down.svg" width="24" height="24" alt="">'}</button>
     </div>${infoPanel(f)}
   </div>`).join('');
 const items = [...list.querySelectorAll('.finish-item')];
@@ -142,7 +182,10 @@ function toggleInfo(item, open) {
   if (!btn) return;
   btn.setAttribute('aria-expanded', String(open));
   btn.querySelector('span').textContent = open ? 'Hide info' : 'Show info';
-  btn.querySelector('img').src = `assets/icons/chevron-${open ? 'up' : 'down'}.svg`;
+  const img = btn.querySelector('img');
+  // The 16px chevron (Exterior rows) has no "up" asset in Figma, so it is flipped instead
+  if (img.classList.contains('finish-info-toggle__small')) img.style.transform = open ? 'rotate(180deg)' : '';
+  else img.src = `assets/icons/chevron-${open ? 'up' : 'down'}.svg`;
   item.querySelector('.finish-info').hidden = !open;
 }
 
