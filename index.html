@@ -10,7 +10,7 @@
   <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="icon" href="assets/favicon-48.png" type="image/png" sizes="48x48">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=20261022195924">
+  <link rel="stylesheet" href="styles.css?v=20261022202353">
 </head>
 <body>
 <!-- Built from Figma file zBK5BOgn7VGEptzhet1s41, frame "PDP" 32:1690 (section "PDP - wip" 56:4766).
@@ -106,17 +106,20 @@
     </div>
   </section>
 
-  <section class="m-hero m-only" data-figma="147:648">
+  <section class="m-hero m-only" data-figma="303:615">
     <nav class="m-breadcrumb" aria-label="Breadcrumb">
       <a href="#">Home</a><img src="assets/icons/m-crumb.svg" width="24" height="24" alt=""><a href="#">Paint</a><img src="assets/icons/m-crumb.svg" width="24" height="24" alt=""><span aria-current="page">Incarnadine</span>
     </nav>
     <div class="m-hero__title"><p>No. 248</p><h1>Incarnadine</h1></div>
-    <div class="m-gallery" id="m-gallery">
-      <div class="m-slide"><img src="assets/img/gallery-3.jpg" alt="Incarnadine on the walls and bookshelves of a living room"><button class="m-slide__all" type="button" data-open-gallery>View all</button><span class="m-slide__count"><span id="m-gallery-index">1</span> / 3</span></div>
-      <div class="m-slide"><img src="assets/img/gallery-1.png" alt=""></div>
-      <div class="m-slide"><img src="assets/img/gallery-2.jpg" alt=""></div>
+    <div class="m-gallery" data-figma="302:1968">
+      <button class="m-gallery__main" type="button" data-photo="assets/img/gallery-3.jpg" aria-label="Open photo"><img src="assets/img/gallery-3.jpg" alt="Incarnadine on the walls and bookshelves of a living room"></button>
+      <div class="m-gallery__thumbs">
+        <button class="m-gallery__thumb" type="button" data-photo="assets/img/gallery-3.jpg" aria-label="Photo 1"><img src="assets/img/gallery-3.jpg" alt=""></button>
+        <button class="m-gallery__thumb" type="button" data-photo="assets/img/gallery-1.png" aria-label="Photo 2"><img src="assets/img/gallery-1.png" alt=""></button>
+        <button class="m-gallery__thumb" type="button" data-photo="assets/img/gallery-2.jpg" aria-label="Photo 3"><img src="assets/img/gallery-2.jpg" alt=""></button>
+        <button class="m-gallery__all" type="button" data-open-gallery>View all</button>
+      </div>
     </div>
-    <div class="m-pager" id="m-pager" aria-hidden="true"><i class="is-active"></i><i></i><i></i></div>
   </section>
 
   <section class="pdp-main" data-figma="32:1759">
@@ -241,7 +244,7 @@
                 <div class="sample__swatch"><span>No. 248</span></div>
                 <div class="sample__text">
                   <p class="sample__title">See it on your wall first</p>
-                  <p class="sample__desc"><span class="d-only">Colour changes with the light in every room. Try it virtually now, or check it with a 100 ml sample pot.</span><span class="m-only">Colour changes with the light in every room. A 100 ml sample pot lets you check before you commit.</span></p>
+                  <p class="sample__desc">Colour changes with the light in every room. Try it virtually now, or check it with a 100 ml sample pot.</p>
                 </div>
               </div>
               <div class="sample__actions">
@@ -419,7 +422,7 @@
           <div class="chapter">
             <button class="chapter__head" type="button" aria-expanded="false">
               <span class="chapter__name">Paint that can't be matched</span>
-              <span class="watch-tag"><img src="assets/icons/play-mini.svg" width="18" height="18" alt="">Watch · 0:28</span>
+              <span class="watch-tag"><img src="assets/icons/play-mini.svg" width="18" height="18" alt="">Watch 0:28</span>
               <span class="chapter__sign" aria-hidden="true">+</span>
             </button>
           </div>
@@ -664,7 +667,7 @@
 
 <!-- Mobile sticky basket bar, shown once the buy box's Add to Basket scrolls away (Figma 151:2107) -->
 <div class="m-basket-bar m-only" id="m-basket-bar" aria-hidden="true" data-figma="151:2107">
-  <div class="m-basket-bar__selection"><span id="m-basket-summary">Estate Emulsion · 2.5 L × 1</span><b id="m-basket-total">$140.00</b></div>
+  <div class="m-basket-bar__selection"><span id="m-basket-summary">Estate Emulsion, 2.5 L × 1</span><b id="m-basket-total">$140.00</b></div>
   <button class="m-basket-bar__btn" type="button" id="m-basket-add" tabindex="-1">Add to Basket</button>
 </div>
 
@@ -796,8 +799,8 @@
     <section class="lb-view" data-figma="257:603" hidden>
       <div class="lb-view__top">
         <button class="lb-view__back" type="button"><img src="assets/icons/gallery-back.svg" width="20" height="20" alt="">All photos</button>
-        <p class="lb-view__position" aria-live="polite"><strong id="lb-pos"></strong><span aria-hidden="true">·</span><span id="lb-room"></span></p>
-        <button class="lb-view__close" type="button" data-close aria-label="Close"><img src="assets/icons/gallery-close.svg" width="20" height="20" alt=""></button>
+        <p class="lb-view__position" aria-live="polite"><strong id="lb-pos"></strong><span id="lb-room"></span></p>
+        <button class="lb-view__close" type="button" data-close aria-label="Close"><img src="assets/icons/gallery-x.svg" width="20" height="20" alt=""></button>
       </div>
       <div class="lb-view__stage">
         <button class="lb-view__nav" type="button" data-dir="-1" aria-label="Previous photo"><img src="assets/icons/gallery-prev.svg" width="24" height="24" alt=""></button>
@@ -807,7 +810,7 @@
       <div class="lb-view__bottom">
         <div class="lb-view__thumbs" id="lb-thumbs"></div>
         <div class="lb-view__shop">
-          <button class="lb-sample" type="button" data-proto><span class="lb-sample__swatch"></span><span class="lb-sample__text"><span>Incarnadine No. 248</span><strong>Order a sample · $9.95</strong></span></button>
+          <button class="lb-sample" type="button" data-proto><span class="lb-sample__swatch"></span><span class="lb-sample__text"><span>Incarnadine No. 248</span><strong>Order a sample $9.95</strong></span></button>
         </div>
       </div>
     </section>
@@ -832,6 +835,6 @@
 <!-- Tooltip for Add to Basket buttons pressed before a quantity is chosen -->
 <div class="tip" id="tip" role="status" aria-live="polite" hidden></div>
 
-<script src="main.js?v=20261022195924"></script>
+<script src="main.js?v=20261022202353"></script>
 </body>
 </html>

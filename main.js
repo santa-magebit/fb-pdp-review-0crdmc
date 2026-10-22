@@ -278,22 +278,30 @@ function hideTip() {
 addEventListener('scroll', hideTip, { passive: true });
 const steppers = [...document.querySelectorAll('.stepper')];
 const addButton = document.getElementById('add-to-basket');
+// Total coverage line (Figma 287:603): sums quantity × the "Covers approx." m² of each size row
+const coverage = document.getElementById('coverage');
+const coverageText = coverage.querySelector('.coverage__text');
+const coverOf = (s) => parseFloat((s.closest('.size-row').querySelector('.size-row__cover').textContent.match(/\d+(?:\.\d+)?/) || [0])[0]);
 
 function updateTotal() {
   let total = 0;
+  let covers = 0;
   steppers.forEach((s) => {
     const qty = parseInt(s.querySelector('.stepper__value').value, 10) || 0;
     s.classList.toggle('is-active', qty > 0);
     s.querySelector('[data-step="-1"]').disabled = qty === 0;
     total += qty * Number(s.dataset.price);
+    covers += qty * coverOf(s);
   });
+  coverage.classList.toggle('is-empty', covers === 0);
+  coverageText.innerHTML = covers > 0 ? `Your selection covers approx. <strong>${covers}&nbsp;m²</strong>` : 'Choose a pack size to see how much it covers';
   addButton.textContent = total > 0 ? `Add to Basket ${money(total)}` : 'Add to Basket';
   addButton.setAttribute('aria-disabled', String(total === 0));
   if (total > 0) hideTip();
   updateBasketBar(total);
 }
 
-// Mobile sticky basket bar (Figma 151:2107): finish · sizes × qty, and the running total
+// Mobile sticky basket bar (Figma 151:2107): finish, sizes × qty, and the running total
 const basketSummary = document.getElementById('m-basket-summary');
 const basketTotal = document.getElementById('m-basket-total');
 const basketAdd = document.getElementById('m-basket-add');
@@ -302,7 +310,7 @@ function updateBasketBar(total) {
     .map((s) => [s.closest('.size-row').querySelector('.size-row__size').textContent, parseInt(s.querySelector('.stepper__value').value, 10) || 0])
     .filter(([, qty]) => qty > 0)
     .map(([size, qty]) => `${size} × ${qty}`);
-  basketSummary.textContent = `${byId(currentFinish).name} · ${parts.length ? parts.join(', ') : 'Choose a pack size'}`;
+  basketSummary.textContent = `${byId(currentFinish).name}, ${parts.length ? parts.join(', ') : 'Choose a pack size'}`;
   basketTotal.textContent = money(total);
   basketAdd.setAttribute('aria-disabled', String(total === 0));
 }
@@ -562,18 +570,6 @@ readMore.addEventListener('click', () => {
   readMore.textContent = open ? 'Read less' : 'Read more';
 });
 
-// Hero gallery swipe: counter on the first slide and the pager follow the scroll position
-const mGallery = document.getElementById('m-gallery');
-const mSlides = [...mGallery.children];
-const mDots = [...document.querySelectorAll('#m-pager i')];
-const mIndex = document.getElementById('m-gallery-index');
-mGallery.addEventListener('scroll', () => {
-  const step = mSlides[1].offsetLeft - mSlides[0].offsetLeft;
-  const i = Math.min(mSlides.length - 1, Math.round(mGallery.scrollLeft / step));
-  mDots.forEach((d, n) => d.classList.toggle('is-active', n === i));
-  mIndex.textContent = i + 1;
-}, { passive: true });
-
 // Sticky compact header and basket bar (Figma 151:1423)
 const stickyHeader = document.querySelector('.m-sticky-header');
 const mHeader = document.querySelector('.m-header');
@@ -663,6 +659,13 @@ let lbRoom = 'all';
 let lbIndex = 0;
 let lbLastFocus = null;
 const lbItems = () => GALLERY.filter((p) => lbRoom === 'all' || p.room === lbRoom);
+// Bottom fade (Figma 293:603) goes away once the grid is scrolled to its last row, or when nothing scrolls
+const lbScroller = lightbox.querySelector('.lb-grid__scroll');
+function updateLbFade() {
+  lbGrid.classList.toggle('is-scroll-end', lbScroller.scrollTop + lbScroller.clientHeight >= lbScroller.scrollHeight - 4);
+}
+lbScroller.addEventListener('scroll', updateLbFade, { passive: true });
+addEventListener('resize', updateLbFade);
 
 function renderGrid() {
   const items = lbItems();
@@ -673,6 +676,7 @@ function renderGrid() {
     .join('');
   lbEmpty.hidden = items.length > 0;
   lbPhotos.querySelectorAll('.lb-tile').forEach((t) => t.addEventListener('click', () => showPhoto(Number(t.dataset.i))));
+  updateLbFade();
 }
 function setRoom(room) {
   lbRoom = room;
@@ -710,6 +714,7 @@ function showGrid() {
   lbBox.classList.remove('is-photo');
   const tile = lbPhotos.querySelector(`[data-i="${lbIndex}"]`);
   (tile || lbBox).focus({ preventScroll: false });
+  updateLbFade();
 }
 lightbox.querySelector('.lb-view__back').addEventListener('click', showGrid);
 lightbox.querySelectorAll('.lb-view__nav').forEach((b) => b.addEventListener('click', () => showPhoto(lbIndex + Number(b.dataset.dir))));
@@ -732,8 +737,9 @@ function openGallery(photoSrc) {
   lightbox.setAttribute('aria-hidden', 'false');
   lightbox.classList.add('is-open');
   document.body.classList.add('drawer-open');
-  const scroller = lightbox.querySelector('.lb-grid__scroll');
-  scroller.style.setProperty('--sb', `${Math.min(scroller.offsetWidth - scroller.clientWidth, 20)}px`);
+  // --sb (scrollbar width) lives on .lb-grid so both the scroll padding and the fade can use it
+  lbGrid.style.setProperty('--sb', `${Math.min(lbScroller.offsetWidth - lbScroller.clientWidth, 20)}px`);
+  updateLbFade();
   if (photoSrc) {
     showPhoto(Math.max(0, lbItems().findIndex((p) => photoSrc.endsWith(p.src))));
   } else {
@@ -759,7 +765,7 @@ galleryMain.addEventListener('click', () => openGallery(galleryMain.src));
 galleryMain.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openGallery(galleryMain.src); }
 });
-document.querySelectorAll('.m-slide > img').forEach((img) => img.addEventListener('click', () => openGallery(img.src)));
+document.querySelectorAll('.m-gallery [data-photo]').forEach((b) => b.addEventListener('click', () => openGallery(b.dataset.photo)));
 lightbox.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeGallery));
 lightbox.addEventListener('keydown', (e) => {
   const inPhoto = !lbView.hidden;
