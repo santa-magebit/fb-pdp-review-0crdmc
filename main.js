@@ -428,11 +428,14 @@ function renumber(kind) {
     row.querySelectorAll('input').forEach((input) => {
       input.setAttribute('aria-label', `${calcNames[kind]} ${i + 1} ${input.dataset.dim === 'w' ? 'width' : 'height'} in ${calcUnit}`);
     });
-    row.querySelector('.calc__remove').setAttribute('aria-label', `Remove ${calcNames[kind].toLowerCase()} ${i + 1}`);
+    const remove = row.querySelector('.calc__remove');
+    remove.setAttribute('aria-label', `Remove ${calcNames[kind].toLowerCase()} ${i + 1}`);
+    // Any wall can go while there are two or more; the last one stays. Windows and doors are optional, so all can go.
+    remove.hidden = kind === 'wall' && rows.length === 1;
   });
 }
 
-function addCalcRow(kind, removable = true) {
+function addCalcRow(kind) {
   const row = calcRowTpl.content.firstElementChild.cloneNode(true);
   row.querySelectorAll('input').forEach((input) => {
     input.placeholder = calcUnit === 'cm' ? '0' : '0.00';
@@ -442,9 +445,7 @@ function addCalcRow(kind, removable = true) {
     });
   });
   row.querySelectorAll('.calc__unit-label').forEach((u) => { u.textContent = calcUnit; });
-  const remove = row.querySelector('.calc__remove');
-  remove.hidden = !removable;
-  remove.addEventListener('click', () => {
+  row.querySelector('.calc__remove').addEventListener('click', () => {
     row.remove();
     renumber(kind);
     renderCalc();
@@ -454,7 +455,7 @@ function addCalcRow(kind, removable = true) {
   renumber(kind);
   return row;
 }
-addCalcRow('wall', false);
+addCalcRow('wall');
 
 calc.querySelectorAll('[data-add]').forEach((btn) => {
   btn.addEventListener('click', () => {
