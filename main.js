@@ -70,8 +70,6 @@ function renderFactStrip(f) {
   fact('fact-sheen').textContent = `${f.sheen}%`;
   fact('fact-look').textContent = lookOf(f);
   fact('fact-use').textContent = useOf(f);
-  fact('fact-sizes').textContent = f.sizes || '';
-  fact('fact-sizes-wrap').hidden = !f.sizes;
 }
 
 function setFinish(id) {
