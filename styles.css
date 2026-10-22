@@ -178,13 +178,14 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .fav__icon { display: block; fill: none; stroke: var(--ink); transition: fill .15s, stroke .15s; }
 .fav[aria-pressed="true"] .fav__icon { fill: var(--paint); stroke: var(--paint); }
 
-.sample { display: flex; flex-direction: column; gap: 12px; padding: 12px; border-radius: 8px; background: var(--cream); }
-.sample__row { display: flex; align-items: center; gap: 14px; }
-.sample__swatch { position: relative; width: 60px; height: 60px; flex: none; border-radius: 8px; background: var(--paint); overflow: hidden; }
-.sample__swatch span { position: absolute; left: 6px; top: 42px; font-weight: 700; font-size: 9px; line-height: 12px; color: var(--on-paint); white-space: nowrap; }
+/* Sample block (68:748): 88px swatch, 14/20 description */
+.sample { display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 8px; background: var(--cream); }
+.sample__row { display: flex; align-items: center; gap: 12px; }
+.sample__swatch { position: relative; width: 88px; height: 88px; flex: none; border-radius: 8px; background: var(--paint); overflow: hidden; }
+.sample__swatch span { position: absolute; left: 6px; bottom: 6px; font-weight: 700; font-size: 14px; line-height: 20px; color: var(--on-paint); white-space: nowrap; }
 .sample__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .sample__title { font-weight: 700; }
-.sample__desc { font-family: var(--verlag); font-size: 12px; line-height: 16px; color: var(--muted); }
+.sample__desc { font-family: var(--verlag); font-size: 14px; line-height: 20px; color: var(--muted); }
 .sample__actions { display: flex; gap: 12px; }
 
 /* Delivery + Klarna rows (154:6429) */
@@ -457,9 +458,10 @@ body.drawer-open { overflow: hidden; }
 .calc__row { display: flex; flex-direction: column; gap: 8px; }
 .calc__row-head { display: flex; align-items: center; gap: 8px; }
 .calc__row-name { font-weight: 500; font-size: 16px; line-height: 24px; white-space: nowrap; }
-.calc__tag { padding: 2px 8px; border-radius: 48px; background: var(--tag); font-weight: 500; font-size: 12px; line-height: 16px; color: var(--muted); white-space: nowrap; }
-.calc__remove { width: 20px; height: 20px; margin-left: auto; flex: none; }
-.calc__remove[hidden] { display: none; }
+.calc__tag { margin-left: auto; padding: 2px 8px; border-radius: 48px; background: var(--tag); font-weight: 500; font-size: 12px; line-height: 16px; color: var(--muted); white-space: nowrap; }
+.calc__remove { width: 20px; height: 20px; flex: none; }
+/* The bin keeps its space when it can't be used, so every row's m² ends at the same spot */
+.calc__remove[hidden] { display: block !important; visibility: hidden; }
 .calc__fields { display: flex; align-items: center; gap: 10px; color: var(--muted); }
 .calc__x { font-size: 16px; line-height: 24px; }
 .calc__field { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px; background: #fff; font-size: 12px; line-height: 16px; cursor: text; }
