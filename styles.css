@@ -606,8 +606,8 @@ body.notice-open { overflow: hidden; }
 .footer__inner { display: flex; flex-direction: column; gap: 40px; }
 .footer__rule { width: 100%; height: 1px; margin: 0; border: 0; background: rgba(255, 255, 255, .1); }
 
-.trustbox { position: relative; width: 1536px; max-width: 100%; height: 140px; border-radius: 8px; overflow: hidden; font-family: var(--verlag); color: #fff; }
-.trustbox__score { position: absolute; left: 0; top: 0; width: 200px; height: 113.77px; }
+.trustbox { position: relative; width: 1536px; max-width: 100%; height: 200px; border-radius: 8px; overflow: hidden; font-family: var(--verlag); color: #fff; }
+.trustbox__score { position: absolute; left: 0; top: 28px; width: 200px; height: 113.77px; }
 .trustbox__excellent { position: absolute; left: 51.3px; right: 47.19px; top: 0; text-align: center; font-weight: 500; font-size: 24px; line-height: 24px; }
 .tp-big { position: absolute; left: 50%; top: 30px; width: 162px; height: 29.688px; transform: translateX(-50%); overflow: hidden; }
 .tp-big img { position: absolute; top: 0; width: 29.93px; height: 29.9px; }
@@ -619,23 +619,28 @@ body.notice-open { overflow: hidden; }
 .trustbox__based u { font-weight: 500; text-decoration-thickness: 1px; }
 .trustbox__logo { position: absolute; left: 50%; top: 87.69px; width: 106px; height: 26.078px; transform: translateX(-50%); }
 
-.trustbox__carousel { position: absolute; left: 200px; top: 0; right: 0; bottom: 1.45px; overflow: hidden; }
-.trustbox__list { position: absolute; left: 40px; right: 40px; top: 0; height: 122.55px; overflow: hidden; display: flex; gap: 67px; }
-.trustbox__note { position: absolute; left: 60px; top: 122.55px; font-size: 13px; line-height: 16px; white-space: nowrap; }
-.trustbox__arrow { position: absolute; top: 57.27px; width: 24px; height: 24px; }
+.trustbox__carousel { position: absolute; left: 200px; top: 0; right: 0; bottom: 0; overflow: hidden; }
+/* Review cards match the mobile ones (217:1859): outline, faint fill, 3-line body */
+.trustbox__list { position: absolute; left: 40px; right: 40px; top: 0; height: 169px; overflow: hidden; display: flex; gap: 16px; }
+.trustbox__note { position: absolute; left: 40px; top: 181px; font-size: 13px; line-height: 16px; white-space: nowrap; }
+.trustbox__arrow { position: absolute; top: 72px; width: 24px; height: 24px; }
 .trustbox__arrow--left { left: 8px; }
 .trustbox__arrow--right { right: 8px; transform: rotate(180deg); }
 
-.review { position: relative; display: block; width: 263.75px; flex: none; padding-left: 20px; }
+.review {
+  position: relative; width: max(240px, calc((100% - 48px) / 4)); height: 169px; flex: none; display: flex; flex-direction: column; gap: 8px; padding: 16px; overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .15); border-radius: 8px; background: rgba(255, 255, 255, .06);
+}
 .tp-mini { position: relative; display: block; width: 99px; height: 18.141px; overflow: hidden; }
 .tp-mini img { position: absolute; top: 0; left: 0.01px; width: 18.289px; height: 18.271px; }
 .tp-mini img:nth-child(2) { left: 20.22px; }
 .tp-mini img:nth-child(3) { left: 40.44px; }
 .tp-mini img:nth-child(4) { left: 60.67px; }
 .tp-mini img:nth-child(5) { left: 80.88px; }
-.review__meta { display: block; margin-top: 10px; height: 14.41px; font-size: 12px; line-height: 14.4px; color: #bebebe; white-space: nowrap; }
-.review__title { display: block; width: 236.67px; margin-top: 6px; font-weight: 700; font-size: 14px; line-height: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.review__body { display: block; margin-top: 6px; font-size: 13px; line-height: 16px; }
+.review__meta { display: block; font-size: 12px; line-height: 18px; color: rgba(255, 255, 255, .7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.review__meta b { margin-right: 2px; font-weight: 600; font-size: 13px; color: #fff; }
+.review__title { display: block; font-weight: 600; font-size: 14px; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.review__body { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-size: 13px; line-height: 19px; color: rgba(255, 255, 255, .8); }
 
 .footer__main { display: flex; align-items: flex-start; gap: 24px; }
 .footer__brand { width: 366px; flex: none; display: flex; flex-direction: column; gap: 32px; }
