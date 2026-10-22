@@ -12,6 +12,27 @@
 <!-- Built from Figma file zBK5BOgn7VGEptzhet1s41, frame "PDP" 32:1690 (section "PDP - wip" 56:4766).
      data-figma attributes give the source node of each block so Figma edits can be mapped back here. -->
 
+<!-- Mobile header (Figma 147:586) -->
+<header class="m-header m-only" data-figma="147:586">
+  <a class="m-topbar" href="#"><img src="assets/icons/m-truck.svg" width="20" height="20" alt=""><span>Free delivery from 1-2 days. <u>View Details.</u></span></a>
+  <div class="m-actions">
+    <a class="m-logo" href="#" aria-label="Farrow &amp; Ball home"><img src="assets/icons/m-logo.svg" width="154" height="18" alt="Farrow &amp; Ball"></a>
+    <div class="m-actions__buttons">
+      <button class="m-icon-btn" type="button" aria-label="Basket, 3 items"><img src="assets/icons/bag.svg" width="24" height="24" alt=""><span class="m-badge">3</span></button>
+      <button class="m-icon-btn" type="button" aria-label="Menu"><img src="assets/icons/m-menu.svg" width="24" height="24" alt=""></button>
+    </div>
+  </div>
+  <div class="m-search"><label class="m-search__field"><input type="search" placeholder="Search" aria-label="Search"><img src="assets/icons/search.svg" width="24" height="24" alt=""></label></div>
+</header>
+<!-- Compact header shown once the page is scrolled (Figma 151:2082) -->
+<div class="m-sticky-header m-only" aria-hidden="true" data-figma="151:2082">
+  <a class="m-logo" href="#" tabindex="-1"><img src="assets/icons/m-logo.svg" width="154" height="18" alt=""></a>
+  <div class="m-actions__buttons">
+    <span class="m-icon-btn"><img src="assets/icons/bag.svg" width="24" height="24" alt=""><span class="m-badge">3</span></span>
+    <span class="m-icon-btn"><img src="assets/icons/m-menu.svg" width="24" height="24" alt=""></span>
+  </div>
+</div>
+
 <header class="site-header" data-figma="32:1691">
   <div class="topbar" data-figma="32:1692">
     <div class="wrap topbar__inner">
@@ -81,6 +102,19 @@
     </div>
   </section>
 
+  <section class="m-hero m-only" data-figma="147:648">
+    <nav class="m-breadcrumb" aria-label="Breadcrumb">
+      <a href="#">Home</a><img src="assets/icons/m-crumb.svg" width="24" height="24" alt=""><a href="#">Paint</a><img src="assets/icons/m-crumb.svg" width="24" height="24" alt=""><span aria-current="page">Incarnadine</span>
+    </nav>
+    <div class="m-hero__title"><p>No. 248</p><h1>Incarnadine</h1></div>
+    <div class="m-gallery" id="m-gallery">
+      <div class="m-slide"><img src="assets/img/gallery-3.jpg" alt="Incarnadine on the walls and bookshelves of a living room"><button class="m-slide__all" type="button">View all</button><span class="m-slide__count"><span id="m-gallery-index">1</span> / 3</span></div>
+      <div class="m-slide"><img src="assets/img/gallery-1.png" alt=""></div>
+      <div class="m-slide"><img src="assets/img/gallery-2.jpg" alt=""></div>
+    </div>
+    <div class="m-pager" id="m-pager" aria-hidden="true"><i class="is-active"></i><i></i><i></i></div>
+  </section>
+
   <section class="pdp-main" data-figma="32:1759">
     <div class="wrap pdp-main__grid">
 
@@ -105,6 +139,7 @@
               <p>Our richest crimson originally takes its name from Latin, but is now a much used term for crimsons and reds. Similar to the deep glossy red used by David Hicks at Barons Court in the 1970s, Incarnadine is unashamedly classic and glamorous.</p>
               <p>It can be used to sumptuous effect in halls when offset with Tanner's Brown on woodwork, or feel more edgy and graphic when paired with a bright white.</p>
             </div>
+            <button class="m-readmore m-only" type="button" aria-expanded="false">Read more</button>
           </div>
 
           <div class="features" data-figma="93:749">
@@ -198,7 +233,7 @@
                 <div class="sample__swatch"><span>No. 248</span></div>
                 <div class="sample__text">
                   <p class="sample__title">See it on your wall first</p>
-                  <p class="sample__desc">Colour changes with the light in every room. Try it virtually now, or check it with a 100 ml sample pot.</p>
+                  <p class="sample__desc"><span class="d-only">Colour changes with the light in every room. Try it virtually now, or check it with a 100 ml sample pot.</span><span class="m-only">Colour changes with the light in every room. A 100 ml sample pot lets you check before you commit.</span></p>
                 </div>
               </div>
               <div class="sample__actions">
@@ -309,7 +344,7 @@
         <div class="scheme scheme--consult">
           <button class="scheme__video" type="button" aria-label="Play the Colour Consultancy video">
             <img src="assets/img/consultancy-video.png" alt="">
-            <span class="scheme__play"><img src="assets/icons/play-small.svg" width="24" height="24" alt=""></span>
+            <span class="scheme__play"><img src="assets/icons/play-small.svg" width="24" height="24" alt=""></span><img class="scheme__play-m m-only" src="assets/icons/m-play60.svg" width="60" height="60" alt="">
           </button>
           <div class="scheme__consult">
             <p class="scheme__consult-title">Need help choosing?</p>
@@ -501,6 +536,24 @@
   <div class="footer" data-figma="113:5293">
     <div class="wrap footer__inner">
 
+      <div class="m-trust m-only" data-figma="149:904">
+        <a class="m-trust__score" href="#" aria-label="Trustpilot reviews. Rated Excellent. 4.4 out of 5. Based on 17,695 reviews on Trustpilot.">
+          <span class="m-trust__excellent">Excellent</span>
+          <span class="tp-big"><img src="assets/icons/tp-big-1.svg" alt=""><img src="assets/icons/tp-big-2.svg" alt=""><img src="assets/icons/tp-big-3.svg" alt=""><img src="assets/icons/tp-big-4.svg" alt=""><img src="assets/icons/tp-big-5.svg" alt=""></span>
+          <span class="m-trust__based">Based on <u>17,695 reviews</u></span>
+          <img class="m-trust__logo" src="assets/icons/m-tplogo.svg" width="106" height="26" alt="Trustpilot">
+        </a>
+        <div class="m-reviews" data-figma="217:1857">
+          <div class="m-reviews__track">
+            <a class="m-review" href="#"><span class="tp-mini"><img src="assets/icons/tp-s1.svg" alt=""><img src="assets/icons/tp-s2.svg" alt=""><img src="assets/icons/tp-s3.svg" alt=""><img src="assets/icons/tp-s4.svg" alt=""><img src="assets/icons/tp-s5.svg" alt=""></span><span class="m-review__meta"><b>MRS Susan Dance,</b><span>10 hours ago</span></span><span class="m-review__title">Fast service and delivery and the…</span><span class="m-review__body">Fast service and delivery and the courier was a very polite young man</span></a>
+            <a class="m-review" href="#"><span class="tp-mini"><img src="assets/icons/tp-s1.svg" alt=""><img src="assets/icons/tp-s2.svg" alt=""><img src="assets/icons/tp-s3.svg" alt=""><img src="assets/icons/tp-s4.svg" alt=""><img src="assets/icons/tp-s5.svg" alt=""></span><span class="m-review__meta"><b>Dave Abbott,</b><span>18 hours ago</span></span><span class="m-review__title">Easy ordering and good communication…</span><span class="m-review__body">Easy ordering and good communication from F&amp;B. Delivery times from Fedex…</span></a>
+            <a class="m-review" href="#"><span class="tp-mini"><img src="assets/icons/tp-s1.svg" alt=""><img src="assets/icons/tp-s2.svg" alt=""><img src="assets/icons/tp-s3.svg" alt=""><img src="assets/icons/tp-s4.svg" alt=""><img src="assets/icons/tp-s5.svg" alt=""></span><span class="m-review__meta"><b>Sophie Ingman,</b><span>2 days ago</span></span><span class="m-review__title">quick delivery</span><span class="m-review__body">quick delivery</span></a>
+            <a class="m-review" href="#"><span class="tp-mini"><img src="assets/icons/tp-s1.svg" alt=""><img src="assets/icons/tp-s2.svg" alt=""><img src="assets/icons/tp-s3.svg" alt=""><img src="assets/icons/tp-s4.svg" alt=""><img src="assets/icons/tp-s5.svg" alt=""></span><span class="m-review__meta"><b>Leslie Weber,</b><span>2 days ago</span></span><span class="m-review__title">Lovely colors and excellent service</span><span class="m-review__body">This is Beautiful paint with lovely earth-tone colors. I must say, though, the m...</span></a>
+          </div>
+          <p class="m-reviews__note">Showing our 4 &amp; 5 star reviews</p>
+        </div>
+      </div>
+
       <div class="trustbox" data-figma="113:5294">
         <a class="trustbox__score" href="#" aria-label="Trustpilot reviews. Rated Excellent. 4.4 out of 5. Based on 17,695 reviews on Trustpilot.">
           <span class="trustbox__excellent">Excellent</span>
@@ -600,6 +653,12 @@
   <div class="footer__art" data-figma="113:5600"></div>
 </footer>
 
+
+<!-- Mobile sticky basket bar, shown once the buy box's Add to Basket scrolls away (Figma 151:2107) -->
+<div class="m-basket-bar m-only" id="m-basket-bar" aria-hidden="true" data-figma="151:2107">
+  <div class="m-basket-bar__selection"><span id="m-basket-summary">Estate Emulsion · 2.5 L × 1</span><b id="m-basket-total">$140.00</b></div>
+  <button class="m-basket-bar__btn" type="button" id="m-basket-add" tabindex="-1">Add to Basket</button>
+</div>
 
 <!-- "See all 9 finishes" slide-out, Figma 124:578 (scrim from overlay spec 122:2576) -->
 <div class="drawer" id="finish-drawer" aria-hidden="true" inert>

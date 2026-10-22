@@ -127,6 +127,7 @@ function setFinish(id) {
     c.setAttribute('aria-checked', String(c === card));
   });
   renderFactStrip(f);
+  if (typeof updateTotal === 'function' && steppers) updateTotal();
 }
 finishCards.forEach((card) => card.addEventListener('click', () => setFinish(card.dataset.finish)));
 
@@ -158,9 +159,7 @@ list.innerHTML = FINISHES.map((f) => `
           <span class="finish-option__desc">${esc(f.desc)}</span>
         </span>
       </button>
-      <button class="finish-info-toggle" type="button" aria-expanded="false" aria-controls="info-${f.id}"><span>Show info</span>${f.variant === 'exterior'
-        ? '<img class="finish-info-toggle__small" src="assets/icons/chevron-down-16.svg" width="16" height="16" alt="">'
-        : '<img src="assets/icons/chevron-down.svg" width="24" height="24" alt="">'}</button>
+      <button class="finish-info-toggle" type="button" aria-expanded="false" aria-controls="info-${f.id}"><span>Show info</span><img class="chev-lg" src="assets/icons/chevron-down.svg" width="24" height="24" alt=""><img class="chev-sm" src="assets/icons/chevron-down-16.svg" width="16" height="16" alt=""></button>
     </div>${infoPanel(f)}
   </div>`).join('');
 const items = [...list.querySelectorAll('.finish-item')];
@@ -182,10 +181,9 @@ function toggleInfo(item, open) {
   if (!btn) return;
   btn.setAttribute('aria-expanded', String(open));
   btn.querySelector('span').textContent = open ? 'Hide info' : 'Show info';
-  const img = btn.querySelector('img');
-  // The 16px chevron (Exterior rows) has no "up" asset in Figma, so it is flipped instead
-  if (img.classList.contains('finish-info-toggle__small')) img.style.transform = open ? 'rotate(180deg)' : '';
-  else img.src = `assets/icons/chevron-${open ? 'up' : 'down'}.svg`;
+  // 24px chevron swaps to Figma's "up" asset; the 16px one (Exterior rows, mobile sheet) is flipped as in Figma
+  btn.querySelector('.chev-lg').src = `assets/icons/chevron-${open ? 'up' : 'down'}.svg`;
+  btn.querySelector('.chev-sm').style.transform = open ? 'rotate(180deg)' : '';
   item.querySelector('.finish-info').hidden = !open;
 }
 
@@ -269,7 +267,23 @@ function updateTotal() {
   });
   addButton.textContent = total > 0 ? `Add to Basket ${money(total)}` : 'Add to Basket';
   addButton.disabled = total === 0;
+  updateBasketBar(total);
 }
+
+// Mobile sticky basket bar (Figma 151:2107): finish · sizes × qty, and the running total
+const basketSummary = document.getElementById('m-basket-summary');
+const basketTotal = document.getElementById('m-basket-total');
+const basketAdd = document.getElementById('m-basket-add');
+function updateBasketBar(total) {
+  const parts = steppers
+    .map((s) => [s.closest('.size-row').querySelector('.size-row__size').textContent, parseInt(s.querySelector('.stepper__value').value, 10) || 0])
+    .filter(([, qty]) => qty > 0)
+    .map(([size, qty]) => `${size} × ${qty}`);
+  basketSummary.textContent = `${byId(currentFinish).name} · ${parts.length ? parts.join(', ') : 'Choose a pack size'}`;
+  basketTotal.textContent = money(total);
+  basketAdd.disabled = total === 0;
+}
+basketAdd.addEventListener('click', () => addButton.click());
 
 steppers.forEach((s) => {
   const input = s.querySelector('.stepper__value');
@@ -317,9 +331,9 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   const bar = carousel.querySelector('.carousel__bar');
   carousel.querySelector('.carousel__count').textContent = cards.length;
   let index = 0;
-  const goTo = (i) => {
+  const goTo = (i, scroll = true) => {
     index = Math.max(0, Math.min(cards.length - 1, i));
-    track.scrollTo({ left: cards[index].offsetLeft - track.offsetLeft });
+    if (scroll) track.scrollTo({ left: cards[index].offsetLeft - track.offsetLeft });
     counter.textContent = index + 1;
     const travel = bar.parentElement.clientWidth - bar.offsetWidth;
     bar.style.transform = `translateX(${(travel * index) / Math.max(1, cards.length - 1)}px)`;
@@ -328,5 +342,48 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   };
   prev.addEventListener('click', () => goTo(index - 1));
   next.addEventListener('click', () => goTo(index + 1));
-  goTo(0);
+  goTo(0, false);
 });
+
+// ---------- Mobile only (Figma 147:585) ----------
+const mobile = window.matchMedia('(max-width: 767px)');
+
+// "Read more" under the description: clamped to six lines on mobile (CSS only clamps below 768px)
+const descBody = document.querySelector('.pdp-desc__body');
+const readMore = document.querySelector('.m-readmore');
+descBody.classList.add('is-clamped');
+readMore.addEventListener('click', () => {
+  const open = descBody.classList.toggle('is-clamped') === false;
+  readMore.setAttribute('aria-expanded', String(open));
+  readMore.textContent = open ? 'Read less' : 'Read more';
+});
+
+// Hero gallery swipe: counter on the first slide and the pager follow the scroll position
+const mGallery = document.getElementById('m-gallery');
+const mSlides = [...mGallery.children];
+const mDots = [...document.querySelectorAll('#m-pager i')];
+const mIndex = document.getElementById('m-gallery-index');
+mGallery.addEventListener('scroll', () => {
+  const step = mSlides[1].offsetLeft - mSlides[0].offsetLeft;
+  const i = Math.min(mSlides.length - 1, Math.round(mGallery.scrollLeft / step));
+  mDots.forEach((d, n) => d.classList.toggle('is-active', n === i));
+  mIndex.textContent = i + 1;
+}, { passive: true });
+
+// Sticky compact header and basket bar (Figma 151:1423)
+const stickyHeader = document.querySelector('.m-sticky-header');
+const mHeader = document.querySelector('.m-header');
+const basketBar = document.getElementById('m-basket-bar');
+function setVisible(el, on) {
+  el.classList.toggle('is-visible', on);
+  el.setAttribute('aria-hidden', String(!on));
+  el.querySelectorAll('button').forEach((b) => { b.tabIndex = on ? 0 : -1; });
+}
+function updateSticky() {
+  if (!mobile.matches) { setVisible(stickyHeader, false); setVisible(basketBar, false); return; }
+  setVisible(stickyHeader, mHeader.getBoundingClientRect().bottom < 0);
+  setVisible(basketBar, addButton.getBoundingClientRect().bottom < 0);
+}
+window.addEventListener('scroll', updateSticky, { passive: true });
+mobile.addEventListener('change', updateSticky);
+updateSticky();
