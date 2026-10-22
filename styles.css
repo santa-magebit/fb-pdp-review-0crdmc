@@ -415,7 +415,7 @@ body.drawer-open { overflow: hidden; }
 /* Figma's 2px underline sits inside the 44px tab, so every tab reserves it */
 .drawer__tab { height: 44px; min-width: 72px; padding: 0 8px 10px; display: flex; align-items: flex-end; justify-content: center; border-bottom: 2px solid transparent; white-space: nowrap; }
 .drawer__tab.is-active { border-bottom-color: var(--ink); }
-.drawer__list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 0 32px 24px; }
+.drawer__list { flex: 1; min-height: 0; overflow-y: scroll; scrollbar-gutter: stable; display: flex; flex-direction: column; gap: 8px; padding: 0 32px 24px; }
 .finish-item { flex: none; border: 1px solid var(--border); border-radius: 8px; }
 .finish-item.is-selected { border-color: var(--ink); background: var(--cream); }
 .finish-row { display: flex; align-items: center; gap: 14px; padding: 12px; cursor: pointer; }
