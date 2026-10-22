@@ -180,7 +180,7 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .order-card__add { display: flex; align-items: stretch; gap: 12px; }
 .btn { display: flex; align-items: center; justify-content: center; gap: 8px; height: 52px; padding: 0 32px; border-radius: 48px; font-size: 16px; line-height: normal; white-space: nowrap; }
 .btn--primary { flex: 1; min-width: 0; background: var(--paint); color: var(--on-paint); }
-.btn--primary:disabled { opacity: .5; cursor: default; }
+.btn--primary[aria-disabled="true"] { opacity: .5; cursor: default; }
 .btn--secondary { flex: 1; min-width: 0; background: #fff; border: 1px solid var(--border); color: var(--ink); }
 .fav { width: 52px; height: 52px; flex: none; -webkit-tap-highlight-color: transparent; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 26px; background: #fff; }
 /* heart.svg inlined so the active state can fill it with the paint colour */
@@ -453,9 +453,13 @@ body.drawer-open { overflow: hidden; }
 .calc__body { flex: 1; min-height: 0; overflow-y: scroll; scrollbar-gutter: stable; display: flex; flex-direction: column; gap: 16px; padding: 0 32px 32px; }
 .calc__measure-head { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; }
 .calc__h { margin: 0; font-weight: 600; font-size: 18px; line-height: 26px; }
-.calc__units { display: flex; padding: 2px; border-radius: 48px; background: var(--tag); }
-.calc__unit { padding: 4px 14px; border-radius: 48px; font-size: 14px; line-height: 20px; color: var(--muted); }
-.calc__unit.is-active { background: #fff; font-weight: 500; color: var(--ink); }
+/* Unit switch (274:614): 120×44 track, 56×36 segments. Each button fills half the track so the tap target is 60×44; the pill is drawn inside it. */
+.calc__units { display: flex; width: 120px; height: 44px; border-radius: 48px; background: var(--tag); }
+.calc__unit { position: relative; isolation: isolate; flex: 1; display: grid; place-items: center; font-size: 14px; line-height: 20px; color: var(--muted); }
+.calc__unit::before { content: ""; position: absolute; z-index: -1; inset: 4px 0 4px 4px; border-radius: 48px; }
+.calc__unit:last-child::before { inset: 4px 4px 4px 0; }
+.calc__unit.is-active { font-weight: 500; color: var(--ink); }
+.calc__unit.is-active::before { background: #fff; }
 .calc__card { flex: none; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; padding: 20px; border: 1px solid var(--border); border-radius: 12px; }
 .calc__card-head { display: flex; flex-direction: column; gap: 4px; }
 .calc__optional { margin-left: 2px; font-weight: 400; font-size: 16px; color: var(--muted); }
@@ -490,7 +494,7 @@ body.drawer-open { overflow: hidden; }
 .calc__total { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border); font-weight: 600; font-size: 16px; line-height: 24px; white-space: nowrap; }
 .calc__total strong { font-weight: 600; font-size: 20px; line-height: 28px; }
 .calc__buy { width: 100%; height: 52px; padding: 0 32px; border-radius: 48px; background: var(--paint); font-weight: 500; font-size: 16px; line-height: 24px; color: #fff; }
-.calc__buy:disabled { opacity: .5; cursor: default; }
+.calc__buy[aria-disabled="true"] { opacity: .5; cursor: default; }
 .calc__help { display: flex; align-items: center; gap: 6px; font-weight: 500; font-size: 14px; line-height: 20px; text-decoration: underline; }
 .calc__unit:focus-visible, .calc__add:focus-visible, .calc__remove:focus-visible, .calc__buy:focus-visible, .calc__help:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
@@ -519,6 +523,19 @@ body.notice-open { overflow: hidden; }
 .notice__back { width: 100%; height: 52px; padding: 0 32px; border-radius: 48px; background: var(--ink); font-weight: 500; font-size: 16px; line-height: 24px; color: #fff; }
 .notice__credit { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 14px; line-height: 24px; color: var(--muted); }
 .notice__back:focus-visible, .notice__close:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* ---------- Tooltip on a disabled Add to Basket (not in Figma) ----------
+   The buttons stay clickable (aria-disabled, not disabled) so a press can explain what's missing. */
+.tip {
+  position: fixed; z-index: 120; max-width: min(280px, calc(100vw - 32px)); padding: 8px 12px; border-radius: 8px;
+  background: var(--ink); color: #fff; font-family: var(--inter); font-weight: 500; font-size: 14px; line-height: 20px; text-align: center;
+  pointer-events: none; opacity: 0; transform: translateY(4px); transition: opacity .15s ease, transform .15s ease;
+}
+.tip.is-shown { opacity: 1; transform: none; }
+.tip::after { content: ""; position: absolute; left: var(--arrow-x, 50%); top: 100%; margin-left: -6px; border: 6px solid transparent; border-top-color: var(--ink); }
+@media (prefers-reduced-motion: reduce) {
+  .tip { transition: none; }
+}
 
 /* ---------- Footer (113:5292) ---------- */
 .footer { background: var(--ink); padding: 80px 0 40px; color: #fff; }
@@ -918,5 +935,6 @@ body.notice-open { overflow: hidden; }
   .m-basket-bar__selection { flex: 1; min-width: 0; display: flex; flex-direction: column; white-space: nowrap; }
   .m-basket-bar__selection span { overflow: hidden; text-overflow: ellipsis; font-family: var(--inter); font-size: 12px; line-height: 16px; color: var(--muted); }
   .m-basket-bar__selection b { font-size: 18px; line-height: 24px; }
+  .m-basket-bar__btn[aria-disabled="true"] { opacity: .5; cursor: default; }
   .m-basket-bar__btn { padding: 0 24px; border-radius: 48px; background: var(--paint); color: #fff; font-size: 16px; line-height: normal; white-space: nowrap; }
 }

@@ -253,6 +253,29 @@ drawer.addEventListener('keydown', (e) => {
 if (location.hash === '#finishes') openDrawer();
 
 // ---------- Quantity steppers drive the Add to Basket total ----------
+// Nothing is preselected. Add to Basket buttons stay clickable while empty (aria-disabled) so a press
+// can show a tooltip asking for a quantity.
+const QTY_TIP = 'Add a quantity to continue';
+const tip = document.getElementById('tip');
+let tipTimer;
+function showTip(target, text) {
+  tip.textContent = text;
+  tip.hidden = false;
+  const r = target.getBoundingClientRect();
+  const w = tip.offsetWidth;
+  const left = Math.min(Math.max(16, r.left + r.width / 2 - w / 2), innerWidth - 16 - w);
+  tip.style.left = `${left}px`;
+  tip.style.top = `${r.top - tip.offsetHeight - 10}px`;
+  tip.style.setProperty('--arrow-x', `${r.left + r.width / 2 - left}px`);
+  requestAnimationFrame(() => tip.classList.add('is-shown'));
+  clearTimeout(tipTimer);
+  tipTimer = setTimeout(hideTip, 2500);
+}
+function hideTip() {
+  tip.classList.remove('is-shown');
+  tip.hidden = true;
+}
+addEventListener('scroll', hideTip, { passive: true });
 const steppers = [...document.querySelectorAll('.stepper')];
 const addButton = document.getElementById('add-to-basket');
 
@@ -265,7 +288,8 @@ function updateTotal() {
     total += qty * Number(s.dataset.price);
   });
   addButton.textContent = total > 0 ? `Add to Basket ${money(total)}` : 'Add to Basket';
-  addButton.disabled = total === 0;
+  addButton.setAttribute('aria-disabled', String(total === 0));
+  if (total > 0) hideTip();
   updateBasketBar(total);
 }
 
@@ -280,9 +304,12 @@ function updateBasketBar(total) {
     .map(([size, qty]) => `${size} × ${qty}`);
   basketSummary.textContent = `${byId(currentFinish).name} · ${parts.length ? parts.join(', ') : 'Choose a pack size'}`;
   basketTotal.textContent = money(total);
-  basketAdd.disabled = total === 0;
+  basketAdd.setAttribute('aria-disabled', String(total === 0));
 }
-basketAdd.addEventListener('click', () => addButton.click());
+basketAdd.addEventListener('click', () => {
+  if (basketAdd.getAttribute('aria-disabled') === 'true') showTip(basketAdd, QTY_TIP);
+  else addButton.click();
+});
 
 steppers.forEach((s) => {
   const input = s.querySelector('.stepper__value');
@@ -380,7 +407,7 @@ function renderCalc() {
     .join('');
   calcTotal.textContent = money(total);
   calcBuy.textContent = total > 0 ? `Add to Basket ${money(total)}` : 'Add to Basket';
-  calcBuy.disabled = total === 0;
+  calcBuy.setAttribute('aria-disabled', String(total === 0));
 }
 
 function renumber(kind) {
@@ -464,6 +491,7 @@ document.querySelectorAll('[data-open-calc]').forEach((b) => b.addEventListener(
 calc.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeCalc));
 // Add to Basket puts the listed tins in the buy box and closes the drawer
 calcBuy.addEventListener('click', () => {
+  if (calcBuy.getAttribute('aria-disabled') === 'true') { showTip(calcBuy, 'Add your walls to work out the tins'); return; }
   packs.forEach((p, i) => { p.stepper.querySelector('.stepper__value').value = calcTinQty[i]; });
   updateTotal();
   closeCalc();
@@ -603,5 +631,6 @@ document.addEventListener('click', (e) => {
 // Adding to the basket isn't part of the preview either (the mobile basket bar clicks this same button)
 addButton.closest('form').addEventListener('submit', (e) => {
   e.preventDefault();
-  openNotice();
+  if (addButton.getAttribute('aria-disabled') === 'true') showTip(addButton, QTY_TIP);
+  else openNotice();
 });
