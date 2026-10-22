@@ -67,31 +67,30 @@ const FINISHES = [
     sizes: '750ml, 2.5L, 5L',
   },
   {
-    id: 'modern-eggshell', group: 'wood', name: 'Modern Eggshell', desc: 'Hard-wearing for wood, metal & floors', sheen: 40, variant: 'inter',
+    id: 'modern-eggshell', group: 'wood', name: 'Modern Eggshell', desc: 'Hard-wearing for wood, metal & floors', sheen: 40,
     text: 'Modern Eggshell is our mid-sheen, super-tough finish adding lasting colour and protection to interior wood, metal and concrete. It’s even tough enough for floors and kitchen cabinets.',
     suitable: ['Interior Woodwork', 'Interior Furniture', 'Kitchen Cabinets', 'Interior Metal & Radiators', 'Interior Floors & Concrete'],
     sizes: '750ml, 2.5L, 5L',
   },
   {
-    id: 'full-gloss', group: 'wood', name: 'Full Gloss', desc: 'High shine for wood & metal', sheen: 95, variant: 'inter',
+    id: 'full-gloss', group: 'wood', name: 'Full Gloss', desc: 'High shine for wood & metal', sheen: 95,
     text: 'Full Gloss is an ultra-high-gloss water based finish suitable for both interior and exterior wood and metal, as well as bringing a touch of glamour to walls and ceilings. Our highest-shine finish, it’s resistant to water, flaking, peeling, and fading for up to six years.',
     suitable: ['Interior Walls & Ceilings', 'Interior & Exterior Woodwork', 'Interior & Exterior Metal, Including Radiators', 'Exterior Doors & Furniture'],
     sizes: '750ml, 2.5L',
   },
   {
-    id: 'exterior-masonry', group: 'exterior', name: 'Exterior Masonry', desc: 'For exterior walls', sheen: 2, variant: 'exterior',
+    id: 'exterior-masonry', group: 'exterior', name: 'Exterior Masonry', desc: 'For exterior walls', sheen: 2,
     text: 'For brick, render and concrete, Exterior Masonry brings super matt, long-lasting colour to exterior walls. Its water-resistant formula protects walls, while also offering the highest level of water vapour permeability to allow them to breathe. Applied in line with our Product Advice Sheets, it resists flaking, peeling, and fading for up to 15 years.',
     suitable: ['Brickwork', 'Exterior Render', 'Exterior Concrete'],
   },
   {
-    id: 'exterior-eggshell', group: 'exterior', name: 'Exterior Eggshell', desc: 'For exterior wood & metal', sheen: 20, variant: 'exterior',
+    id: 'exterior-eggshell', group: 'exterior', name: 'Exterior Eggshell', desc: 'For exterior wood & metal', sheen: 20,
     text: 'Exterior Eggshell brings long-lasting, rich colour to exterior wood and metal. The low sheen finish remains flexible once dry, protecting wood and metal surfaces through changing weather, while preservatives help prevent the growth of algae and fungi. The resin-rich formula resists flaking, peeling, and fading for up to six years.',
     suitable: ['Exterior Woodwork', 'Window Frames & Shutters', 'Exterior Metal', 'Railings & Metal Guttering'],
     sizes: '750ml, 2.5L',
   },
 ];
-// Row styling follows the Figma drawer exactly, including its per-row differences (Inter rows, Exterior rows,
-// tighter title gap on Estate Emulsion) so the design can be reviewed as drawn.
+// Every row shares one style (the user dropped Figma's per-row differences as a mistake).
 const byId = (id) => FINISHES.find((f) => f.id === id);
 // "Chalky matt for walls & ceilings" -> look "Chalky matt", use on "Walls & ceilings"
 const lookOf = (f) => (/^for /i.test(f.desc) ? f.desc : f.desc.split(' for ')[0]);
@@ -150,7 +149,7 @@ const infoPanel = (f) => {
 };
 
 list.innerHTML = FINISHES.map((f) => `
-  <div class="finish-item${f.variant ? ` finish-item--${f.variant}` : ''}${f.id === 'estate-emulsion' ? ' finish-item--tight' : ''}" data-id="${f.id}" data-group="${f.group}">
+  <div class="finish-item" data-id="${f.id}" data-group="${f.group}">
     <div class="finish-row">
       <button class="finish-option" type="button" role="radio" aria-checked="false">
         <span class="finish-option__radio" aria-hidden="true"></span>
@@ -303,6 +302,183 @@ steppers.forEach((s) => {
   input.addEventListener('focus', () => input.select());
 });
 updateTotal();
+
+// ---------- Paint calculator drawer (Figma 274:603, notes 274:753) ----------
+// Walls minus windows & doors, 1 coat. Tins are the cheapest mix of the PDP pack sizes that covers the area,
+// read from the size rows (size, "Covers approx." m² and price), so the calculator follows the buy box.
+const calc = document.getElementById('calc-drawer');
+const calcRowTpl = document.getElementById('calc-row');
+const calcLists = { wall: document.getElementById('calc-walls'), opening: document.getElementById('calc-openings') };
+const calcNames = { wall: 'Wall', opening: 'Window or door' };
+const calcArea = document.getElementById('calc-area');
+const calcHint = document.getElementById('calc-hint');
+const calcTins = document.getElementById('calc-tins');
+const calcTotal = document.getElementById('calc-total');
+const calcBuy = document.getElementById('calc-buy');
+const packs = steppers.map((s) => {
+  const row = s.closest('.size-row');
+  return {
+    stepper: s,
+    size: row.querySelector('.size-row__size').textContent,
+    covers: parseFloat(row.querySelector('.size-row__cover').textContent.match(/\d+(\.\d+)?/)[0]),
+    price: Number(s.dataset.price),
+  };
+});
+let calcUnit = 'm';
+let calcLastFocus = null;
+let calcTinQty = [];
+
+const fmtArea = (a) => `${Number(a.toFixed(2))} m²`;
+const toMetres = (v) => (calcUnit === 'cm' ? v / 100 : v);
+const readDim = (input) => toMetres(parseFloat(input.value.replace(',', '.')) || 0);
+const rowArea = (row) => readDim(row.querySelector('[data-dim="w"]')) * readDim(row.querySelector('[data-dim="h"]'));
+
+// Cheapest pack mix with coverage >= area (ties go to fewer tins)
+function cheapestMix(area) {
+  const [small, ...rest] = [...packs].sort((a, b) => a.covers - b.covers);
+  let best = null;
+  const tryMix = (counts, covered, cost, i) => {
+    if (i === rest.length) {
+      const n = Math.max(0, Math.ceil((area - covered) / small.covers - 1e-9));
+      const total = cost + n * small.price;
+      const tins = n + counts.reduce((a, b) => a + b, 0);
+      if (!best || total < best.total || (total === best.total && tins < best.tins)) best = { counts: [n, ...counts], total, tins };
+      return;
+    }
+    const p = rest[i];
+    for (let c = 0; c <= Math.ceil(area / p.covers); c++) tryMix([...counts, c], covered + c * p.covers, cost + c * p.price, i + 1);
+  };
+  tryMix([], 0, 0, 0);
+  const order = [small, ...rest];
+  return packs.map((p) => best.counts[order.indexOf(p)]);
+}
+
+function renderCalc() {
+  let walls = 0;
+  let openings = 0;
+  Object.entries(calcLists).forEach(([kind, list]) => {
+    list.querySelectorAll('.calc__row').forEach((row) => {
+      const a = rowArea(row);
+      row.querySelector('.calc__tag').textContent = fmtArea(a);
+      if (kind === 'wall') walls += a; else openings += a;
+    });
+  });
+  const area = Math.max(0, walls - openings);
+  calcArea.textContent = fmtArea(area);
+  calcArea.classList.toggle('has-value', area > 0);
+  calcHint.textContent = area > 0 ? 'Based on 1 coat' : 'Add your walls to calculate';
+  // Until something is measured, the pack sizes already chosen on the page are carried in
+  calcTinQty = area > 0 ? cheapestMix(area) : packs.map((p) => parseInt(p.stepper.querySelector('.stepper__value').value, 10) || 0);
+  let total = 0;
+  calcTins.innerHTML = packs
+    .map((p, i) => {
+      const qty = calcTinQty[i];
+      if (!qty) return '';
+      total += qty * p.price;
+      return `<div class="calc__tin"><span>${qty} × ${p.size}</span><span>${money(qty * p.price)}</span></div>`;
+    })
+    .join('');
+  calcTotal.textContent = money(total);
+  calcBuy.textContent = total > 0 ? `Add to Basket ${money(total)}` : 'Add to Basket';
+  calcBuy.disabled = total === 0;
+}
+
+function renumber(kind) {
+  const rows = [...calcLists[kind].querySelectorAll('.calc__row')];
+  rows.forEach((row, i) => {
+    row.querySelector('.calc__row-name').textContent = `${calcNames[kind]} ${i + 1}`;
+    row.querySelectorAll('input').forEach((input) => {
+      input.setAttribute('aria-label', `${calcNames[kind]} ${i + 1} ${input.dataset.dim === 'w' ? 'width' : 'height'} in ${calcUnit}`);
+    });
+    row.querySelector('.calc__remove').setAttribute('aria-label', `Remove ${calcNames[kind].toLowerCase()} ${i + 1}`);
+  });
+}
+
+function addCalcRow(kind, removable = true) {
+  const row = calcRowTpl.content.firstElementChild.cloneNode(true);
+  row.querySelectorAll('input').forEach((input) => {
+    input.placeholder = calcUnit === 'cm' ? '0' : '0.00';
+    input.addEventListener('input', () => {
+      input.value = input.value.replace(/[^\d.,]/g, '');
+      renderCalc();
+    });
+  });
+  row.querySelectorAll('.calc__unit-label').forEach((u) => { u.textContent = calcUnit; });
+  const remove = row.querySelector('.calc__remove');
+  remove.hidden = !removable;
+  remove.addEventListener('click', () => {
+    row.remove();
+    renumber(kind);
+    renderCalc();
+    calc.querySelector(`[data-add="${kind}"]`).focus();
+  });
+  calcLists[kind].appendChild(row);
+  renumber(kind);
+  return row;
+}
+addCalcRow('wall', false);
+
+calc.querySelectorAll('[data-add]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    addCalcRow(btn.dataset.add).querySelector('input').focus();
+    renderCalc();
+  });
+});
+
+// m / cm applies to every field and converts what's already entered
+const unitBtns = [...calc.querySelectorAll('.calc__unit')];
+singleSelect(unitBtns, (btn) => {
+  if (btn.dataset.unit === calcUnit) return;
+  const factor = btn.dataset.unit === 'cm' ? 100 : 0.01;
+  calcUnit = btn.dataset.unit;
+  calc.querySelectorAll('.calc__row input').forEach((input) => {
+    input.placeholder = calcUnit === 'cm' ? '0' : '0.00';
+    if (input.value.trim() === '') return;
+    const v = (parseFloat(input.value.replace(',', '.')) || 0) * factor;
+    input.value = calcUnit === 'cm' ? String(Number(v.toFixed(1))) : v.toFixed(2);
+  });
+  calc.querySelectorAll('.calc__unit-label').forEach((u) => { u.textContent = calcUnit; });
+  Object.keys(calcLists).forEach(renumber);
+  renderCalc();
+});
+
+function openCalc() {
+  calcLastFocus = document.activeElement;
+  renderCalc();
+  calc.inert = false;
+  calc.setAttribute('aria-hidden', 'false');
+  calc.classList.add('is-open');
+  document.body.classList.add('drawer-open');
+  // Figma's "on open" state has Wall 1's width focused; on phones that would pop the keyboard, so focus the panel
+  const target = matchMedia('(min-width: 768px)').matches ? calcLists.wall.querySelector('input') : calc.querySelector('.drawer__panel');
+  target.focus({ preventScroll: true });
+}
+function closeCalc() {
+  calc.classList.remove('is-open');
+  calc.setAttribute('aria-hidden', 'true');
+  calc.inert = true;
+  document.body.classList.remove('drawer-open');
+  if (calcLastFocus) calcLastFocus.focus({ preventScroll: true });
+}
+document.querySelectorAll('[data-open-calc]').forEach((b) => b.addEventListener('click', openCalc));
+calc.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeCalc));
+// Add to Basket puts the listed tins in the buy box and closes the drawer
+calcBuy.addEventListener('click', () => {
+  packs.forEach((p, i) => { p.stepper.querySelector('.stepper__value').value = calcTinQty[i]; });
+  updateTotal();
+  closeCalc();
+});
+calc.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { closeCalc(); return; }
+  if (e.key !== 'Tab') return;
+  const focusable = [...calc.querySelectorAll('button, a[href], input')].filter((b) => !b.disabled && b.offsetParent);
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+// index.html#calculator opens the calculator straight away
+if (location.hash === '#calculator') openCalc();
 
 // Favourite toggle
 const fav = document.querySelector('.fav');

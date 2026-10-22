@@ -428,16 +428,7 @@ body.drawer-open { overflow: hidden; }
 .finish-option__sheen { padding: 2px 8px; border-radius: 48px; background: var(--tag); font-family: var(--inter); font-weight: 500; font-size: 12px; line-height: 16px; white-space: nowrap; }
 .finish-option__desc { color: var(--muted); white-space: nowrap; }
 .finish-info-toggle { display: flex; align-items: center; gap: 4px; flex: none; color: var(--muted); white-space: nowrap; }
-/* Per-row differences as drawn in Figma 124:578 */
-.finish-item--tight .finish-option__title { gap: 4px; }
-.finish-item--inter .finish-option__name { font-family: var(--inter); font-weight: 600; line-height: 22px; }
-.finish-item--inter .finish-option__desc { font-family: var(--inter); font-size: 13px; line-height: 18px; }
-.finish-item--exterior:not(.is-selected) { border-color: #fff; }
-.finish-item--exterior .finish-row { padding: 12px 14px; }
-.finish-item--exterior .finish-info { padding-left: 50px; padding-right: 14px; }
-.finish-item--exterior .finish-info-toggle { font-family: var(--inter); font-weight: 500; font-size: 13px; line-height: 18px; color: var(--ink); }
-.finish-info-toggle .chev-sm, .finish-item--exterior .finish-info-toggle .chev-lg { display: none; }
-.finish-item--exterior .finish-info-toggle .chev-sm { display: block; }
+.finish-info-toggle .chev-sm { display: none; }
 .finish-info { display: flex; flex-direction: column; gap: 10px; padding: 0 12px 16px 48px; margin-top: 8px; font-family: var(--inter); font-size: 13px; line-height: 18px; }
 .finish-info[hidden] { display: none; }
 .finish-info__text { font-size: 14px; line-height: 21px; }
@@ -448,6 +439,56 @@ body.drawer-open { overflow: hidden; }
 .drawer__select { width: 100%; height: 56px; padding: 0 32px; border-radius: 48px; background: var(--paint); font-weight: 500; font-size: 16px; line-height: 24px; color: #fff; }
 .drawer__help { display: flex; align-items: center; gap: 6px; font-weight: 500; font-size: 14px; line-height: 20px; text-decoration: underline; }
 .drawer__tab:focus-visible, .finish-option:focus-visible, .finish-info-toggle:focus-visible, .drawer__close:focus-visible, .drawer__select:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* ---------- Paint calculator drawer (274:603) ----------
+   Reuses the finish drawer shell. Set in Inter as drawn (Figma notes 274:753: a stand-in for Verlag). */
+.calc { font-family: var(--inter); }
+.calc__header { display: flex; flex-direction: column; gap: 12px; padding: 32px 32px 24px; }
+.calc__title { font-family: var(--inter); }
+.calc__intro { font-size: 16px; line-height: 24px; color: var(--muted); }
+.calc__body { flex: 1; min-height: 0; overflow-y: scroll; scrollbar-gutter: stable; display: flex; flex-direction: column; gap: 16px; padding: 0 32px 32px; }
+.calc__measure-head { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; }
+.calc__h { margin: 0; font-weight: 600; font-size: 18px; line-height: 26px; }
+.calc__units { display: flex; padding: 2px; border-radius: 48px; background: var(--tag); }
+.calc__unit { padding: 4px 14px; border-radius: 48px; font-size: 14px; line-height: 20px; color: var(--muted); }
+.calc__unit.is-active { background: #fff; font-weight: 500; color: var(--ink); }
+.calc__card { flex: none; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; padding: 20px; border: 1px solid var(--border); border-radius: 12px; }
+.calc__card-head { display: flex; flex-direction: column; gap: 4px; }
+.calc__optional { margin-left: 2px; font-weight: 400; font-size: 16px; color: var(--muted); }
+.calc__note { margin: 0; font-size: 14px; line-height: 20px; color: var(--muted); }
+.calc__rows { width: 100%; display: flex; flex-direction: column; gap: 20px; }
+.calc__rows:empty { display: none; }
+.calc__row { display: flex; flex-direction: column; gap: 8px; }
+.calc__row-head { display: flex; align-items: center; gap: 8px; }
+.calc__row-name { font-weight: 500; font-size: 16px; line-height: 24px; white-space: nowrap; }
+.calc__tag { padding: 2px 8px; border-radius: 48px; background: var(--tag); font-weight: 500; font-size: 12px; line-height: 16px; color: var(--muted); white-space: nowrap; }
+.calc__remove { width: 20px; height: 20px; margin-left: auto; flex: none; }
+.calc__remove[hidden] { display: none; }
+.calc__fields { display: flex; align-items: center; gap: 10px; color: var(--muted); }
+.calc__x { font-size: 16px; line-height: 24px; }
+.calc__field { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px; background: #fff; font-size: 12px; line-height: 16px; cursor: text; }
+/* Figma's focused field has a 1.5px ink border (faked: 1px border + 0.5px inset shadow) */
+.calc__field:focus-within { border-color: var(--ink); box-shadow: inset 0 0 0 .5px var(--ink); }
+.calc__input { display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 24px; }
+.calc__input input { flex: 1; min-width: 0; padding: 0; border: 0; outline: 0; background: none; font: inherit; color: var(--ink); }
+.calc__input input::placeholder { color: var(--muted); opacity: 1; }
+.calc__add { display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 16px; line-height: 24px; text-decoration: underline; white-space: nowrap; }
+.calc__footer { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 24px 32px; border-top: 1px solid var(--line); background: #fff; }
+/* min 121px and bottom-aligned, so one tin or three never shifts the layout */
+.calc__summary { width: 100%; min-height: 121px; display: flex; align-items: stretch; gap: 12px; }
+.calc__space { width: 220px; flex: none; display: flex; flex-direction: column; justify-content: space-between; padding: 12px; border-radius: 8px; background: var(--cream); font-size: 14px; line-height: 20px; color: var(--muted); }
+.calc__space-block { display: flex; flex-direction: column; gap: 2px; }
+.calc__area { font-weight: 600; font-size: 24px; line-height: 32px; white-space: nowrap; }
+.calc__area.has-value { color: var(--ink); }
+.calc__hint { font-size: 13px; line-height: 18px; }
+.calc__receipt { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 12px; }
+.calc__tin { display: flex; justify-content: space-between; font-size: 16px; line-height: 24px; color: var(--muted); white-space: nowrap; }
+.calc__total { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border); font-weight: 600; font-size: 16px; line-height: 24px; white-space: nowrap; }
+.calc__total strong { font-weight: 600; font-size: 20px; line-height: 28px; }
+.calc__buy { width: 100%; height: 52px; padding: 0 32px; border-radius: 48px; background: var(--paint); font-weight: 500; font-size: 16px; line-height: 24px; color: #fff; }
+.calc__buy:disabled { opacity: .5; cursor: default; }
+.calc__help { display: flex; align-items: center; gap: 6px; font-weight: 500; font-size: 14px; line-height: 20px; text-decoration: underline; }
+.calc__unit:focus-visible, .calc__add:focus-visible, .calc__remove:focus-visible, .calc__buy:focus-visible, .calc__help:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
 /* ---------- Footer (113:5292) ---------- */
 .footer { background: var(--ink); padding: 80px 0 40px; color: #fff; }
@@ -808,22 +849,29 @@ body.drawer-open { overflow: hidden; }
   .drawer__tabs { gap: 4px; }
   .drawer__tab { height: auto; min-width: 0; padding: 0 8px 12px; font-family: var(--inter); font-size: 14px; line-height: 20px; }
   .drawer__list { padding: 16px 20px; gap: 8px; }
-  .finish-item, .finish-item--exterior:not(.is-selected) { border-color: var(--border); }
+  .finish-item { border-color: var(--border); }
   .finish-item.is-selected { border-color: var(--ink); }
-  .finish-row, .finish-item--exterior .finish-row { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 4px; align-items: start; padding: 12px 14px; }
+  .finish-row { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 4px; align-items: start; padding: 12px 14px; }
   .finish-option { align-items: flex-start; }
-  .finish-option__title, .finish-item--tight .finish-option__title { gap: 8px; }
-  .finish-option__name, .finish-item--inter .finish-option__name { font-family: var(--inter); font-weight: 600; line-height: 22px; }
-  .finish-option__desc, .finish-item--inter .finish-option__desc { font-family: var(--inter); font-size: 13px; line-height: 18px; white-space: normal; }
-  .finish-info-toggle, .finish-item--exterior .finish-info-toggle {
+  .finish-option__title { gap: 8px; }
+  .finish-option__name { font-family: var(--inter); font-weight: 600; line-height: 22px; }
+  .finish-option__desc { font-family: var(--inter); font-size: 13px; line-height: 18px; white-space: normal; }
+  .finish-info-toggle {
     justify-self: start; margin-left: 36px; padding-top: 4px; font-family: var(--inter); font-weight: 500; font-size: 13px; line-height: 18px; color: var(--ink);
   }
   .finish-info-toggle .chev-lg { display: none; }
   .finish-info-toggle .chev-sm { display: block; }
-  .finish-info, .finish-item--exterior .finish-info { margin-top: 0; padding: 0 14px 16px 50px; }
+  .finish-info { margin-top: 0; padding: 0 14px 16px 50px; }
   .finish-info__text { line-height: 20px; }
   .drawer__footer { gap: 12px; padding: 20px 20px 24px; }
   .drawer__select { height: 52px; }
+  /* Paint calculator: no mobile frame yet, so it follows the finish sheet's spacing */
+  .calc__header { padding: 16px 20px 20px; }
+  .calc__title { white-space: normal; }
+  .calc__body { padding: 0 20px 24px; }
+  .calc__card { padding: 16px; }
+  .calc__footer { gap: 12px; padding: 16px 20px 24px; }
+  .calc__space { width: auto; flex: 1; }
 
   /* Sticky basket bar (151:2107) */
   .m-basket-bar {

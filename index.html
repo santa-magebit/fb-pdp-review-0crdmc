@@ -192,7 +192,7 @@
           <div class="sizes" data-figma="56:3487">
             <div class="order-card__heading">
               <h3 class="label">Pack Size</h3>
-              <a class="link-u link-u--icon" href="#"><img src="assets/icons/calculator.svg" width="18" height="18" alt="">How much paint do I need?</a>
+              <button class="link-u link-u--icon" type="button" data-open-calc aria-haspopup="dialog" aria-controls="calc-drawer"><img src="assets/icons/calculator.svg" width="18" height="18" alt="">How much paint do I need?</button>
             </div>
             <div class="size-row">
               <div class="size-row__info"><span class="size-row__size">750 ml</span><span class="size-row__cover">Covers approx. 10&nbsp;m²</span></div>
@@ -683,6 +683,81 @@
     </div>
   </aside>
 </div>
+
+<!-- Paint calculator slide-out, opens from "How much paint do I need?" (Figma 274:603, notes 274:753) -->
+<div class="drawer drawer--calc" id="calc-drawer" aria-hidden="true" inert>
+  <div class="drawer__scrim" data-close></div>
+  <aside class="drawer__panel calc" role="dialog" aria-modal="true" aria-labelledby="calc-title" tabindex="-1" data-figma="274:603">
+    <div class="calc__header">
+      <div class="drawer__title-row">
+        <h2 class="drawer__title calc__title" id="calc-title">How much paint do I need?</h2>
+        <button class="drawer__close" type="button" data-close aria-label="Close"><img src="assets/icons/close.svg" width="20" height="20" alt=""></button>
+      </div>
+      <p class="calc__intro">Add your walls and we’ll work out the tins you need.</p>
+    </div>
+
+    <div class="calc__body">
+      <div class="calc__measure-head">
+        <h3 class="calc__h">Your measurements</h3>
+        <div class="calc__units" role="radiogroup" aria-label="Units">
+          <button class="calc__unit is-active" type="button" role="radio" aria-checked="true" data-unit="m">m</button>
+          <button class="calc__unit" type="button" role="radio" aria-checked="false" data-unit="cm">cm</button>
+        </div>
+      </div>
+
+      <section class="calc__card" data-figma="274:619">
+        <div class="calc__card-head">
+          <h4 class="calc__h">Walls</h4>
+          <p class="calc__note">Measure the width and height of each wall.</p>
+        </div>
+        <div class="calc__rows" id="calc-walls"></div>
+        <button class="calc__add" type="button" data-add="wall"><img src="assets/icons/calc-add.svg" width="22" height="22" alt="">Add a wall</button>
+      </section>
+
+      <section class="calc__card" data-figma="274:673">
+        <div class="calc__card-head">
+          <h4 class="calc__h">Windows &amp; doors <span class="calc__optional">(optional)</span></h4>
+          <p class="calc__note">We take these off the total so you don’t buy more than you need.</p>
+        </div>
+        <div class="calc__rows" id="calc-openings"></div>
+        <button class="calc__add" type="button" data-add="opening"><img src="assets/icons/calc-add.svg" width="22" height="22" alt="">Add a window or door</button>
+      </section>
+    </div>
+
+    <div class="calc__footer" data-figma="274:710">
+      <div class="calc__summary">
+        <div class="calc__space">
+          <span>Your space</span>
+          <div class="calc__space-block">
+            <strong class="calc__area" id="calc-area">0 m²</strong>
+            <span class="calc__hint" id="calc-hint">Add your walls to calculate</span>
+          </div>
+        </div>
+        <div class="calc__receipt" aria-live="polite">
+          <div class="calc__tins" id="calc-tins"></div>
+          <div class="calc__total"><span>Total</span><strong id="calc-total">$0.00</strong></div>
+        </div>
+      </div>
+      <button class="calc__buy" type="button" id="calc-buy">Add to Basket</button>
+      <a class="calc__help" href="#"><img src="assets/icons/calc-measure.svg" width="18" height="18" alt="">How to measure your space</a>
+    </div>
+  </aside>
+</div>
+
+<template id="calc-row">
+  <div class="calc__row">
+    <div class="calc__row-head">
+      <span class="calc__row-name"></span>
+      <span class="calc__tag">0 m²</span>
+      <button class="calc__remove" type="button"><img src="assets/icons/calc-remove.svg" width="20" height="20" alt=""></button>
+    </div>
+    <div class="calc__fields">
+      <label class="calc__field"><span>Width</span><span class="calc__input"><input type="text" inputmode="decimal" placeholder="0.00" data-dim="w"><span class="calc__unit-label">m</span></span></label>
+      <span class="calc__x" aria-hidden="true">×</span>
+      <label class="calc__field"><span>Height</span><span class="calc__input"><input type="text" inputmode="decimal" placeholder="0.00" data-dim="h"><span class="calc__unit-label">m</span></span></label>
+    </div>
+  </div>
+</template>
 
 <script src="main.js"></script>
 </body>
