@@ -648,7 +648,8 @@ body.notice-open { overflow: hidden; }
 
 .footer__links { flex: 1; min-width: 0; display: flex; gap: 24px; font-family: var(--verlag); }
 .footer__col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
-.footer__col-title { font-size: 14px; line-height: 20px; letter-spacing: -0.28px; }
+.footer__col-title { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0; background: none; border: 0; color: inherit; font: inherit; font-size: 14px; line-height: 20px; letter-spacing: -0.28px; text-align: left; cursor: default; }
+.footer__chev { display: none; flex: none; }
 .footer__col ul { font-size: 16px; line-height: 24px; letter-spacing: -0.32px; color: #e6e6e6; }
 .footer__col li + li { margin-top: 8px; }
 
@@ -947,7 +948,18 @@ body.notice-open { overflow: hidden; }
   .footer__main { flex-direction: column; gap: 32px; }
   .footer__brand { width: auto; }
   .social-btn { border-radius: 8px; }
-  .footer__links { flex-direction: column; gap: 32px; width: 100%; }
+  /* Link groups collapse into dropdowns (149:957, pattern from 302:2485); the first one starts open */
+  .footer__links { flex-direction: column; gap: 0; width: 100%; border-top: 1px solid rgba(255, 255, 255, .2); }
+  .footer__col { gap: 0; border-bottom: 1px solid rgba(255, 255, 255, .2); }
+  .footer__col-title { padding: 16px 0; font-size: 16px; line-height: 24px; letter-spacing: 0; color: #fff; cursor: pointer; }
+  .footer__col-title:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  .footer__chev { display: block; transition: transform .2s ease; }
+  .footer__col.is-open .footer__chev { transform: rotate(180deg); }
+  .footer__col ul { display: none; padding-bottom: 8px; }
+  .footer__col.is-open ul { display: block; }
+  .footer__col li + li { margin-top: 0; }
+  .footer__col li a { display: block; padding: 12px 0; border-top: 1px solid rgba(255, 255, 255, .1); }
+  .footer__rule { display: none; }
   .footer__bottom { flex-direction: column; align-items: flex-start; font-family: var(--verlag); }
   .footer__legal { flex-direction: column; align-items: flex-start; gap: 12px; }
   .footer__art { background-size: 100% 100%; }

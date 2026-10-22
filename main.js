@@ -586,6 +586,23 @@ function updateSticky() {
 }
 window.addEventListener('scroll', updateSticky, { passive: true });
 mobile.addEventListener('change', updateSticky);
+
+// Footer link groups are dropdowns on mobile only; on desktop the titles are plain labels
+const footerToggles = [...document.querySelectorAll('.footer__col-title')];
+function syncFooterToggles() {
+  footerToggles.forEach((b) => {
+    b.tabIndex = mobile.matches ? 0 : -1;
+    if (mobile.matches) b.setAttribute('aria-expanded', String(b.parentElement.classList.contains('is-open')));
+    else b.removeAttribute('aria-expanded');
+  });
+}
+footerToggles.forEach((b) => b.addEventListener('click', () => {
+  if (!mobile.matches) return;
+  const open = b.parentElement.classList.toggle('is-open');
+  b.setAttribute('aria-expanded', String(open));
+}));
+syncFooterToggles();
+mobile.addEventListener('change', syncFooterToggles);
 updateSticky();
 
 // ---------- Prototype notice (Figma 281:603 / 283:606) ----------
