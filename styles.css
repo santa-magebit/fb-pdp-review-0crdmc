@@ -1053,3 +1053,7 @@ body.notice-open { overflow: hidden; }
   .m-basket-bar__btn[aria-disabled="true"] { opacity: .5; cursor: default; }
   .m-basket-bar__btn { padding: 0 24px; border-radius: 48px; background: var(--paint); color: #fff; font-size: 16px; line-height: normal; white-space: nowrap; }
 }
+
+/* Magebit logo in the footer and the prototype notice links to magebit.com */
+.magebit-link { display: inline-flex; border-radius: 2px; }
+.magebit-link:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
