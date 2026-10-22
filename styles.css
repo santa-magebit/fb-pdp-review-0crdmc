@@ -142,7 +142,8 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .finish-card__desc { font-family: var(--verlag); font-size: 12px; line-height: 16px; color: var(--muted); }
 /* Name and description sit 2px apart; the tag keeps the card's 6px gap */
 .finish-card__name + .finish-card__desc { margin-top: -4px; }
-.tag { font-family: var(--verlag); font-weight: 500; font-size: 12px; line-height: 16px; padding: 3px 10px; border-radius: 48px; background: var(--tag); white-space: nowrap; }
+/* Verlag sits ~1px low in a 16px line: 2.5px / 3.5px padding centres the letters, still 22px tall */
+.tag { font-family: var(--verlag); font-weight: 500; font-size: 12px; line-height: 16px; padding: 2.5px 10px 3.5px; border-radius: 48px; background: var(--tag); white-space: nowrap; }
 
 .sizes { display: flex; flex-direction: column; gap: 4px; }
 .size-row { display: flex; align-items: center; gap: 16px; padding: 8px 0; border-bottom: 1px solid var(--line); }
