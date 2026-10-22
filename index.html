@@ -10,7 +10,7 @@
   <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="icon" href="assets/favicon-48.png" type="image/png" sizes="48x48">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=20261022210227">
+  <link rel="stylesheet" href="styles.css?v=20261022210543">
 </head>
 <body>
 <!-- Built from Figma file zBK5BOgn7VGEptzhet1s41, frame "PDP" 32:1690 (section "PDP - wip" 56:4766).
@@ -757,12 +757,11 @@
 
 <template id="calc-row">
   <div class="calc__row">
-    <div class="calc__row-head"><span class="calc__row-name"></span><span class="calc__tag"></span></div>
+    <div class="calc__row-head"><span class="calc__label"><span class="calc__row-name"></span>: <span class="calc__tag"></span></span><button class="calc__remove" type="button">Remove</button></div>
     <div class="calc__fields">
       <label class="calc__field"><span>Width</span><span class="calc__input"><input type="text" inputmode="decimal" placeholder="0.00" data-dim="w"><span class="calc__unit-label">m</span></span></label>
       <span class="calc__x" aria-hidden="true">×</span>
       <label class="calc__field"><span>Height</span><span class="calc__input"><input type="text" inputmode="decimal" placeholder="0.00" data-dim="h"><span class="calc__unit-label">m</span></span></label>
-      <button class="calc__remove" type="button"><img src="assets/icons/calc-remove.svg" width="20" height="20" alt=""></button>
     </div>
   </div>
 </template>
@@ -832,6 +831,6 @@
 <!-- Tooltip for Add to Basket buttons pressed before a quantity is chosen -->
 <div class="tip" id="tip" role="status" aria-live="polite" hidden></div>
 
-<script src="main.js?v=20261022210227"></script>
+<script src="main.js?v=20261022210543"></script>
 </body>
 </html>

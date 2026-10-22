@@ -453,18 +453,21 @@ body.drawer-open { overflow: hidden; }
 .calc__card-head { display: flex; flex-direction: column; gap: 4px; }
 .calc__optional { margin-left: 2px; font-weight: 400; font-size: 18px; color: var(--muted); }
 .calc__note { margin: 0; font-size: 14px; line-height: 20px; color: var(--muted); }
-/* Rows (324:2506): name left and m² right above the boxes (the m² ends at the Height box edge),
-   labels inside the boxes, bin at the end of the box row. */
+/* Rows (237:726): "Wall 1: 18.72 m²" with the m² in ink, boxes at full width, and a "Remove"
+   link on the label line that only shows on hover or focus (always on touch screens). */
 .calc__rows { width: 100%; display: flex; flex-direction: column; gap: 24px; }
 .calc__rows:empty { display: none; }
 .calc__row { display: flex; flex-direction: column; gap: 8px; }
-.calc__row-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-right: 30px; font-weight: 500; font-size: 16px; line-height: 24px; }
-.calc__row-name, .calc__tag { white-space: nowrap; }
-.calc__tag.is-empty { color: var(--muted); }
+.calc__row-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 16px; line-height: 24px; }
+.calc__label { color: var(--muted); white-space: nowrap; }
+.calc__tag { font-weight: 600; color: var(--ink); }
+.calc__tag.is-empty { font-weight: 400; color: var(--muted); }
 .calc__fields { display: flex; align-items: center; gap: 10px; }
-.calc__remove { width: 20px; height: 20px; flex: none; }
-/* The bin keeps its space when it can't be used, so every row's m² ends at the same spot */
-.calc__remove[hidden] { display: block !important; visibility: hidden; }
+.calc__remove { flex: none; font-weight: 500; font-size: 14px; line-height: 20px; color: var(--ink); text-decoration: underline; }
+@media (hover: hover) {
+  .calc__remove { opacity: 0; transition: opacity .15s ease; }
+  .calc__row:hover .calc__remove, .calc__row:focus-within .calc__remove { opacity: 1; }
+}
 .calc__x { font-size: 16px; line-height: 24px; color: var(--muted); }
 .calc__field { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px; background: #fff; font-size: 12px; line-height: 16px; cursor: text; }
 /* Figma's focused field has a 1.5px ink border (faked: 1px border + 0.5px inset shadow) */
@@ -1026,7 +1029,6 @@ body.notice-open { overflow: hidden; }
   .calc__card { padding: 16px; }
   /* Tighter gaps so four-digit cm values still fit */
   .calc__fields { gap: 8px; }
-  .calc__row-head { padding-right: 28px; }
   .calc__field { padding: 8px 10px; }
   .calc__footer { gap: 12px; padding: 16px 20px 24px; }
   .calc__space { width: auto; flex: 1; }
