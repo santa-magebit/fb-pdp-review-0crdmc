@@ -531,6 +531,48 @@ body.drawer-open { overflow: hidden; }
   .safe__duration { left: auto; top: auto; right: 15px; bottom: 16px; }
 }
 
+/* ---------- Tablet (768–1199px) ----------
+   Not in Figma. The product area splits 50/50: gallery on the left, configurator (order card) on the right,
+   with the description under the gallery; other sections wrap or stack so nothing overflows. */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .pdp-title { padding-left: calc(50% + 16px); }
+  .pdp-main__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 32px; }
+  .gallery { width: auto; margin: -200px 0 0; }
+  .gallery__main { width: 100%; height: auto; aspect-ratio: 1; }
+  .gallery__thumbs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .gallery__thumb, .gallery__all { width: auto; height: auto; aspect-ratio: 1; }
+  .order-card { width: auto; padding: 24px; }
+  .stepper { width: 112px; }
+  .size-row__info, .info-row p { white-space: normal; }
+  .sample__actions { flex-direction: column; gap: 8px; }
+  .sample__actions .btn { width: 100%; flex: none; }
+
+  .schemes__row { overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+  .scheme { flex: none; width: 272px; }
+  .chapters__inner { gap: 48px; }
+  .chapters__photo { width: calc(50% - 24px); height: auto; aspect-ratio: 680 / 599; }
+  .chapters__shade { width: 100%; }
+  .crosslink__overlay { width: auto; max-width: calc(100% - 64px); }
+  .crosslink__title { white-space: normal; }
+  .crosslink__desc { width: auto; min-width: 0; }
+  .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
+}
+@media (min-width: 768px) and (max-width: 1119px) {
+  .mainnav__menu { display: none; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .story__body, .reds__body { flex-direction: column; }
+  .story__film { flex: none; aspect-ratio: 16 / 9; }
+  .pairs-card, .reds__card { width: auto; }
+  .reds__image { flex: none; aspect-ratio: 16 / 9; }
+  .safe__inner { flex-direction: column; align-items: stretch; gap: 40px; }
+  .safe__video { width: 100%; }
+  .footer__main { flex-direction: column; gap: 40px; }
+  .footer__brand { width: auto; }
+  .crosslinks__cards { flex-direction: column; }
+  .crosslink { flex: none; }
+}
+
 /* ======================================================================
    Mobile (Figma "PDP · Mobile 390" 147:585, finish sheet 151:616,
    sticky header + basket bar 151:1423). Built as drawn, including its
