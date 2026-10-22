@@ -913,11 +913,12 @@ body.notice-open { overflow: hidden; }
   /* similar, inspo and crosslinks are all white: one 32px gap between them, not 64px */
   .inspo { padding-top: 0; }
   .similar .wrap, .inspo .wrap { margin-right: 0; }
-  .carousel__track { padding-right: 20px; }
+  /* Tracks run to both screen edges, so cards slide off the edge instead of being cut at the 20px gutter */
+  .carousel__track { margin-left: -20px; padding: 0 20px; scroll-padding-inline: 20px; }
   .carousel-nav { margin-top: 24px; padding-right: 20px; }
   .carousel-nav__counter { font-family: var(--verlag); font-weight: 700; }
   /* Starts at the 20px gutter; keeps the desktop 307.2px progress bar */
-  .similar__track { height: 230px; padding-left: 0; scroll-snap-type: none; }
+  .similar__track { scroll-snap-type: none; }
   /* Images have square corners, as drawn */
   .swatch-card { width: 160px; height: 211px; overflow: hidden; }
   .swatch-card__img { width: 160px; height: 160px; border-radius: 0; }
