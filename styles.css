@@ -515,15 +515,17 @@ body.drawer-open { overflow: hidden; }
 .footer__art { height: 52px; background: url("assets/img/bottom-bar.png") 0 0 / 100% 100% no-repeat; }
 
 /* ---------- Smaller desktop / laptop (below the 1536px content width) ----------
-   Not in Figma: below this width the description column between gallery and order card gets too narrow,
-   so the description, key features and fact strip move under the gallery and use the full left column. */
-@media (max-width: 1535px) {
+   Not in Figma. From 1360px the product area keeps the Figma columns (gallery | description | order card)
+   and only the description column narrows; below that it gets too narrow, so the description, key features
+   and fact strip move under the gallery and use the full left column. */
+@media (max-width: 1359px) {
   .pdp-main__grid { grid-template-columns: minmax(0, 1fr) 495px; grid-template-areas: "gallery card" "info card"; row-gap: 40px; }
   .pdp-content { display: contents; }
   .gallery { grid-area: gallery; margin-left: 0; }
   .pdp-info { grid-area: info; }
   .order-card { grid-area: card; align-self: start; }
-
+}
+@media (max-width: 1535px) {
   .safe__inner { gap: 64px; }
   .safe__desc { white-space: normal; }
   .safe__video { width: min(820px, 55%); height: auto; aspect-ratio: 820 / 461; }
@@ -531,17 +533,25 @@ body.drawer-open { overflow: hidden; }
   .safe__duration { left: auto; top: auto; right: 15px; bottom: 16px; }
 }
 
-/* ---------- Tablet (768–1199px) ----------
+/* ---------- Laptop + tablet (768–1359px) ----------
    Not in Figma. The product area splits 50/50: gallery on the left, configurator (order card) on the right,
-   with the description under the gallery; other sections wrap or stack so nothing overflows. */
-@media (min-width: 768px) and (max-width: 1199px) {
+   with the description under the gallery; on tablet (≤1199px) other sections wrap or stack so nothing overflows. */
+@media (min-width: 768px) and (max-width: 1359px) {
   .pdp-title { padding-left: calc(50% + 16px); }
   .pdp-main__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 32px; }
   .gallery { width: auto; margin: -200px 0 0; }
   .gallery__main { width: 100%; height: auto; aspect-ratio: 1; }
   .gallery__thumbs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
   .gallery__thumb, .gallery__all { width: auto; height: auto; aspect-ratio: 1; }
-  .order-card { width: auto; padding: 24px; }
+  .order-card { width: auto; }
+}
+/* 1200–1535px: narrower description column, so facts wrap as whole items instead of breaking their values */
+@media (min-width: 1200px) and (max-width: 1535px) {
+  .facts { flex-wrap: wrap; row-gap: 16px; }
+  .fact dd { white-space: nowrap; }
+}
+@media (min-width: 768px) and (max-width: 1199px) {
+  .order-card { padding: 24px; }
   .stepper { width: 112px; }
   .size-row__info, .info-row p { white-space: normal; }
   .sample__actions { flex-direction: column; gap: 8px; }
