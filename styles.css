@@ -915,7 +915,9 @@ body.notice-open { overflow: hidden; }
   .similar .wrap, .inspo .wrap { margin-right: 0; }
   /* Tracks run to both screen edges, so cards slide off the edge instead of being cut at the 20px gutter */
   .carousel__track { margin-left: -20px; padding: 0 20px; scroll-padding-inline: 20px; }
-  .carousel-nav { margin-top: 24px; padding-right: 20px; }
+  /* No progress bar on phones: the peeking next card already says it scrolls (Figma 149:889, 213:1501) */
+  .carousel-nav { justify-content: flex-end; margin-top: 24px; padding-right: 20px; }
+  .carousel-nav__progress { display: none; }
   .carousel-nav__counter { font-family: var(--verlag); font-weight: 700; }
   /* Starts at the 20px gutter; keeps the desktop 307.2px progress bar */
   .similar__track { scroll-snap-type: none; }
