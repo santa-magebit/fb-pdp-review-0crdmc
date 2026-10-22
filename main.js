@@ -634,3 +634,143 @@ addButton.closest('form').addEventListener('submit', (e) => {
   if (addButton.getAttribute('aria-disabled') === 'true') showTip(addButton, QTY_TIP);
   else openNotice();
 });
+
+// ---------- Gallery popup: grid (Figma 255:603) and photo view (257:603) ----------
+// Photos as drawn in the grid frame (its last row repeats the first while more photos are to come).
+// Room tabs filter the grid; the photo view walks the filtered set with ← →, swipe and thumbnails,
+// and Esc or "All photos" goes back to the grid with the filter kept.
+const GALLERY = [
+  { src: 'assets/img/gallery-1.png', room: 'Bedroom' },
+  { src: 'assets/img/gallery-2.jpg', room: 'Living Room' },
+  { src: 'assets/img/gallery-3.jpg', room: 'Living Room' },
+  { src: 'assets/img/gallery-dining.jpg', room: 'Dining Room' },
+  { src: 'assets/img/gallery-bathroom.jpg', room: 'Bathroom' },
+  { src: 'assets/img/gallery-child.jpg', room: 'Child Room' },
+  { src: 'assets/img/gallery-1.png', room: 'Bedroom' },
+  { src: 'assets/img/gallery-2.jpg', room: 'Living Room' },
+  { src: 'assets/img/gallery-3.jpg', room: 'Living Room' },
+];
+const lightbox = document.getElementById('gallery-popup');
+const lbBox = lightbox.querySelector('.lightbox__box');
+const lbGrid = lightbox.querySelector('.lb-grid');
+const lbView = lightbox.querySelector('.lb-view');
+const lbPhotos = document.getElementById('lb-photos');
+const lbEmpty = document.getElementById('lb-empty');
+const lbThumbs = document.getElementById('lb-thumbs');
+const lbPhoto = document.getElementById('lb-photo');
+const lbTabs = [...lightbox.querySelectorAll('.lb-tab')];
+let lbRoom = 'all';
+let lbIndex = 0;
+let lbLastFocus = null;
+const lbItems = () => GALLERY.filter((p) => lbRoom === 'all' || p.room === lbRoom);
+
+function renderGrid() {
+  const items = lbItems();
+  lbPhotos.innerHTML = items
+    .map((p, i) => `<button class="lb-tile" type="button" data-i="${i}" aria-label="${p.room}, open photo ${i + 1} of ${items.length}">
+      <img src="${p.src}" alt="" loading="lazy"><span class="lb-tile__tag">${p.room}</span>
+      <span class="lb-tile__open"><img src="assets/icons/gallery-maximize.svg" width="20" height="20" alt=""></span></button>`)
+    .join('');
+  lbEmpty.hidden = items.length > 0;
+  lbPhotos.querySelectorAll('.lb-tile').forEach((t) => t.addEventListener('click', () => showPhoto(Number(t.dataset.i))));
+}
+function setRoom(room) {
+  lbRoom = room;
+  lbTabs.forEach((t) => {
+    t.classList.toggle('is-active', t.dataset.room === room);
+    t.setAttribute('aria-selected', String(t.dataset.room === room));
+  });
+  renderGrid();
+}
+lbTabs.forEach((tab) => tab.addEventListener('click', () => setRoom(tab.dataset.room)));
+
+function showPhoto(i) {
+  const items = lbItems();
+  lbIndex = (i + items.length) % items.length;
+  const p = items[lbIndex];
+  lbPhoto.src = p.src;
+  lbPhoto.alt = `Incarnadine in a ${p.room.toLowerCase()}`;
+  document.getElementById('lb-pos').textContent = `${lbIndex + 1} / ${items.length}`;
+  document.getElementById('lb-room').textContent = p.room;
+  lbThumbs.innerHTML = items
+    .map((t, j) => `<button class="lb-thumb${j === lbIndex ? ' is-active' : ''}" type="button" data-i="${j}" aria-label="Photo ${j + 1}"${j === lbIndex ? ' aria-current="true"' : ''}><img src="${t.src}" alt=""></button>`)
+    .join('');
+  lbThumbs.querySelectorAll('.lb-thumb').forEach((t) => t.addEventListener('click', () => showPhoto(Number(t.dataset.i))));
+  lbThumbs.querySelector('.is-active').scrollIntoView({ block: 'nearest', inline: 'center' });
+  if (lbView.hidden) {
+    lbGrid.hidden = true;
+    lbView.hidden = false;
+    lbBox.classList.add('is-photo');
+    lbView.querySelector('.lb-view__back').focus({ preventScroll: true });
+  }
+}
+function showGrid() {
+  lbView.hidden = true;
+  lbGrid.hidden = false;
+  lbBox.classList.remove('is-photo');
+  const tile = lbPhotos.querySelector(`[data-i="${lbIndex}"]`);
+  (tile || lbBox).focus({ preventScroll: false });
+}
+lightbox.querySelector('.lb-view__back').addEventListener('click', showGrid);
+lightbox.querySelectorAll('.lb-view__nav').forEach((b) => b.addEventListener('click', () => showPhoto(lbIndex + Number(b.dataset.dir))));
+
+// Swipe between photos on touch screens
+let swipeX = null;
+const stage = lightbox.querySelector('.lb-view__stage');
+stage.addEventListener('pointerdown', (e) => { swipeX = e.clientX; });
+stage.addEventListener('pointerup', (e) => {
+  if (swipeX === null) return;
+  const dx = e.clientX - swipeX;
+  swipeX = null;
+  if (Math.abs(dx) > 40) showPhoto(lbIndex + (dx < 0 ? 1 : -1));
+});
+
+function openGallery(photoSrc) {
+  lbLastFocus = document.activeElement;
+  setRoom('all');
+  lightbox.inert = false;
+  lightbox.setAttribute('aria-hidden', 'false');
+  lightbox.classList.add('is-open');
+  document.body.classList.add('drawer-open');
+  const scroller = lightbox.querySelector('.lb-grid__scroll');
+  scroller.style.setProperty('--sb', `${Math.min(scroller.offsetWidth - scroller.clientWidth, 20)}px`);
+  if (photoSrc) {
+    showPhoto(Math.max(0, lbItems().findIndex((p) => photoSrc.endsWith(p.src))));
+  } else {
+    lbView.hidden = true;
+    lbGrid.hidden = false;
+    lbBox.classList.remove('is-photo');
+    lbBox.focus({ preventScroll: true });
+  }
+}
+function closeGallery() {
+  lightbox.classList.remove('is-open');
+  lightbox.setAttribute('aria-hidden', 'true');
+  lightbox.inert = true;
+  document.body.classList.remove('drawer-open');
+  if (lbLastFocus) lbLastFocus.focus({ preventScroll: true });
+}
+document.querySelectorAll('[data-open-gallery]').forEach((b) => b.addEventListener('click', (e) => {
+  e.stopPropagation();
+  openGallery();
+}));
+// A photo on the page opens the photo view at that photo
+galleryMain.addEventListener('click', () => openGallery(galleryMain.src));
+galleryMain.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openGallery(galleryMain.src); }
+});
+document.querySelectorAll('.m-slide > img').forEach((img) => img.addEventListener('click', () => openGallery(img.src)));
+lightbox.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeGallery));
+lightbox.addEventListener('keydown', (e) => {
+  const inPhoto = !lbView.hidden;
+  if (e.key === 'Escape') { if (inPhoto) showGrid(); else closeGallery(); return; }
+  if (inPhoto && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { e.preventDefault(); showPhoto(lbIndex + (e.key === 'ArrowRight' ? 1 : -1)); return; }
+  if (e.key !== 'Tab') return;
+  const focusable = [...lightbox.querySelectorAll('button')].filter((b) => b.offsetParent);
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+// index.html#gallery opens the grid straight away
+if (location.hash === '#gallery') openGallery();

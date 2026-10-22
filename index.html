@@ -10,7 +10,7 @@
   <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="icon" href="assets/favicon-48.png" type="image/png" sizes="48x48">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=202610221931">
+  <link rel="stylesheet" href="styles.css?v=20261022193915">
 </head>
 <body>
 <!-- Built from Figma file zBK5BOgn7VGEptzhet1s41, frame "PDP" 32:1690 (section "PDP - wip" 56:4766).
@@ -112,7 +112,7 @@
     </nav>
     <div class="m-hero__title"><p>No. 248</p><h1>Incarnadine</h1></div>
     <div class="m-gallery" id="m-gallery">
-      <div class="m-slide"><img src="assets/img/gallery-3.jpg" alt="Incarnadine on the walls and bookshelves of a living room"><button class="m-slide__all" type="button" data-proto>View all</button><span class="m-slide__count"><span id="m-gallery-index">1</span> / 3</span></div>
+      <div class="m-slide"><img src="assets/img/gallery-3.jpg" alt="Incarnadine on the walls and bookshelves of a living room"><button class="m-slide__all" type="button" data-open-gallery>View all</button><span class="m-slide__count"><span id="m-gallery-index">1</span> / 3</span></div>
       <div class="m-slide"><img src="assets/img/gallery-1.png" alt=""></div>
       <div class="m-slide"><img src="assets/img/gallery-2.jpg" alt=""></div>
     </div>
@@ -124,13 +124,13 @@
 
       <div class="gallery" data-figma="32:1760">
         <div class="gallery__main">
-          <img id="gallery-main" src="assets/img/gallery-3.jpg" alt="Incarnadine on the walls and bookshelves of a living room">
+          <img id="gallery-main" tabindex="0" role="button" aria-label="Open photo" src="assets/img/gallery-3.jpg" alt="Incarnadine on the walls and bookshelves of a living room">
         </div>
         <div class="gallery__thumbs" data-figma="51:3306">
           <button class="gallery__thumb is-active" type="button" data-src="assets/img/gallery-3.jpg" aria-label="Photo 1"><img src="assets/img/gallery-3.jpg" alt=""></button>
           <button class="gallery__thumb" type="button" data-src="assets/img/gallery-1.png" aria-label="Photo 2"><img src="assets/img/gallery-1.png" alt=""></button>
           <button class="gallery__thumb" type="button" data-src="assets/img/gallery-2.jpg" aria-label="Photo 3"><img src="assets/img/gallery-2.jpg" alt=""></button>
-          <button class="gallery__all" type="button" data-proto>View all</button>
+          <button class="gallery__all" type="button" data-open-gallery>View all</button>
         </div>
       </div>
 
@@ -763,6 +763,53 @@
   </div>
 </template>
 
+<!-- Gallery popup: grid from "View all" (Figma 255:603), photo view from a photo (257:603) -->
+<div class="lightbox" id="gallery-popup" aria-hidden="true" inert>
+  <div class="lightbox__scrim" data-close></div>
+  <div class="lightbox__box" role="dialog" aria-modal="true" aria-labelledby="lightbox-title" tabindex="-1">
+    <section class="lb-grid" data-figma="255:603">
+      <div class="lb-grid__header">
+        <div class="lb-grid__title-row">
+          <h2 class="lb-grid__title" id="lightbox-title">Incarnadine in real homes</h2>
+          <button class="drawer__close" type="button" data-close aria-label="Close"><img src="assets/icons/gallery-x.svg" width="20" height="20" alt=""></button>
+        </div>
+        <div class="lb-tabs" role="tablist" aria-label="Filter photos by room">
+          <button class="lb-tab is-active" type="button" role="tab" aria-selected="true" data-room="all">All</button>
+          <button class="lb-tab" type="button" role="tab" aria-selected="false" data-room="Bathroom">Bathroom</button>
+          <button class="lb-tab" type="button" role="tab" aria-selected="false" data-room="Bedroom">Bedroom</button>
+          <button class="lb-tab" type="button" role="tab" aria-selected="false" data-room="Child Room">Child Room</button>
+          <button class="lb-tab" type="button" role="tab" aria-selected="false" data-room="Dining Room">Dining Room</button>
+          <button class="lb-tab" type="button" role="tab" aria-selected="false" data-room="Exterior">Exterior</button>
+          <button class="lb-tab" type="button" role="tab" aria-selected="false" data-room="Living Room">Living Room</button>
+        </div>
+      </div>
+      <div class="lb-grid__scroll">
+        <div class="lb-grid__photos" id="lb-photos"></div>
+        <p class="lb-grid__empty" id="lb-empty" hidden>No photos for this room yet.</p>
+      </div>
+    </section>
+
+    <section class="lb-view" data-figma="257:603" hidden>
+      <div class="lb-view__top">
+        <button class="lb-view__back" type="button"><img src="assets/icons/gallery-back.svg" width="20" height="20" alt="">All photos</button>
+        <p class="lb-view__position" aria-live="polite"><strong id="lb-pos"></strong><span aria-hidden="true">·</span><span id="lb-room"></span></p>
+        <button class="lb-view__close" type="button" data-close aria-label="Close"><img src="assets/icons/gallery-close.svg" width="20" height="20" alt=""></button>
+      </div>
+      <div class="lb-view__stage">
+        <button class="lb-view__nav" type="button" data-dir="-1" aria-label="Previous photo"><img src="assets/icons/gallery-prev.svg" width="24" height="24" alt=""></button>
+        <div class="lb-view__photo"><img id="lb-photo" src="" alt=""></div>
+        <button class="lb-view__nav" type="button" data-dir="1" aria-label="Next photo"><img src="assets/icons/gallery-next.svg" width="24" height="24" alt=""></button>
+      </div>
+      <div class="lb-view__bottom">
+        <div class="lb-view__thumbs" id="lb-thumbs"></div>
+        <div class="lb-view__shop">
+          <button class="lb-sample" type="button" data-proto><span class="lb-sample__swatch"></span><span class="lb-sample__text"><span>Incarnadine No. 248</span><strong>Order a sample · $9.95</strong></span></button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
 <!-- Prototype notice: shown for anything clickable that this preview doesn't design (Figma 281:603 desktop, 283:606 mobile) -->
 <div class="notice" id="proto-notice" aria-hidden="true" inert>
   <div class="notice__scrim" data-close></div>
@@ -781,6 +828,6 @@
 <!-- Tooltip for Add to Basket buttons pressed before a quantity is chosen -->
 <div class="tip" id="tip" role="status" aria-live="polite" hidden></div>
 
-<script src="main.js?v=202610221931"></script>
+<script src="main.js?v=20261022193915"></script>
 </body>
 </html>

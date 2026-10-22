@@ -508,6 +508,74 @@ body.notice-open { overflow: hidden; }
 .notice__credit { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 14px; line-height: 24px; color: var(--muted); }
 .notice__back:focus-visible, .notice__close:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
+/* ---------- Gallery popup (grid 255:603, photo view 257:603) ----------
+   1200 × 820 centred, shrinking with the window. No drop shadow (user rule). */
+.lightbox { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 24px; visibility: hidden; transition: visibility 0s .2s; }
+.lightbox.is-open { visibility: visible; transition: none; }
+.lightbox__scrim { position: absolute; inset: 0; background: rgba(0, 0, 0, .5); opacity: 0; transition: opacity .2s ease; }
+.lightbox.is-open .lightbox__scrim { opacity: 1; }
+.lightbox__box {
+  position: relative; width: 1200px; max-width: 100%; height: 820px; max-height: 100%; display: flex; flex-direction: column; overflow: hidden;
+  border-radius: 8px; background: #fff; color: var(--ink); outline: none; opacity: 0; transform: translateY(8px); transition: opacity .2s ease, transform .2s ease;
+}
+.lightbox.is-open .lightbox__box { opacity: 1; transform: none; }
+.lightbox__box.is-photo { background: #202122; }
+@media (prefers-reduced-motion: reduce) {
+  .lightbox, .lightbox__scrim, .lightbox__box { transition: none; }
+}
+.lb-grid, .lb-view { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.lb-grid[hidden], .lb-view[hidden] { display: none; }
+.lb-grid__header { display: flex; flex-direction: column; gap: 12px; padding: 28px 32px 0; }
+.lb-grid__title-row { display: flex; align-items: center; gap: 16px; }
+.lb-grid__title { flex: 1; min-width: 0; margin: 0; font-weight: 400; font-size: 28px; line-height: 36px; }
+.lb-tabs { display: flex; align-items: flex-end; gap: 8px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
+.lb-tabs::-webkit-scrollbar { display: none; }
+.lb-tab { flex: none; height: 44px; min-width: 72px; padding: 0 8px 12px; display: flex; align-items: flex-end; justify-content: center; border-bottom: 2px solid transparent; font-size: 15px; line-height: 22px; color: var(--muted); white-space: nowrap; }
+.lb-tab.is-active { border-bottom-color: var(--ink); font-weight: 700; color: var(--ink); }
+/* the always-on scrollbar sits inside the 32px side padding (--sb is its width), so tiles keep Figma's 368px */
+.lb-grid__scroll { flex: 1; min-height: 0; overflow-y: scroll; scrollbar-gutter: stable; padding: 24px calc(32px - var(--sb, 0px)) 32px 32px; }
+.lb-grid__photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.lb-tile { position: relative; display: block; aspect-ratio: 368 / 276; overflow: hidden; border-radius: 8px; }
+.lb-tile img { width: 100%; height: 100%; object-fit: cover; }
+.lb-tile::before { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, .18); opacity: 0; transition: opacity .15s ease; }
+.lb-tile__tag { position: absolute; left: 12px; bottom: 12px; padding: 6px 12px; border-radius: 48px; background: rgba(255, 255, 255, .92); font-size: 13px; line-height: 18px; white-space: nowrap; }
+.lb-tile__open { position: absolute; top: 12px; right: 12px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 22px; background: #fff; opacity: 0; transition: opacity .15s ease; }
+.lb-tile:hover::before, .lb-tile:hover .lb-tile__open, .lb-tile:focus-visible::before, .lb-tile:focus-visible .lb-tile__open { opacity: 1; }
+.lb-grid__empty { margin: 0; padding: 48px 0; text-align: center; color: var(--muted); }
+
+.lb-view { color: #fff; }
+.lb-view__top { display: flex; align-items: center; gap: 16px; padding: 20px 24px 8px; }
+.lb-view__back { display: flex; align-items: center; gap: 8px; font-size: 15px; line-height: 22px; color: #fff; white-space: nowrap; }
+.lb-view__position { flex: 1; min-width: 0; display: flex; justify-content: center; gap: 12px; margin: 0; font-size: 15px; line-height: 22px; white-space: nowrap; }
+.lb-view__position strong { font-weight: 700; }
+.lb-view__position span:first-of-type { color: rgba(255, 255, 255, .5); }
+.lb-view__position span:last-child { color: rgba(255, 255, 255, .8); }
+.lb-view__close { width: 44px; height: 44px; flex: none; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, .35); border-radius: 22px; }
+.lb-view__stage { flex: 1; min-height: 0; display: flex; align-items: center; gap: 20px; padding: 0 20px; touch-action: pan-y; }
+.lb-view__nav { width: 48px; height: 48px; flex: none; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, .25); border-radius: 24px; background: rgba(255, 255, 255, .08); }
+.lb-view__photo { flex: 1; min-width: 0; height: 100%; }
+.lb-view__photo img { width: 100%; height: 100%; object-fit: contain; }
+/* Figma's bottom bar is 136px: a 100px row (thumbs centred) between 16px / 20px padding */
+.lb-view__bottom { flex: none; height: 136px; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 24px; padding: 16px 24px 20px; }
+.lb-view__thumbs { grid-column: 2; display: flex; gap: 8px; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.lb-view__thumbs::-webkit-scrollbar { display: none; }
+.lb-thumb { position: relative; width: 52px; height: 52px; flex: none; border-radius: 8px; opacity: .55; }
+.lb-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+.lb-thumb.is-active { opacity: 1; }
+.lb-thumb.is-active::after { content: ""; position: absolute; inset: 0; border: 1px solid #fff; border-radius: 8px; }
+.lb-view__shop { grid-column: 3; display: flex; justify-content: flex-end; min-width: 0; }
+.lb-sample { height: 48px; display: flex; align-items: center; gap: 12px; padding: 0 24px 0 8px; border-radius: 24px; background: #fff; color: var(--ink); text-align: left; white-space: nowrap; }
+.lb-sample__swatch { width: 36px; height: 36px; flex: none; border-radius: 18px; background: var(--paint); }
+.lb-sample__text { display: flex; flex-direction: column; }
+.lb-sample__text span { font-size: 12px; line-height: 16px; color: rgba(69, 72, 75, .7); }
+.lb-sample__text strong { font-weight: 700; font-size: 15px; line-height: 20px; }
+.lb-tab:focus-visible, .lb-tile:focus-visible, .lb-view__back:focus-visible, .lb-view__close:focus-visible, .lb-view__nav:focus-visible, .lb-thumb:focus-visible, .lb-sample:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.lb-view :focus-visible { outline-color: #fff; }
+#gallery-main { cursor: zoom-in; }
+@media (max-width: 1023px) {
+  .lb-grid__photos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 /* ---------- Tooltip on a disabled Add to Basket (not in Figma) ----------
    The buttons stay clickable (aria-disabled, not disabled) so a press can explain what's missing. */
 .tip {
@@ -893,6 +961,22 @@ body.notice-open { overflow: hidden; }
   .finish-info__text { line-height: 20px; }
   .drawer__footer { gap: 12px; padding: 20px 20px 24px; }
   .drawer__select { height: 52px; }
+  /* Gallery popup: no mobile frame, so it fills the screen; arrows give way to swipe */
+  .lightbox { padding: 0; }
+  .lightbox__box { width: 100%; height: 100%; border-radius: 0; }
+  .lb-grid__header { padding: 16px 20px 0; }
+  .lb-grid__title { font-size: 22px; line-height: 28px; }
+  .lb-tabs { margin-right: -20px; padding-right: 20px; }
+  .lb-tab { min-width: 0; }
+  .lb-grid__scroll { padding: 16px calc(20px - var(--sb, 0px)) 24px 20px; }
+  .lb-grid__photos { gap: 8px; }
+  .lb-tile__tag { left: 8px; bottom: 8px; padding: 4px 10px; font-size: 12px; line-height: 16px; }
+  .lb-view__top { padding: 12px 12px 8px 16px; }
+  .lb-view__stage { padding: 0; }
+  .lb-view__nav { display: none; }
+  .lb-view__bottom { height: auto; display: flex; flex-direction: column; gap: 16px; padding: 16px 16px 24px; }
+  .lb-view__shop { width: 100%; justify-content: center; }
+
   /* Prototype notice, mobile (283:606) */
   .notice__box { width: 342px; padding: 48px 24px 24px; }
   .notice__close { top: 12px; right: 12px; }
