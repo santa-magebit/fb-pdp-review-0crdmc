@@ -182,8 +182,10 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .btn--primary { flex: 1; min-width: 0; background: var(--paint); color: var(--on-paint); }
 .btn--primary:disabled { opacity: .5; cursor: default; }
 .btn--secondary { flex: 1; min-width: 0; background: #fff; border: 1px solid var(--border); color: var(--ink); }
-.fav { width: 52px; height: 52px; flex: none; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 26px; background: #fff; }
-.fav[aria-pressed="true"] { border-color: var(--paint); }
+.fav { width: 52px; height: 52px; flex: none; -webkit-tap-highlight-color: transparent; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 26px; background: #fff; }
+/* heart.svg inlined so the active state can fill it with the paint colour */
+.fav__icon { display: block; fill: none; stroke: var(--ink); transition: fill .15s, stroke .15s; }
+.fav[aria-pressed="true"] .fav__icon { fill: var(--paint); stroke: var(--paint); }
 
 .sample { display: flex; flex-direction: column; gap: 12px; padding: 12px; border-radius: 8px; background: var(--cream); }
 .sample__row { display: flex; align-items: center; gap: 14px; }
