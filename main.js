@@ -1174,7 +1174,7 @@ function updateSticky() {
 window.addEventListener('scroll', updateSticky, { passive: true });
 mobile.addEventListener('change', updateSticky);
 updateSticky(); // a reload can restore the page part-way down
-// "Choose finish & size" never adds to basket: it scrolls back to the order card and focuses the chosen finish,
+// "Configure Paint" never adds to basket: it scrolls back to the order card and focuses the chosen finish,
 // clear of the mobile sticky header (56px) when that's showing
 document.getElementById('strip-go').addEventListener('click', () => {
   const card = document.querySelector('.order-card');
