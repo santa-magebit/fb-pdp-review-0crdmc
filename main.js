@@ -1,4 +1,4 @@
-// Interactions for the PDP: gallery + gallery popup, finish choice + finish drawer, fact strip, quantity steppers,
+// Interactions for the PDP: gallery + gallery popup, finish choice + finish drawer, Key features chips + panel, quantity steppers,
 // paint calculator, primer picker, favourite, chapters accordion, carousels, sticky strip, prototype notice and the
 // colour preview switcher.
 
@@ -64,13 +64,13 @@ singleSelect([...document.querySelectorAll('.primer-type')], (btn) => {
   primerLabel.textContent = `${btn.textContent} Primer`;
 });
 
-// ---------- Finishes (order card, fact strip 137:558, drawer 124:578) ----------
-// Copy: Estate and Modern Emulsion text from the Figma file; the other finishes' info, "Suitable for" lists and
+// ---------- Finishes (order card, Key features 363:991, drawer 124:578) ----------
+// Copy: Estate Emulsion text from the live finish page, Modern Emulsion from the Figma file; the other finishes' info, "Suitable for" lists and
 // sizes from the live farrow-ball.com/paint/incarnadine finish selector.
 const FINISHES = [
   {
     id: 'estate-emulsion', group: 'walls', name: 'Estate Emulsion', desc: 'Chalky matt for walls & ceilings', sheen: 2,
-    text: 'Estate Emulsion is our classic matt finish for interior walls and ceilings. Its soft, chalky look gives colour real depth and works beautifully in living rooms, bedrooms and dining rooms.',
+    text: 'Estate Emulsion is a classic choice for low-traffic interior walls and ceilings. Very matt with a distinctive, chalky finish, it minimises imperfections and creates a beautiful depth of colour.',
     suitable: ['Interior Walls & Ceilings', 'Low-traffic Areas'],
     sizes: '2.5L, 5L',
   },
@@ -123,20 +123,98 @@ const FINISHES = [
   },
 ];
 const byId = (id) => FINISHES.find((f) => f.id === id);
-// "Chalky matt for walls & ceilings" -> look "Chalky matt", use on "Walls & ceilings"
+// "Chalky matt for walls & ceilings" -> look "Chalky matt"
 const lookOf = (f) => (/^for /i.test(f.desc) ? f.desc : f.desc.split(' for ')[0]);
-const useOf = (f) => { const u = f.desc.split(/for /i)[1] || ''; return u.charAt(0).toUpperCase() + u.slice(1); };
 
 let currentFinish = 'estate-emulsion';
 const finishCards = [...document.querySelectorAll('.finish-card')];
-const fact = (id) => document.getElementById(id);
 
-function renderFactStrip(f) {
-  fact('fact-name').textContent = f.name;
-  fact('fact-text').textContent = f.text;
-  fact('fact-sheen').textContent = `${f.sheen}%`;
-  fact('fact-look').textContent = lookOf(f);
-  fact('fact-use').textContent = useOf(f);
+// ---------- Key features chips (Figma 363:991) and their panel (363:1058) ----------
+// Finish features and descriptions as listed on the live farrow-ball.com/paint/incarnadine/<finish> pages (2026-10-23).
+// Estate Emulsion's first chip carries its sheen, as drawn.
+const FINISH_FEATURES = {
+  'estate-emulsion': { features: ['Very matt, 2% sheen', 'Classic, chalky look', 'For walls and ceilings in low-traffic areas', 'Water based', 'Toy safe'] },
+  'modern-emulsion': {
+    about: 'Modern Emulsion is our super-tough, easy to clean finish for interior walls and ceilings. Washable and protected against mould, it’s the best choice for kitchens and bathrooms.',
+    features: ['Matt', 'For interior walls and ceilings', 'Best choice for kitchens and bathrooms', 'Tough and easy-to-clean', 'Water based', 'Toy safe'],
+  },
+  'dead-flat': {
+    about: 'Dead Flat is our multi-surface, ultra-matt finish with added toughness. Suitable for walls, it’s ideal for colour drenching. The flat matt look creates richer colour from every angle, while the washable, scuff-resistant finish is more than a match for mess, perfect for hallways, playrooms and other high-traffic areas.',
+    features: ['Our most matt finish', 'Multi-surface', 'For walls, interior wood and metal', 'Scrubbable and protected against mould', 'Water based', 'Toy safe'],
+  },
+  'casein-distemper': {
+    about: 'Casein Distemper offers a very flat matt finish with a breathable, permeable structure.',
+    features: ['Very matt', 'For interior lime-based plaster', 'Highly breathable', 'Water based'],
+  },
+  'flat-eggshell': { features: ['Our flattest interior eggshell', 'For interior wood, metal and concrete', 'Tough enough for floors', 'A classic choice', 'Water based', 'Toy safe'] },
+  'modern-eggshell': {
+    about: 'Modern Eggshell is our toughest interior finish, adding lasting colour and protection to interior wood, metal and concrete.',
+    features: ['Mid sheen', 'For interior wood, metal and concrete', 'Tough enough for floors', 'Our most durable finish', 'Water based', 'Toy safe'],
+  },
+  'full-gloss': { features: ['Our highest shine finish', 'For interior and exterior wood and metal', 'Durable and washable', 'Lasts up to 6 years outside', 'Water based', 'Toy safe'] },
+  'exterior-masonry': {
+    about: 'Exterior Masonry is our super-matt, long-lasting finish for exterior walls with a 2% sheen.',
+    features: ['Very matt', 'For exterior brick and render', 'Weather resistant and breathable', 'Protected from fungi and algae', 'Lasts up to 15 years', 'Water based', 'Toy safe'],
+  },
+  'exterior-eggshell': { features: ['Low sheen', 'For exterior wood and metal', 'Weather resistant and flexible', 'Protected from fungi and algae', 'Lasts up to 6 years', 'Water based', 'Toy safe'] },
+};
+// Icon by what the feature is about (Tabler, 20px)
+const featureIcon = (label) => {
+  const l = label.toLowerCase();
+  if (l.includes('water based')) return 'droplet';
+  if (l.includes('toy safe')) return 'horse-toy';
+  if (/matt|sheen|shine|flattest/.test(l)) return 'sun';
+  if (/chalky|classic|multi-surface/.test(l)) return 'brush';
+  if (/^for |best choice/.test(l)) return 'home';
+  if (/breathable/.test(l)) return 'wind';
+  if (/protected|resistant/.test(l)) return 'shield';
+  return 'sparkles';
+};
+const featureKey = (label) => label.toLowerCase().replace(/,.*$/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const WATER_COPY = 'We’re proud to have been the first in the industry to transition to a completely water based range back in 2010. As a result, all of our finishes, including our tough trim and floor paints, are made with a low-odour, low-VOC water base that scores A+ for indoor air quality. Plus, our water based paint doesn’t discolour over time like solvent based paints can. So your spaces stay beautiful for longer.';
+// Panel copy from the live key feature panels. Features without captured copy fall back to the finish's description.
+const FEATURE_PANELS = {
+  depth: { title: 'Unmatchable depth of colour', intro: 'Packed with pigment for an extraordinary response to every kind of light. We add generous helpings of rich pigment to create our signature look – deep colours with complex undertones. The same space that feels bright and airy in morning sun, can feel cosy and intimate by evening. Our teams design each shade under every kind of light, so it will be perfectly balanced in every setting.' },
+  // Placeholder: the live panel copy for this feature wasn't captured, so it only restates the feature. Swap in the live text.
+  supply: { title: 'Audited and ethical supply chain', intro: 'Our supply chain is audited and ethical.' },
+  'water-a': { title: 'Water based', intro: WATER_COPY },
+  // The live footnote for the asterisk (from the finish details on farrow-ball.com)
+  scrub: { title: 'Finishes to last', intro: '100% of our colours are Scrub Class 1 rated*.', text: '*Excluding Estate Emulsion, Exterior Masonry, Soft Distemper, Casein Distemper and Limewash.' },
+  surfaces: { title: 'Interior and exterior finishes', intro: 'From walls, floors and furniture to radiators, skirtings and sheds, our range of paint finishes can help you transform almost any surface in your home (and outside it, too).', text: 'We even have multi-surface finishes like Dead Flat and Full Gloss, so you can tackle walls, woodwork and metal at the same time.' },
+  'very-matt': { title: 'Very matt', intro: 'Estate Emulsion is a very matt finish with a chalky 2% sheen.', text: 'Our deeper, richer colours are available in a range of finishes with different sheen levels. Sheen always affects how colour appears: the same shade in gloss can look very different in matt. That’s why we specifically adjust the formula for every finish to make sure the balance is exactly right and you get the colour you were expecting. Our colours and finishes are formulated together, so you simply can’t have one without the other.' },
+  'classic': { title: 'Classic, chalky look', intro: 'A true classic, Estate Emulsion is a distinctive, chalky finish that minimises imperfections and creates beautiful depth of colour. Due to this unique texture, it’s best suited to less-busy areas without a lot of traffic.' },
+  'for-walls-and-ceilings-in-low-traffic-areas': { title: 'For walls and ceilings in low-traffic areas', intro: 'Estate Emulsion is our classic finish for interior walls and ceilings in low-traffic areas. Gently wipeable but not washable.', text: 'From walls, floors and furniture to radiators, skirtings and sheds, our range of paint finishes can help you transform almost any surface in your home (and outside it, too). Browse our full selection of finishes to find the perfect paint for your project.' },
+  'water-based': { title: 'Water based', intro: WATER_COPY },
+  'toy-safe': { title: 'Toy safe', intro: 'This finish is independently tested and certified toy-safe in accordance with Safety of Toys Part 3: Migration of certain elements (EN 71-3:2019+A1:2021). That means you can add a splash of colour to toys, cribs and other surfaces little ones come into contact with. Our paints also have hardly any odour and don’t need any solvents to clean up, so you can breathe easy during application and beyond.' },
+};
+// Panel keys: Water based and Toy safe share one panel across finishes; Estate Emulsion's own features have captured
+// copy; any other finish's feature gets a finish-scoped key, so it falls back to that finish's description
+const finishFeatureKey = (f, label) => {
+  const k = featureKey(label);
+  if (k === 'water-based' || k === 'toy-safe') return k;
+  if (f.id === 'estate-emulsion') return k === 'very-matt' ? 'very-matt' : k;
+  return `${f.id}--${k}`;
+};
+const chipHtml = (key, icon, label) => `<button class="kf-chip" type="button" aria-haspopup="dialog" aria-controls="kf-panel" data-feature="${key}"><img src="assets/icons/${icon}.svg" width="20" height="20" alt=""><span>${esc(label)}</span></button>`;
+const kfFinishChips = document.getElementById('kf-finish');
+
+// Chips too long for one line wrap their text and go full width with a 24px radius
+function markWrappedChips() {
+  document.querySelectorAll('.kf-chip').forEach((c) => {
+    c.classList.remove('is-wrapped');
+    if (c.querySelector('span').getClientRects().length && c.offsetHeight > 40) c.classList.add('is-wrapped');
+  });
+}
+addEventListener('resize', markWrappedChips);
+
+function renderFinishFeatures(f) {
+  const data = FINISH_FEATURES[f.id];
+  document.getElementById('kf-finish-name').textContent = f.name;
+  document.getElementById('kf-finish-text').textContent = (data && data.about) || f.text;
+  if (data) {
+    kfFinishChips.innerHTML = data.features.map((label) => chipHtml(finishFeatureKey(f, label), featureIcon(label), label)).join('');
+  }
+  markWrappedChips();
 }
 
 function setFinish(id) {
@@ -155,7 +233,7 @@ function setFinish(id) {
     c.classList.toggle('is-active', c === card);
     c.setAttribute('aria-checked', String(c === card));
   });
-  renderFactStrip(f);
+  renderFinishFeatures(f);
   updateTotal(); // the sticky strip's summary names the finish
 }
 finishCards.forEach((card) => card.addEventListener('click', () => setFinish(card.dataset.finish)));
@@ -259,6 +337,35 @@ drawer.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeDrawer();
   else if (e.key === 'Tab') trapTab(e, drawer, 'button, a[href]');
 });
+// Key feature panel (363:1058): every Key features chip opens it with that feature's icon, title and copy
+const kfPanel = document.getElementById('kf-panel');
+function openFeature(chip) {
+  const label = chip.querySelector('span').textContent;
+  const p = FEATURE_PANELS[chip.dataset.feature]
+    || { title: label, intro: (FINISH_FEATURES[currentFinish] && FINISH_FEATURES[currentFinish].about) || byId(currentFinish).text };
+  document.getElementById('kfp-icon').src = chip.querySelector('img').src;
+  document.getElementById('kfp-title').textContent = p.title;
+  document.getElementById('kfp-intro').textContent = p.intro || '';
+  document.getElementById('kfp-text').textContent = p.text || '';
+  // Stand-in photo: the current colour's first room photo (the live panels use F&B-hosted images)
+  const photo = document.getElementById('kfp-photo');
+  photo.src = GALLERY[0].src;
+  photo.alt = `${lbPaintName} in a ${GALLERY[0].room.toLowerCase()}`;
+  kfPanel.querySelector('.kfp__body').scrollTop = 0;
+  openOverlay(kfPanel, 'drawer-open', kfPanel.querySelector('.drawer__panel'));
+}
+const closeFeature = () => closeOverlay(kfPanel, 'drawer-open');
+document.querySelector('.kf').addEventListener('click', (e) => {
+  const chip = e.target.closest('.kf-chip');
+  if (chip) openFeature(chip);
+});
+kfPanel.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeFeature));
+kfPanel.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeFeature();
+  else if (e.key === 'Tab') trapTab(e, kfPanel, 'button, a[href]');
+});
+renderFinishFeatures(byId(currentFinish));
+
 // index.html#finishes opens the drawer straight away (handy for sharing the slide-out)
 if (location.hash === '#finishes') openDrawer();
 

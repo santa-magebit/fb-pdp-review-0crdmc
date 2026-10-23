@@ -109,20 +109,33 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .pdp-desc { display: flex; flex-direction: column; gap: 12px; }
 .pdp-desc__body p + p { margin-top: 8px; }
 
-.features { display: flex; flex-direction: column; gap: 12px; }
-.features__list { display: flex; flex-direction: column; gap: 12px; }
-.features__list li { display: flex; align-items: center; gap: 12px; }
+/* Key features (363:991): colour chips, then the chosen finish's heading, copy and chips. Each chip opens the panel. */
+.kf { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+.kf__group { font-weight: 500; font-size: 14px; line-height: 20px; color: var(--muted); }
+.kf__chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.kf-chip {
+  max-width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px 14px 8px 12px; border: 1px solid var(--border); border-radius: 48px;
+  background: #fff; font-size: 14px; line-height: 20px; color: var(--ink); text-align: left; transition: border-color .15s ease;
+}
+.kf-chip img { flex: none; }
+.kf-chip:hover { border-color: var(--ink); }
+/* A chip too long for its row wraps its text and takes the full width (set from main.js) */
+.kf-chip.is-wrapped { width: 100%; border-radius: 24px; }
+.kf__finish-head { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; }
+.kf__change { font-weight: 500; font-size: 14px; line-height: 20px; color: var(--ink); text-decoration: underline; }
+.kf__text { font-size: 15px; line-height: 22px; color: var(--ink); }
+.kf-chip:focus-visible, .kf__change:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
-/* Selected finish fact strip (137:558) */
-.fact-strip { display: flex; flex-direction: column; gap: 16px; }
-.fact-strip__intro { display: flex; flex-direction: column; gap: 12px; }
-.fact-strip__heading { display: flex; align-items: center; gap: 8px; }
-.fact-strip__change { font-family: var(--verlag); font-weight: 500; font-size: 14px; line-height: 20px; text-decoration: underline; }
-.facts { display: flex; align-items: center; gap: 24px; margin: 0; }
-.fact { display: flex; align-items: center; gap: 12px; }
-.fact__icon { width: 36px; height: 36px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 18px; background: var(--cream); }
-.fact dt { font-size: 12px; line-height: 16px; color: var(--muted); }
-.fact dd { margin: 0; font-size: 16px; line-height: 20px; }
+/* Key feature panel (363:1058): the finish drawer's shell with an icon, a title, copy and a photo */
+.kfp__header { display: flex; align-items: center; gap: 12px; padding: 32px 32px 24px; }
+.kfp__icon { flex: none; }
+.kfp__title { flex: 1; min-width: 0; margin: 0; font-weight: 400; font-size: 32px; line-height: 40px; }
+.kfp__body { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; padding: 0 32px 40px; font-size: 16px; line-height: 24px; }
+.kfp__intro:empty, .kfp__text:empty { display: none; }
+.kfp__photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px; }
+@media (prefers-reduced-motion: reduce) {
+  .kf-chip { transition: none; }
+}
 
 /* Order card (56:3479) */
 .order-card {
@@ -742,11 +755,6 @@ body.notice-open { overflow: hidden; }
   .gallery__thumb, .gallery__all { width: auto; height: auto; aspect-ratio: 1; }
   .order-card { width: auto; }
 }
-/* 1200–1535px: narrower description column, so facts wrap as whole items instead of breaking their values */
-@media (min-width: 1200px) and (max-width: 1535px) {
-  .facts { flex-wrap: wrap; row-gap: 16px; }
-  .fact dd { white-space: nowrap; }
-}
 @media (min-width: 768px) and (max-width: 1199px) {
   .order-card { padding: 24px; }
   .stepper { width: 112px; }
@@ -762,7 +770,6 @@ body.notice-open { overflow: hidden; }
   .crosslink__overlay { width: auto; max-width: calc(100% - 64px); }
   .crosslink__title { white-space: normal; }
   .crosslink__desc { width: auto; min-width: 0; }
-  .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
 }
 @media (min-width: 768px) and (max-width: 1119px) {
   .mainnav__menu { display: none; }
@@ -851,12 +858,11 @@ body.notice-open { overflow: hidden; }
   .pdp-desc__body.is-clamped { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; overflow: hidden; }
   .pdp-desc__body.is-clamped p + p { margin-top: 0; }
   .m-readmore { align-self: flex-start; font-weight: 700; text-decoration: underline; }
-  .fact-strip__intro { gap: 16px; }
-  .fact-strip__heading .label { flex: 1; min-width: 0; }
-  .fact-strip__text { font-family: var(--verlag); line-height: 26px; }
-  .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
-  .fact dt { font-family: var(--verlag); }
-  .fact dd { font-family: var(--verlag); font-weight: 500; font-size: 14px; line-height: 20px; }
+  /* Key feature panel: full screen like the finish sheet */
+  .kfp__header { padding: 16px 20px 20px; }
+  .kfp__icon { width: 24px; height: 24px; }
+  .kfp__title { font-size: 22px; line-height: 28px; }
+  .kfp__body { padding: 0 20px 32px; }
 
   /* Shared section type on mobile */
   .section-title, .section-title--32, .section-title--on-paint, .chapters__title, .safe__title {

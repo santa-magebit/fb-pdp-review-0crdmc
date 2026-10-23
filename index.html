@@ -10,7 +10,7 @@
   <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="icon" href="assets/favicon-48.png" type="image/png" sizes="48x48">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=202610231110">
+  <link rel="stylesheet" href="styles.css?v=202610231300">
 </head>
 <body>
 <!-- Built from Figma file zBK5BOgn7VGEptzhet1s41, frame "PDP" 32:1690 (section "PDP - wip" 56:4766).
@@ -148,30 +148,30 @@
             <button class="m-readmore m-only" type="button" aria-expanded="false">Read more</button>
           </div>
 
-          <div class="features" data-figma="93:749">
+          <!-- Key features (Figma 363:991): the colour's features, then the chosen finish's, as chips. Every chip opens
+               the key feature panel (363:1058). The finish chips and description follow the finish (main.js). -->
+          <div class="kf" data-figma="363:991">
             <h2 class="label">Key features</h2>
-            <ul class="features__list">
-              <li><img src="assets/icons/palette.svg" width="20" height="20" alt="">Unmatchable depth of colour</li>
-              <li><img src="assets/icons/shield.svg" width="20" height="20" alt="">Audited and ethical supply chain</li>
-              <li><img src="assets/icons/wind.svg" width="20" height="20" alt="">Water based with A+ indoor air quality rating</li>
-              <li><img src="assets/icons/sparkles.svg" width="20" height="20" alt="">Finishes to last: 100% of colours Scrub Class 1 rated*</li>
-              <li><img src="assets/icons/home.svg" width="20" height="20" alt="">Interior and exterior finishes</li>
-            </ul>
-          </div>
-
-          <div class="fact-strip" data-figma="137:558">
-            <div class="fact-strip__intro">
-              <div class="fact-strip__heading">
-                <h2 class="label" id="fact-name">Estate Emulsion</h2>
-                <button class="fact-strip__change" type="button" data-open-finishes aria-haspopup="dialog" aria-controls="finish-drawer">Change</button>
-              </div>
-              <p class="fact-strip__text" id="fact-text">Estate Emulsion is our classic matt finish for interior walls and ceilings. Its soft, chalky look gives colour real depth and works beautifully in living rooms, bedrooms and dining rooms.</p>
+            <p class="kf__group" data-slot="name">Incarnadine</p>
+            <div class="kf__chips" id="kf-colour">
+              <button class="kf-chip" type="button" aria-haspopup="dialog" aria-controls="kf-panel" data-feature="depth"><img src="assets/icons/palette.svg" width="20" height="20" alt=""><span>Unmatchable depth of colour</span></button>
+              <button class="kf-chip" type="button" aria-haspopup="dialog" aria-controls="kf-panel" data-feature="supply"><img src="assets/icons/shield.svg" width="20" height="20" alt=""><span>Audited and ethical supply chain</span></button>
+              <button class="kf-chip" type="button" aria-haspopup="dialog" aria-controls="kf-panel" data-feature="water-a"><img src="assets/icons/wind.svg" width="20" height="20" alt=""><span>Water based with A+ indoor air quality rating</span></button>
+              <button class="kf-chip" type="button" aria-haspopup="dialog" aria-controls="kf-panel" data-feature="scrub"><img src="assets/icons/sparkles.svg" width="20" height="20" alt=""><span>Finishes to last: 100% of colours Scrub Class 1 rated*</span></button>
+              <button class="kf-chip" type="button" aria-haspopup="dialog" aria-controls="kf-panel" data-feature="surfaces"><img src="assets/icons/home.svg" width="20" height="20" alt=""><span>Interior and exterior finishes</span></button>
             </div>
-            <dl class="facts">
-              <div class="fact"><span class="fact__icon"><img src="assets/icons/sun.svg" width="20" height="20" alt=""></span><div><dt>Sheen</dt><dd id="fact-sheen">2%</dd></div></div>
-              <div class="fact"><span class="fact__icon"><img src="assets/icons/brush.svg" width="20" height="20" alt=""></span><div><dt>Look</dt><dd id="fact-look">Chalky matt</dd></div></div>
-              <div class="fact"><span class="fact__icon"><img src="assets/icons/home-fact.svg" width="20" height="20" alt=""></span><div><dt>Use on</dt><dd id="fact-use">Walls &amp; ceilings</dd></div></div>
-            </dl>
+            <div class="kf__finish-head">
+              <p class="kf__group" id="kf-finish-name">Estate Emulsion</p>
+              <button class="kf__change" type="button" data-open-finishes aria-haspopup="dialog" aria-controls="finish-drawer">Change</button>
+            </div>
+            <p class="kf__text" id="kf-finish-text">Estate Emulsion is a classic choice for low-traffic interior walls and ceilings. Very matt with a distinctive, chalky finish, it minimises imperfections and creates a beautiful depth of colour.</p>
+            <div class="kf__chips" id="kf-finish">
+              <button class="kf-chip" type="button" aria-haspopup="dialog" aria-controls="kf-panel" data-feature="very-matt"><img src="assets/icons/sun.svg" width="20" height="20" alt=""><span>Very matt, 2% sheen</span></button>
+              <button class="kf-chip" type="button" aria-haspopup="dialog" aria-controls="kf-panel" data-feature="classic"><img src="assets/icons/brush.svg" width="20" height="20" alt=""><span>Classic, chalky look</span></button>
+              <button class="kf-chip" type="button" aria-haspopup="dialog" aria-controls="kf-panel" data-feature="for-walls-and-ceilings-in-low-traffic-areas"><img src="assets/icons/home.svg" width="20" height="20" alt=""><span>For walls and ceilings in low-traffic areas</span></button>
+              <button class="kf-chip" type="button" aria-haspopup="dialog" aria-controls="kf-panel" data-feature="water-based"><img src="assets/icons/droplet.svg" width="20" height="20" alt=""><span>Water based</span></button>
+              <button class="kf-chip" type="button" aria-haspopup="dialog" aria-controls="kf-panel" data-feature="toy-safe"><img src="assets/icons/horse-toy.svg" width="20" height="20" alt=""><span>Toy safe</span></button>
+            </div>
           </div>
         </div>
 
@@ -701,6 +701,24 @@
   </aside>
 </div>
 
+<!-- Key feature panel (Figma 363:1058), opened by every Key features chip. Same shell as the finish drawer. -->
+<div class="drawer drawer--kf" id="kf-panel" aria-hidden="true" inert>
+  <div class="drawer__scrim" data-close></div>
+  <aside class="drawer__panel kfp" role="dialog" aria-modal="true" aria-labelledby="kfp-title" tabindex="-1" data-figma="363:1058">
+    <div class="kfp__header">
+      <img class="kfp__icon" id="kfp-icon" src="assets/icons/sun.svg" width="28" height="28" alt="">
+      <h2 class="kfp__title" id="kfp-title">Very matt</h2>
+      <button class="drawer__close" type="button" data-close aria-label="Close"><img src="assets/icons/close.svg" width="20" height="20" alt=""></button>
+    </div>
+    <div class="kfp__body">
+      <p class="kfp__intro" id="kfp-intro"></p>
+      <!-- Stand-in photo: the live panels use F&B-hosted images, so this shows the current colour's first room photo -->
+      <img class="kfp__photo" id="kfp-photo" src="assets/img/gallery-1.png" alt="">
+      <p class="kfp__text" id="kfp-text"></p>
+    </div>
+  </aside>
+</div>
+
 <!-- Paint calculator slide-out, opens from "How much paint do I need?" (Figma 274:603, notes 274:753) -->
 <div class="drawer drawer--calc" id="calc-drawer" aria-hidden="true" inert>
   <div class="drawer__scrim" data-close></div>
@@ -947,6 +965,6 @@
   </div>
 </template>
 
-<script src="main.js?v=202610231110"></script>
+<script src="main.js?v=202610231300"></script>
 </body>
 </html>
