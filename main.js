@@ -263,7 +263,8 @@ drawer.addEventListener('keydown', (e) => {
 if (location.hash === '#finishes') openDrawer();
 
 // ---------- Quantity steppers drive the Add to Basket total ----------
-// Nothing is preselected. Add to Basket buttons stay clickable while empty (aria-disabled) so a press
+// 2.5 L × 1 is preselected (client brief: Add to Basket works on load). If every quantity goes back to 0, the
+// Add to Basket buttons stay clickable (aria-disabled) so a press
 // can show a tooltip asking for a quantity.
 const QTY_TIP = 'Add a quantity to continue';
 const tip = document.getElementById('tip');
