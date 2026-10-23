@@ -10,7 +10,7 @@
   <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="icon" href="assets/favicon-48.png" type="image/png" sizes="48x48">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=202610231910">
+  <link rel="stylesheet" href="styles.css?v=202610232000">
 </head>
 <body>
 <!-- Built from Figma file zBK5BOgn7VGEptzhet1s41, frame "PDP" 32:1690 (section "PDP - wip" 56:4766).
@@ -22,7 +22,7 @@
   <div class="m-actions">
     <a class="m-logo" href="#" aria-label="Farrow &amp; Ball home"><img src="assets/icons/m-logo.svg" width="154" height="18" alt="Farrow &amp; Ball"></a>
     <div class="m-actions__buttons">
-      <button class="m-icon-btn" type="button" data-proto aria-label="Basket, 3 items"><img src="assets/icons/bag.svg" width="24" height="24" alt=""><span class="m-badge">3</span></button>
+      <button class="m-icon-btn" type="button" data-open-basket aria-label="Basket, empty"><img src="assets/icons/bag.svg" width="24" height="24" alt=""><span class="m-badge" hidden>0</span></button>
       <button class="m-icon-btn" type="button" data-proto aria-label="Menu"><img src="assets/icons/m-menu.svg" width="24" height="24" alt=""></button>
     </div>
   </div>
@@ -32,7 +32,7 @@
 <div class="m-sticky-header m-only" aria-hidden="true" data-figma="151:2082">
   <a class="m-logo" href="#" tabindex="-1"><img src="assets/icons/m-logo.svg" width="154" height="18" alt=""></a>
   <div class="m-actions__buttons">
-    <span class="m-icon-btn"><img src="assets/icons/bag.svg" width="24" height="24" alt=""><span class="m-badge">3</span></span>
+    <button class="m-icon-btn" type="button" tabindex="-1" data-open-basket aria-label="Basket, empty"><img src="assets/icons/bag.svg" width="24" height="24" alt=""><span class="m-badge" hidden>0</span></button>
     <span class="m-icon-btn"><img src="assets/icons/m-menu.svg" width="24" height="24" alt=""></span>
   </div>
 </div>
@@ -80,9 +80,9 @@
       <div class="mainnav__actions">
         <button class="icon-btn" type="button" data-proto aria-label="Search"><img src="assets/icons/search.svg" width="24" height="24" alt=""></button>
         <button class="icon-btn" type="button" data-proto aria-label="Account"><img src="assets/icons/user.svg" width="24" height="24" alt=""></button>
-        <button class="icon-btn" type="button" data-proto aria-label="Basket, 3 items">
+        <button class="icon-btn" type="button" data-open-basket aria-label="Basket, empty">
           <img src="assets/icons/bag.svg" width="24" height="24" alt="">
-          <span class="icon-btn__badge">3</span>
+          <span class="icon-btn__badge" hidden>0</span>
         </button>
       </div>
     </div>
@@ -743,6 +743,10 @@
     <div class="bk__body">
       <p class="sr-only" id="bk-status" aria-live="polite"></p>
       <ul class="bk__items" id="bk-items"></ul>
+      <div class="bk__empty">
+        <p class="bk__empty-title">Your basket is empty</p>
+        <button class="btn btn--secondary" type="button" data-close>Continue shopping</button>
+      </div>
       <section class="bk__group bk__group--pairs" aria-labelledby="bk-pairs-title">
         <h3 class="bk__h" id="bk-pairs-title">Pairs perfectly with</h3>
         <div class="bk__rows" id="bk-pairs"></div>
@@ -1005,6 +1009,6 @@
   </div>
 </template>
 
-<script src="main.js?v=202610231910"></script>
+<script src="main.js?v=202610232000"></script>
 </body>
 </html>

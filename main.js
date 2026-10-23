@@ -11,8 +11,17 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 // closed, the body stops scrolling while open, and focus goes back to where it was on close. The body class differs
 // (drawer-open / notice-open) because the notice can open on top of a drawer and must not release the drawer's lock.
 const returnFocus = new WeakMap();
+// The scroll lock pins the body where it is (styles.css keeps the scrollbar) and only the first overlay to open
+// and the last to close touch it, since the notice can open on top of a drawer
+const LOCKS = ['drawer-open', 'notice-open'];
+const isLocked = () => LOCKS.some((c) => document.body.classList.contains(c));
+let lockedY = 0;
 function openOverlay(el, bodyClass, target) {
   returnFocus.set(el, document.activeElement);
+  if (!isLocked()) {
+    lockedY = window.scrollY;
+    document.body.style.top = `${-lockedY}px`;
+  }
   el.inert = false;
   el.setAttribute('aria-hidden', 'false');
   el.classList.add('is-open');
@@ -24,6 +33,10 @@ function closeOverlay(el, bodyClass) {
   el.setAttribute('aria-hidden', 'true');
   el.inert = true;
   document.body.classList.remove(bodyClass);
+  if (!isLocked()) {
+    document.body.style.top = '';
+    window.scrollTo({ top: lockedY, behavior: 'instant' });
+  }
   const back = returnFocus.get(el);
   if (back) back.focus({ preventScroll: true });
 }
@@ -1220,46 +1233,162 @@ const CHECK_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" s
 const PLUS_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>';
 const wait = (ms) => new Promise((r) => setTimeout(r, reduceMotion.matches ? 0 : ms));
 
-function fillBasket(lines, total) {
+const MINUS_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>';
+const PLUS_SM_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>';
+const TRASH_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/></svg>';
+
+// What this page has put in the basket, one line per colour, finish and size; adding the same again tops it up.
+// The basket starts empty, so the header badge always matches what the slide-out lists.
+let basketLines = [];
+const lineTotal = () => basketLines.reduce((sum, l) => sum + (l.removed ? 0 : l.qty * l.price), 0);
+const lineTins = () => basketLines.reduce((n, l) => n + (l.removed ? 0 : l.qty), 0);
+
+function addToBasketLines(lines) {
   const colour = document.querySelector('[data-slot="name"]').textContent;
   const no = document.querySelector('[data-slot="no"]').textContent;
   const finish = byId(currentFinish).name;
-  document.getElementById('bk-items').innerHTML = lines.map(({ p, qty }) => `
-    <li class="bk-item">
-      <span class="bk-item__swatch" aria-hidden="true"><span>${esc(no)}</span></span>
+  const root = getComputedStyle(document.documentElement);
+  basketLines = basketLines.filter((l) => !l.removed);
+  basketLines.forEach((l) => { l.fresh = false; });
+  const added = [];
+  lines.forEach(({ p, qty }) => {
+    const key = `${colour}|${finish}|${p.size}`;
+    let line = basketLines.find((l) => l.key === key);
+    if (line) line.qty = Math.min(99, line.qty + qty);
+    else {
+      line = { key, colour, no, finish, size: p.size, price: p.price, qty, bg: root.getPropertyValue('--paint').trim(), fg: root.getPropertyValue('--on-paint').trim() };
+      added.push(line);
+    }
+    line.fresh = true;
+  });
+  basketLines = [...added, ...basketLines];
+}
+
+function basketItem(l, i) {
+  const label = `${esc(l.colour)}, ${esc(l.finish)}, ${esc(l.size)}`;
+  if (l.removed) {
+    return `
+    <li class="bk-item bk-item--removed" data-line="${i}">
+      <p class="bk-item__removed">${esc(l.colour)}, ${esc(l.size)} removed</p>
+      <button class="bk-item__undo" type="button" data-undo>Undo<span class="sr-only"> remove ${label}</span></button>
+    </li>`;
+  }
+  return `
+    <li class="bk-item" data-line="${i}">
+      <span class="bk-item__swatch" style="background:${l.bg}; color:${l.fg}" aria-hidden="true"><span>${esc(l.no)}</span></span>
       <span class="bk-item__text">
-        <span class="bk-item__name">${esc(colour)}<span class="bk-tag">${TICK_SVG}Just added</span></span>
-        <span class="bk-item__desc">${esc(finish)}, ${esc(p.size)} × ${qty}</span>
+        <span class="bk-item__name">${esc(l.colour)}${l.fresh ? `<span class="bk-tag">${TICK_SVG}Just added</span>` : ''}</span>
+        <span class="bk-item__desc">${esc(l.finish)}, ${esc(l.size)}</span>
+        <span class="bk-item__actions">
+          <span class="bk-qty">
+            <button class="bk-qty__btn" type="button" data-step="-1" aria-label="Decrease ${label}"${l.qty <= 1 ? ' disabled' : ''}>${MINUS_SVG}</button>
+            <input class="bk-qty__value" type="text" inputmode="numeric" value="${l.qty}" aria-label="Quantity ${label}">
+            <button class="bk-qty__btn" type="button" data-step="1" aria-label="Increase ${label}"${l.qty >= 99 ? ' disabled' : ''}>${PLUS_SM_SVG}</button>
+          </span>
+          <button class="bk-item__remove" type="button" data-remove>${TRASH_SVG}Remove<span class="sr-only"> ${label}</span></button>
+        </span>
       </span>
-      <span class="bk-item__price">${money(qty * p.price)}</span>
-    </li>`).join('');
-  // Cross-sells are about this colour only: its first scheme's two colours, then its primer
-  const row = (media, name, sub) => `
-    <div class="bk-row">${media}<span class="bk-row__text"><span class="bk-row__name">${esc(name)}</span><span class="bk-row__sub">${esc(sub)}</span></span>
-      <button class="bk-row__add" type="button" data-proto>${PLUS_SVG}Add<span class="sr-only"> ${esc(name)}</span></button></div>`;
+      <span class="bk-item__price">${money(l.qty * l.price)}</span>
+    </li>`;
+}
+
+const bkItems = document.getElementById('bk-items');
+const bkStatus = document.getElementById('bk-status');
+const bkCheckout = document.getElementById('bk-checkout');
+function renderBasketItems() {
+  bkItems.innerHTML = basketLines.map(basketItem).join('');
+}
+// Checkout total and the header badges follow every change in the slide-out
+function syncBasket(bump) {
+  const total = lineTotal();
+  bkCheckout.textContent = total > 0 ? `Checkout ${money(total)}` : 'Checkout';
+  setBasketCount(lineTins(), bump);
+}
+
+function fillBasket() {
+  basketPanel.classList.toggle('is-empty', !basketLines.length);
+  renderBasketItems();
+  // Cross-sells are about this colour only: its first scheme's two colours as sample pots, then its primer. Rows use
+  // the page's colour rows (number on the chip, name, then the sample price) so they read like the schemes above.
+  const row = (media, name, sub, what) => `
+    <div class="bk-row colour-row">${media}<span class="colour-row__text"><b class="colour-row__name">${esc(name)}</b><span class="colour-row__sub">${esc(sub)}</span></span>
+      <button class="bk-row__add" type="button" data-proto>${PLUS_SVG}Add<span class="sr-only"> ${esc(what)}</span></button></div>`;
   document.getElementById('bk-pairs').innerHTML = [...document.querySelectorAll('[data-slot="scheme-1"] .scheme__colours li')].map((li) => {
-    const bg = li.querySelector('.colour-row__chip').style.background;
-    const number = li.querySelector('.colour-row__chip span').textContent.replace(/^No\.?\s*/, 'No. ');
-    return row(`<span class="bk-row__swatch" style="background:${bg}" aria-hidden="true"></span>`, li.querySelector('b').textContent, number);
+    const chip = li.querySelector('.colour-row__chip');
+    const name = li.querySelector('.colour-row__name').textContent;
+    return row(`<span class="${chip.className}" style="background:${chip.style.background}" aria-hidden="true"><span>${esc(chip.textContent.trim())}</span></span>`, name, 'Sample pot £9.95', `${name} sample pot`);
   }).join('');
   const primerImg = document.querySelector('[data-slot="primer-img"] img');
   const primerName = document.querySelector('[data-slot="primer-text"] .pairing__name');
-  document.getElementById('bk-primer').innerHTML = row(`<img class="bk-row__swatch" src="${primerImg.getAttribute('src')}" alt="">`, 'Primer & Undercoat', primerName ? primerName.textContent : '');
-  document.getElementById('bk-checkout').textContent = `Checkout ${money(total)}`;
-  const tins = lines.reduce((n, l) => n + l.qty, 0);
-  document.getElementById('bk-status').textContent = `Added to basket: ${colour}, ${finish}, ${lines.map(({ p, qty }) => `${p.size} × ${qty}`).join(', ')}. ${tins === 1 ? '1 tin' : `${tins} tins`}, ${money(total)}.`;
+  document.getElementById('bk-primer').innerHTML = row(`<img class="bk-row__img" src="${primerImg.getAttribute('src')}" alt="">`, 'Primer & Undercoat', primerName ? primerName.textContent : '', 'Primer & Undercoat');
+}
+function announceAdded() {
+  const fresh = basketLines.filter((l) => l.fresh);
+  const tins = lineTins();
+  bkStatus.textContent = `Added to basket: ${fresh[0].colour}, ${fresh[0].finish}, ${fresh.map((l) => `${l.size} × ${l.qty}`).join(', ')}. Basket total ${tins === 1 ? '1 tin' : `${tins} tins`}, ${money(lineTotal())}.`;
 }
 
-function bumpBadges(by) {
-  basketCount += by;
+function setBasketCount(count, bump) {
+  basketCount = count;
   basketBadges.forEach((b) => {
     b.textContent = basketCount;
+    b.hidden = basketCount === 0;
+    if (!bump) return;
     b.classList.remove('is-bump');
     void b.offsetWidth; // restart the bump if it's still running
     b.classList.add('is-bump');
   });
-  basketButtons.forEach((b) => b.setAttribute('aria-label', `Basket, ${basketCount} items`));
+  basketButtons.forEach((b) => b.setAttribute('aria-label', basketCount ? `Basket, ${basketCount} item${basketCount === 1 ? '' : 's'}` : 'Basket, empty'));
 }
+
+// Item actions: the stepper changes the quantity in place (1-99), Remove swaps the row for an Undo line until
+// the next add, and the checkout total and badges keep up
+function setLineQty(li, qty) {
+  const l = basketLines[li.dataset.line];
+  l.qty = Math.min(99, Math.max(1, qty));
+  li.querySelector('.bk-qty__value').value = l.qty;
+  li.querySelector('[data-step="-1"]').disabled = l.qty <= 1;
+  li.querySelector('[data-step="1"]').disabled = l.qty >= 99;
+  li.querySelector('.bk-item__price').textContent = money(l.qty * l.price);
+  syncBasket(false);
+  bkStatus.textContent = `${l.colour}, ${l.size}: quantity ${l.qty}. Basket total ${money(lineTotal())}.`;
+}
+bkItems.addEventListener('click', (e) => {
+  const li = e.target.closest('.bk-item');
+  if (!li) return;
+  const l = basketLines[li.dataset.line];
+  const step = e.target.closest('[data-step]');
+  if (step) { setLineQty(li, l.qty + Number(step.dataset.step)); return; }
+  if (e.target.closest('[data-remove]') || e.target.closest('[data-undo]')) {
+    l.removed = !l.removed;
+    li.outerHTML = basketItem(l, li.dataset.line);
+    const now = bkItems.querySelector(`[data-line="${li.dataset.line}"]`);
+    now.querySelector(l.removed ? '[data-undo]' : '[data-remove]').focus();
+    syncBasket(false);
+    bkStatus.textContent = `${l.colour}, ${l.size} ${l.removed ? 'removed from' : 'back in'} your basket. Basket total ${money(lineTotal())}.`;
+  }
+});
+bkItems.addEventListener('input', (e) => {
+  if (!e.target.matches('.bk-qty__value')) return;
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 2);
+  if (e.target.value !== '' && e.target.value !== '0') setLineQty(e.target.closest('.bk-item'), parseInt(e.target.value, 10));
+});
+bkItems.addEventListener('focusout', (e) => {
+  if (e.target.matches('.bk-qty__value')) e.target.value = basketLines[e.target.closest('.bk-item').dataset.line].qty;
+});
+bkItems.addEventListener('focusin', (e) => { if (e.target.matches('.bk-qty__value')) e.target.select(); });
+
+// The header basket (desktop, mobile and the mobile sticky header) opens the slide-out with what's in it; rows
+// removed last time are gone by now, and nothing is "Just added"
+document.querySelectorAll('[data-open-basket]').forEach((b) => b.addEventListener('click', () => {
+  basketLines = basketLines.filter((l) => !l.removed);
+  basketLines.forEach((l) => { l.fresh = false; });
+  fillBasket();
+  syncBasket(false);
+  bkStatus.textContent = '';
+  stopAutoClose();
+  openOverlay(basket, 'drawer-open', basketPanel);
+}));
 
 addButton.closest('form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -1267,15 +1396,16 @@ addButton.closest('form').addEventListener('submit', async (e) => {
   if (adding) return;
   adding = true;
   const lines = packs.map((p) => ({ p, qty: qtyOf(p) })).filter((l) => l.qty > 0);
-  const total = lines.reduce((sum, l) => sum + l.qty * l.p.price, 0);
   addButton.classList.add('is-pressed');
   setTimeout(() => addButton.classList.remove('is-pressed'), 100);
   addButton.innerHTML = '<span class="atb-state"><span class="atb-spinner" aria-hidden="true"></span>Adding</span>';
   await wait(300);
   addButton.innerHTML = `<span class="atb-state">${CHECK_SVG}Added to basket</span>`;
-  bumpBadges(lines.reduce((n, l) => n + l.qty, 0));
+  addToBasketLines(lines);
+  syncBasket(true);
   await wait(300);
-  fillBasket(lines, total);
+  fillBasket();
+  announceAdded();
   openOverlay(basket, 'drawer-open', basketPanel);
   startAutoClose();
   // Behind the drawer the order card clears for the next add; the finish stays
