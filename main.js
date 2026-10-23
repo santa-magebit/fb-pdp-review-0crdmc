@@ -1192,11 +1192,88 @@ document.addEventListener('click', (e) => {
   e.preventDefault();
   openNotice();
 });
-// Adding to the basket isn't part of the preview either (the mobile basket bar clicks this same button)
-addButton.closest('form').addEventListener('submit', (e) => {
+// ---------- Add to basket moment (Figma storyboard 367:1019, basket slide-out 379:1065) ----------
+// 0 ms: the button presses in. 0-300: "Adding" with a spinner. 300-600: a check, "Added to basket", and the header
+// basket badges bump. 600-920: the basket slide-out comes in; behind it the order card clears (quantities back to 0,
+// the finish stays) so it's ready for the next add. Reduced motion skips the pauses.
+const basket = document.getElementById('basket-drawer');
+const basketPanel = basket.querySelector('.drawer__panel');
+const basketBadges = [...document.querySelectorAll('.icon-btn__badge, .m-badge')];
+const basketButtons = basketBadges.map((b) => b.closest('button')).filter(Boolean);
+let basketCount = parseInt(basketBadges[0].textContent, 10) || 0;
+let adding = false;
+const TICK_SVG = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5l10 -10"/></svg>';
+const CHECK_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5l10 -10"/></svg>';
+const PLUS_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>';
+const wait = (ms) => new Promise((r) => setTimeout(r, reduceMotion.matches ? 0 : ms));
+
+function fillBasket(lines, total) {
+  const colour = document.querySelector('[data-slot="name"]').textContent;
+  const no = document.querySelector('[data-slot="no"]').textContent;
+  const finish = byId(currentFinish).name;
+  document.getElementById('bk-items').innerHTML = lines.map(({ p, qty }) => `
+    <li class="bk-item">
+      <span class="bk-item__swatch" aria-hidden="true"><span>${esc(no)}</span></span>
+      <span class="bk-item__text">
+        <span class="bk-item__name">${esc(colour)}<span class="bk-tag">${TICK_SVG}Just added</span></span>
+        <span class="bk-item__desc">${esc(finish)}, ${esc(p.size)} × ${qty}</span>
+      </span>
+      <span class="bk-item__price">${money(qty * p.price)}</span>
+    </li>`).join('');
+  // Cross-sells are about this colour only: its first scheme's two colours, then its primer
+  const row = (media, name, sub) => `
+    <div class="bk-row">${media}<span class="bk-row__text"><span class="bk-row__name">${esc(name)}</span><span class="bk-row__sub">${esc(sub)}</span></span>
+      <button class="bk-row__add" type="button" data-proto>${PLUS_SVG}Add<span class="sr-only"> ${esc(name)}</span></button></div>`;
+  document.getElementById('bk-pairs').innerHTML = [...document.querySelectorAll('[data-slot="scheme-1"] .scheme__colours li')].map((li) => {
+    const bg = li.querySelector('.scheme__swatch').style.background;
+    const number = li.querySelector('.scheme__text > span').textContent.replace(/^No\.?\s*/, 'No. ');
+    return row(`<span class="bk-row__swatch" style="background:${bg}" aria-hidden="true"></span>`, li.querySelector('b').textContent, number);
+  }).join('');
+  const primerImg = document.querySelector('[data-slot="primer-img"] img');
+  const primerName = document.querySelector('[data-slot="primer-text"] .pairing__name');
+  document.getElementById('bk-primer').innerHTML = row(`<img class="bk-row__swatch" src="${primerImg.getAttribute('src')}" alt="">`, 'Primer & Undercoat', primerName ? primerName.textContent : '');
+  document.getElementById('bk-checkout').textContent = `Checkout ${money(total)}`;
+  const tins = lines.reduce((n, l) => n + l.qty, 0);
+  document.getElementById('bk-status').textContent = `Added to basket: ${colour}, ${finish}, ${lines.map(({ p, qty }) => `${p.size} × ${qty}`).join(', ')}. ${tins === 1 ? '1 tin' : `${tins} tins`}, ${money(total)}.`;
+}
+
+function bumpBadges(by) {
+  basketCount += by;
+  basketBadges.forEach((b) => {
+    b.textContent = basketCount;
+    b.classList.remove('is-bump');
+    void b.offsetWidth; // restart the bump if it's still running
+    b.classList.add('is-bump');
+  });
+  basketButtons.forEach((b) => b.setAttribute('aria-label', `Basket, ${basketCount} items`));
+}
+
+addButton.closest('form').addEventListener('submit', async (e) => {
   e.preventDefault();
-  if (addButton.getAttribute('aria-disabled') === 'true') showTip(addButton, QTY_TIP);
-  else openNotice();
+  if (addButton.getAttribute('aria-disabled') === 'true') { showTip(addButton, QTY_TIP); return; }
+  if (adding) return;
+  adding = true;
+  const lines = packs.map((p) => ({ p, qty: qtyOf(p) })).filter((l) => l.qty > 0);
+  const total = lines.reduce((sum, l) => sum + l.qty * l.p.price, 0);
+  addButton.classList.add('is-pressed');
+  setTimeout(() => addButton.classList.remove('is-pressed'), 100);
+  addButton.innerHTML = '<span class="atb-state"><span class="atb-spinner" aria-hidden="true"></span>Adding</span>';
+  await wait(300);
+  addButton.innerHTML = `<span class="atb-state">${CHECK_SVG}Added to basket</span>`;
+  bumpBadges(lines.reduce((n, l) => n + l.qty, 0));
+  await wait(300);
+  fillBasket(lines, total);
+  openOverlay(basket, 'drawer-open', basketPanel);
+  // Behind the drawer the order card clears for the next add; the finish stays
+  packs.forEach((p) => { p.stepper.querySelector('.stepper__value').value = '0'; });
+  updateTotal();
+  adding = false;
+});
+const closeBasket = () => closeOverlay(basket, 'drawer-open');
+basket.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeBasket));
+basket.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeBasket();
+  else if (e.key === 'Tab') trapTab(e, basket, 'button, a[href]');
 });
 
 // ---------- Gallery popup: grid (Figma 255:603) and photo view (257:603) ----------

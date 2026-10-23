@@ -10,7 +10,7 @@
   <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="icon" href="assets/favicon-48.png" type="image/png" sizes="48x48">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=202610231720">
+  <link rel="stylesheet" href="styles.css?v=202610231800">
 </head>
 <body>
 <!-- Built from Figma file zBK5BOgn7VGEptzhet1s41, frame "PDP" 32:1690 (section "PDP - wip" 56:4766).
@@ -727,6 +727,35 @@
   </aside>
 </div>
 
+<!-- Basket slide-out after Add to Basket (Figma storyboard 367:1019, drawer 379:1065, "Just added" tag 378:1048).
+     The button confirms first (Adding, then Added to basket), then this opens with what was added and what goes with it.
+     Items, pairs and primer are filled from the page by main.js, so they follow the colour switcher. -->
+<div class="drawer drawer--basket" id="basket-drawer" aria-hidden="true" inert>
+  <div class="drawer__scrim" data-close></div>
+  <aside class="drawer__panel bk" role="dialog" aria-modal="true" aria-labelledby="bk-title" tabindex="-1" data-figma="379:1065">
+    <div class="bk__header">
+      <h2 class="bk__title" id="bk-title">Basket</h2>
+      <button class="drawer__close" type="button" data-close aria-label="Close"><img src="assets/icons/close.svg" width="20" height="20" alt=""></button>
+    </div>
+    <div class="bk__body">
+      <p class="sr-only" id="bk-status" aria-live="polite"></p>
+      <ul class="bk__items" id="bk-items"></ul>
+      <section class="bk__group bk__group--pairs" aria-labelledby="bk-pairs-title">
+        <h3 class="bk__h" id="bk-pairs-title">Pairs perfectly with</h3>
+        <div class="bk__rows" id="bk-pairs"></div>
+      </section>
+      <section class="bk__group" aria-labelledby="bk-primer-title">
+        <h3 class="bk__h" id="bk-primer-title">Recommended for the best finish</h3>
+        <div class="bk__rows" id="bk-primer"></div>
+      </section>
+    </div>
+    <div class="bk__footer">
+      <button class="btn btn--secondary bk__view" type="button" data-proto>View basket</button>
+      <button class="btn btn--primary bk__checkout" type="button" data-proto id="bk-checkout">Checkout</button>
+    </div>
+  </aside>
+</div>
+
 <!-- Paint calculator slide-out, opens from "How much paint do I need?" (Figma 274:603, notes 274:753) -->
 <div class="drawer drawer--calc" id="calc-drawer" aria-hidden="true" inert>
   <div class="drawer__scrim" data-close></div>
@@ -973,6 +1002,6 @@
   </div>
 </template>
 
-<script src="main.js?v=202610231720"></script>
+<script src="main.js?v=202610231800"></script>
 </body>
 </html>
