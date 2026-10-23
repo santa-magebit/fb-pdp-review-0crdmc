@@ -792,10 +792,10 @@ html:has(body.has-strip) { scroll-padding-bottom: 77px; }
 .strip__total[hidden] { display: none; }
 .strip__total span { font-size: 13px; line-height: 18px; color: var(--muted); }
 .strip__total strong { font-weight: 700; font-size: 22px; line-height: 28px; white-space: nowrap; }
-.strip__fav { margin-left: auto; }
-.strip__total:not([hidden]) + .strip__fav { margin-left: 0; }
 .strip__btn { flex: none; margin-left: auto; padding: 0 32px; }
-.strip__fav + .strip__btn { margin-left: 0; }
+.strip__total:not([hidden]) + .strip__btn { margin-left: 0; }
+.strip__fav { margin-left: auto; }
+.strip__btn + .strip__fav { margin-left: 0; }
 @media (prefers-reduced-motion: reduce) {
   .strip { transition: none; }
 }
