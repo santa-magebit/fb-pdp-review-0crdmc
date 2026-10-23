@@ -1237,15 +1237,8 @@ const MINUS_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
 const PLUS_SM_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>';
 const TRASH_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/></svg>';
 
-// What's in the basket, one line per colour, finish and size; adding the same again tops it up. The shopper arrives
-// with one tin already in it: Dutch Orange No. W76 (farrow-ball.com/paint/dutch-orange) in this page's Estate Emulsion
-// 2.5 L at the stepper's price. It is never "Just added"; what the page adds is listed above it. The orange is too
-// light for white text, so its chip number is ink.
-const alreadyInBasket = () => {
-  const pack = packs.find((p) => p.size === '2.5 L') || packs[0];
-  return { key: `Dutch Orange|Estate Emulsion|${pack.size}`, colour: 'Dutch Orange', no: 'No. W76', finish: 'Estate Emulsion', size: pack.size, price: pack.price, qty: 1, added: 0, bg: '#e69f43', fg: 'var(--ink)' };
-};
-let basketLines = [alreadyInBasket()];
+// What's in the basket, one line per colour, finish and size; adding the same again tops it up. It starts empty.
+let basketLines = [];
 let basketAdds = 0; // each Add to Basket press gets a number, so lines sort newest first
 const lineTotal = () => basketLines.reduce((sum, l) => sum + (l.removed ? 0 : l.qty * l.price), 0);
 const lineTins = () => basketLines.reduce((n, l) => n + (l.removed ? 0 : l.qty), 0);

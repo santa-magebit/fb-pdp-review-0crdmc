@@ -10,7 +10,7 @@
   <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="icon" href="assets/favicon-48.png" type="image/png" sizes="48x48">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=202610232000">
+  <link rel="stylesheet" href="styles.css?v=20261023164120">
 </head>
 <body>
 <!-- Built from Figma file zBK5BOgn7VGEptzhet1s41, frame "PDP" 32:1690 (section "PDP - wip" 56:4766).
@@ -22,7 +22,7 @@
   <div class="m-actions">
     <a class="m-logo" href="#" aria-label="Farrow &amp; Ball home"><img src="assets/icons/m-logo.svg" width="154" height="18" alt="Farrow &amp; Ball"></a>
     <div class="m-actions__buttons">
-      <button class="m-icon-btn" type="button" data-open-basket aria-label="Basket, 1 item"><img src="assets/icons/bag.svg" width="24" height="24" alt=""><span class="m-badge">1</span></button>
+      <button class="m-icon-btn" type="button" data-open-basket aria-label="Basket, empty"><img src="assets/icons/bag.svg" width="24" height="24" alt=""><span class="m-badge" hidden>0</span></button>
       <button class="m-icon-btn" type="button" data-proto aria-label="Menu"><img src="assets/icons/m-menu.svg" width="24" height="24" alt=""></button>
     </div>
   </div>
@@ -32,7 +32,7 @@
 <div class="m-sticky-header m-only" aria-hidden="true" data-figma="151:2082">
   <a class="m-logo" href="#" tabindex="-1"><img src="assets/icons/m-logo.svg" width="154" height="18" alt=""></a>
   <div class="m-actions__buttons">
-    <button class="m-icon-btn" type="button" tabindex="-1" data-open-basket aria-label="Basket, 1 item"><img src="assets/icons/bag.svg" width="24" height="24" alt=""><span class="m-badge">1</span></button>
+    <button class="m-icon-btn" type="button" tabindex="-1" data-open-basket aria-label="Basket, empty"><img src="assets/icons/bag.svg" width="24" height="24" alt=""><span class="m-badge" hidden>0</span></button>
     <span class="m-icon-btn"><img src="assets/icons/m-menu.svg" width="24" height="24" alt=""></span>
   </div>
 </div>
@@ -80,9 +80,9 @@
       <div class="mainnav__actions">
         <button class="icon-btn" type="button" data-proto aria-label="Search"><img src="assets/icons/search.svg" width="24" height="24" alt=""></button>
         <button class="icon-btn" type="button" data-proto aria-label="Account"><img src="assets/icons/user.svg" width="24" height="24" alt=""></button>
-        <button class="icon-btn" type="button" data-open-basket aria-label="Basket, 1 item">
+        <button class="icon-btn" type="button" data-open-basket aria-label="Basket, empty">
           <img src="assets/icons/bag.svg" width="24" height="24" alt="">
-          <span class="icon-btn__badge">1</span>
+          <span class="icon-btn__badge" hidden>0</span>
         </button>
       </div>
     </div>
@@ -1028,6 +1028,6 @@
   </div>
 </template>
 
-<script src="main.js?v=202610232000"></script>
+<script src="main.js?v=20261023164120"></script>
 </body>
 </html>
