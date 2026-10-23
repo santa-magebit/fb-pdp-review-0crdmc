@@ -560,12 +560,12 @@ body.notice-open { overflow: hidden; }
 .lb-tile__open { position: absolute; top: 12px; right: 12px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 22px; background: #fff; opacity: 0; transition: opacity .15s ease; }
 .lb-tile:hover::before, .lb-tile:hover .lb-tile__open, .lb-tile:focus-visible::before, .lb-tile:focus-visible .lb-tile__open { opacity: 1; }
 .lb-grid__empty { padding: 48px 0; text-align: center; color: var(--muted); }
-/* Scroll fade (293:603): a fixed 140px white fade over the bottom of the scroll viewport, clear of the scrollbar.
+/* Scroll fade (293:603): a fixed 140px fade to 50% white over the bottom of the scroll viewport, clear of the scrollbar.
    Hidden once the list is scrolled to the end so the last row shows in full. */
 .lb-grid { position: relative; }
 .lb-grid::after {
   content: ""; position: absolute; left: 0; right: var(--sb, 0px); bottom: 0; height: 140px; pointer-events: none;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, .85) 65%, #fff 100%);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, .5));
   transition: opacity .2s ease;
 }
 .lb-grid.is-scroll-end::after { opacity: 0; }
