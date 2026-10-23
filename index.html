@@ -10,7 +10,7 @@
   <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="icon" href="assets/favicon-48.png" type="image/png" sizes="48x48">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=202610231629">
+  <link rel="stylesheet" href="styles.css?v=202610232000">
 </head>
 <body>
 <!-- Built from Figma file zBK5BOgn7VGEptzhet1s41, frame "PDP" 32:1690 (section "PDP - wip" 56:4766).
@@ -883,17 +883,20 @@
       </div>
       <div class="lb-view__stage">
         <button class="lb-view__nav" type="button" data-dir="-1" aria-label="Previous photo"><img src="assets/icons/gallery-prev.svg" width="24" height="24" alt=""></button>
-        <div class="lb-view__photo"><img id="lb-photo" src="" alt=""></div>
+        <div class="lb-view__photo" data-figma="257:622">
+          <img id="lb-photo" src="" alt="">
+          <!-- Sample card sits on the visible image (304:627); main.js places it, since the photo is object-fit: contain -->
+          <div class="lb-card" id="lb-card">
+            <span class="lb-card__chip" aria-hidden="true"><span data-slot="no">No. 248</span></span>
+            <span class="lb-card__text"><strong data-slot="name">Incarnadine</strong><span>Sample pot £9.95</span></span>
+            <button class="lb-card__btn" type="button" data-proto>Order sample</button>
+          </div>
+        </div>
         <button class="lb-view__nav" type="button" data-dir="1" aria-label="Next photo"><img src="assets/icons/gallery-next.svg" width="24" height="24" alt=""></button>
       </div>
       <div class="lb-view__bottom" data-figma="304:617">
         <div class="lb-strip" id="lb-strip">
           <div class="lb-view__thumbs" id="lb-thumbs"></div>
-        </div>
-        <div class="lb-card">
-          <span class="lb-card__chip" aria-hidden="true"><span data-slot="no">No. 248</span></span>
-          <span class="lb-card__text"><strong data-slot="name">Incarnadine</strong><span>Sample pot £9.95</span></span>
-          <button class="lb-card__btn" type="button" data-proto>Order sample</button>
         </div>
       </div>
     </section>
@@ -1025,6 +1028,6 @@
   </div>
 </template>
 
-<script src="main.js?v=202610231629"></script>
+<script src="main.js?v=202610232000"></script>
 </body>
 </html>

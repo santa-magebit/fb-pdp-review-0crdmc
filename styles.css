@@ -703,12 +703,12 @@ body.drawer-open, body.notice-open { position: fixed; left: 0; right: 0; overflo
 .lb-view__close { width: 44px; height: 44px; flex: none; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 22px; }
 .lb-view__stage { flex: 1; min-height: 0; display: flex; align-items: center; gap: 20px; padding: 0 20px; touch-action: pan-y; }
 .lb-view__nav { width: 48px; height: 48px; flex: none; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 24px; background: #fff; }
-.lb-view__photo { flex: 1; min-width: 0; height: 100%; }
+.lb-view__photo { position: relative; flex: 1; min-width: 0; height: 100%; }
 .lb-view__photo img { width: 100%; height: 100%; object-fit: contain; }
-/* Bottom bar (304:617): scrolling thumbnail strip + sample card. 88px sides line up with the photo area
+/* Bottom bar (304:617): just the thumbnail strip, centred. 88px sides line up with the photo area
    (20px stage padding + 48px arrow + 20px gap). */
-.lb-view__bottom { flex: none; display: flex; align-items: center; gap: 32px; padding: 16px 88px 20px; }
-.lb-strip { position: relative; flex: 1 1 auto; min-width: 0; }
+.lb-view__bottom { flex: none; display: flex; align-items: center; justify-content: center; padding: 16px 88px 20px; }
+.lb-strip { position: relative; flex: 0 1 auto; min-width: 0; max-width: 1024px; }
 .lb-strip::before, .lb-strip::after { content: ""; position: absolute; top: 0; bottom: 0; width: 48px; pointer-events: none; opacity: 0; transition: opacity .2s ease; }
 .lb-strip::before { left: 0; background: linear-gradient(to left, rgba(255, 255, 255, 0), #fff); }
 .lb-strip::after { right: 0; background: linear-gradient(to right, rgba(255, 255, 255, 0), #fff); }
@@ -719,7 +719,8 @@ body.drawer-open, body.notice-open { position: fixed; left: 0; right: 0; overflo
 .lb-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
 .lb-thumb.is-active { opacity: 1; }
 .lb-thumb.is-active::after { content: ""; position: absolute; inset: -2px; border: 2px solid var(--ink); border-radius: 10px; }
-.lb-card { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; background: var(--cream); }
+/* Sample card on the photo (304:627): main.js sets left/bottom from the visible image, centred 16px above its bottom edge */
+.lb-card { position: absolute; z-index: 1; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; background: var(--cream); }
 .lb-card__chip { position: relative; width: 52px; height: 52px; flex: none; border-radius: 6px; background: var(--paint); }
 .lb-card__chip span { position: absolute; left: 5px; bottom: 4px; font-weight: 700; font-size: 8px; line-height: 10px; color: var(--on-paint); white-space: nowrap; }
 .lb-card__text { display: flex; flex-direction: column; gap: 2px; white-space: nowrap; }
@@ -1181,7 +1182,10 @@ html:has(body.has-strip) { scroll-padding-bottom: 77px; }
   .lb-view__top { padding: 12px 12px 8px 16px; }
   .lb-view__stage { padding: 0; }
   .lb-view__nav { display: none; }
-  .lb-view__bottom { flex-direction: column; align-items: stretch; gap: 16px; padding: 16px 16px 24px; }
+  .lb-view__bottom { flex-direction: column; align-items: stretch; padding: 16px 16px 24px; }
+  .lb-strip { max-width: none; }
+  /* On phones the card spans the visible image less 12px a side (main.js sets left/width/bottom) */
+  .lb-card { transform: none; }
   .lb-card__text { flex: 1; min-width: 0; }
 
   /* Prototype notice, mobile (283:606) */

@@ -1546,6 +1546,29 @@ function centreActiveThumb() {
 }
 lbThumbs.addEventListener('scroll', updateStripFade, { passive: true });
 addEventListener('resize', updateStripFade);
+// Sample card on the photo (Figma 304:627). The photo is object-fit: contain, so work out the visible image box and
+// anchor the card to it: centred 16px above its bottom edge, or centred on the stage if the image is too narrow.
+// Phones: 12px in from the image's sides and bottom, full image width.
+const lbCard = document.getElementById('lb-card');
+function placeCard() {
+  const box = lbPhoto.parentElement;
+  const W = box.clientWidth, H = box.clientHeight, nw = lbPhoto.naturalWidth, nh = lbPhoto.naturalHeight;
+  if (!W || !H || !nw || !nh) return;
+  const k = Math.min(W / nw, H / nh);
+  const w = nw * k, h = nh * k, x = (W - w) / 2, y = (H - h) / 2;
+  const below = H - (y + h);
+  if (mobile.matches) {
+    lbCard.style.left = `${x + 12}px`;
+    lbCard.style.width = `${w - 24}px`;
+    lbCard.style.bottom = `${below + 12}px`;
+    return;
+  }
+  lbCard.style.width = '';
+  lbCard.style.left = `${w < lbCard.offsetWidth + 32 ? W / 2 : x + w / 2}px`;
+  lbCard.style.bottom = `${below + 16}px`;
+}
+lbPhoto.addEventListener('load', placeCard);
+addEventListener('resize', placeCard);
 
 function renderGrid() {
   const items = lbItems();
@@ -1597,6 +1620,7 @@ function showPhoto(i) {
     lbBox.classList.add('is-photo');
     lbView.querySelector('.lb-view__back').focus({ preventScroll: true });
   }
+  if (lbPhoto.complete) requestAnimationFrame(placeCard); // cached photos don't fire load again
 }
 function showGrid() {
   lbView.hidden = true;
