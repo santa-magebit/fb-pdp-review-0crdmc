@@ -186,8 +186,8 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .bk-sample__chip span { position: absolute; left: 5px; bottom: 4px; font-weight: 700; font-size: 10px; line-height: 12px; white-space: nowrap; }
 .bk-sample .colour-row__name { font-size: 15px; line-height: 22px; }
 .bk-sample .colour-row__sub { white-space: normal; }
-/* Free Colour Card: a small card of chips stands in for the product photo */
-.bk-offer { display: none; flex: none; gap: 12px; padding: 12px; border-radius: 8px; background: var(--cream); }
+/* Free Colour Card, empty basket only; scoped to .bk so the later .bk-row { display: flex } cannot show it in a full basket */
+.bk .bk-offer { display: none; flex: none; gap: 12px; padding: 12px; border-radius: 8px; background: var(--cream); }
 .bk-offer .colour-row__name { font-size: 15px; line-height: 22px; }
 .bk-offer .colour-row__sub { white-space: normal; }
 .bk-offer__img { width: 70px; height: 77px; flex: none; object-fit: contain; }
