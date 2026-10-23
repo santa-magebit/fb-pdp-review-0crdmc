@@ -169,20 +169,44 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .bk__timer.is-off { opacity: 0; }
 @keyframes bk-timer { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 .bk__title { flex: 1; min-width: 0; margin: 0; font-weight: 400; font-size: 24px; line-height: 32px; }
-.bk__body { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 32px; padding: 32px; }
+.bk__body { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 32px; }
 .bk__items { display: flex; flex-direction: column; gap: 16px; margin: 0; padding: 0; list-style: none; }
 /* Nothing added yet: a short empty state instead of the items, suggestions and checkout */
-.bk__empty { display: none; flex-direction: column; align-items: flex-start; gap: 20px; }
-.bk__empty-title { margin: 0; font-size: 18px; line-height: 26px; }
-.bk.is-empty .bk__empty { display: flex; }
-.bk__empty .btn { flex: none; }
-.bk.is-empty .bk__items, .bk.is-empty .bk__group, .bk.is-empty .bk__footer { display: none; }
+.bk__empty { display: none; flex-direction: column; align-items: flex-start; gap: 16px; }
+.bk__empty-icon { flex: none; color: var(--muted); }
+.bk__empty-text { display: flex; flex-direction: column; gap: 6px; }
+.bk__empty-title { margin: 0; font-size: 20px; line-height: 28px; }
+.bk__empty-copy { margin: 0; font-size: 15px; line-height: 22px; color: var(--muted); }
+.bk__empty-link { font-weight: 500; font-size: 15px; line-height: 22px; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.bk__samples { display: none; flex-direction: column; gap: 12px; padding-top: 32px; border-top: 1px solid var(--line); }
+.bk.is-empty .bk__empty, .bk.is-empty .bk__samples { display: flex; }
+.bk.is-empty .bk__items, .bk.is-empty .bk__groups, .bk.is-empty .bk__footer { display: none; }
+/* Sample rows: the colour's own pot (follows the colour switcher), then its live sample set as three fanned chips */
+.bk-sample__chip { position: relative; width: 56px; height: 56px; flex: none; border-radius: 6px; background: var(--paint); color: var(--on-paint); }
+.bk-sample__chip span { position: absolute; left: 5px; bottom: 4px; font-weight: 700; font-size: 8px; line-height: 10px; white-space: nowrap; }
+.bk-sample__set { position: relative; width: 56px; height: 56px; flex: none; }
+.bk-sample__set i { position: absolute; top: 0; width: 32px; height: 56px; border-radius: 6px; outline: 2px solid #fff; }
+.bk-sample__set i:nth-child(2) { left: 12px; }
+.bk-sample__set i:nth-child(3) { left: 24px; }
+.bk-sample .colour-row__name { font-size: 15px; line-height: 22px; }
+.bk-sample .colour-row__sub { white-space: normal; }
+.bk-browse { display: flex; align-items: center; gap: 12px; padding: 16px 14px 16px 16px; border-radius: 8px; background: var(--cream); color: var(--ink); }
+.bk-browse img, .bk-browse svg { flex: none; }
+.bk-browse__text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.bk-browse__title { font-weight: 700; font-size: 15px; line-height: 22px; }
+.bk-browse__sub { font-size: 14px; line-height: 20px; color: var(--muted); }
+.bk__empty-link:focus-visible, .bk-browse:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .bk-item { display: flex; align-items: flex-start; gap: 16px; }
 .bk-item__swatch { position: relative; width: 72px; height: 72px; flex: none; border-radius: 11px; background: var(--paint); color: var(--on-paint); }
 .bk-item__swatch span { position: absolute; left: 6px; bottom: 6px; font-weight: 700; font-size: 14px; line-height: 20px; white-space: nowrap; }
 .bk-item__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .bk-item__name { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-weight: 700; font-size: 18px; line-height: 26px; }
-.bk-item__desc { font-size: 14px; line-height: 20px; color: var(--muted); }
+/* Finish and size as labelled values, so lines of one colour tell apart at a glance */
+.bk-item__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 0; font-size: 14px; line-height: 20px; color: var(--ink); }
+.bk-item__attr { white-space: nowrap; }
+/* A short outline-grey divider between finish and size, 8px either side */
+.bk-item__attr + .bk-item__attr::before { content: ""; display: inline-block; width: 1px; height: 14px; margin: 0 8px; vertical-align: -2px; background: var(--border); }
+.bk-item__label { color: var(--muted); }
 .bk-item__price { font-weight: 700; font-size: 16px; line-height: 24px; white-space: nowrap; }
 /* Item actions: a small quantity stepper (same look as the buy box's) and Remove; a removed row keeps its place
    with an Undo until the next add */
@@ -199,15 +223,19 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .bk-item__undo { font-weight: 700; }
 .bk-qty__btn:focus-visible, .bk-item__remove:focus-visible, .bk-item__undo:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .bk-tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px 3px 6px; border-radius: 48px; background: #d9e9d8; font-weight: 500; font-size: 12px; line-height: 16px; color: #157253; white-space: nowrap; }
+/* Both cross-sell groups share one box like the order card's sample block (cream, 8px radius, 16px inside), with
+   only spacing between them */
+.bk__groups { display: flex; flex-direction: column; gap: 24px; margin-top: 16px; padding: 16px; border-radius: 8px; background: var(--cream); }
 .bk__group { display: flex; flex-direction: column; gap: 12px; }
-.bk__group--pairs { padding-top: 32px; border-top: 1px solid var(--line); }
 .bk__h { margin: 0; font-weight: 700; font-size: 15px; line-height: 22px; }
 .bk__rows { display: flex; flex-direction: column; gap: 12px; }
 .bk-row { display: flex; align-items: center; gap: 16px; }
 .bk-row__img { width: 64px; height: 64px; flex: none; border-radius: 8px; object-fit: contain; }
 .bk-row__add { flex: none; height: 52px; display: flex; align-items: center; gap: 6px; padding: 0 20px 0 18px; border: 1px solid var(--border); border-radius: 48px; background: #fff; font-weight: 500; font-size: 14px; line-height: 20px; color: var(--ink); }
 .bk__footer { display: flex; gap: 12px; padding: 20px 32px 24px; border-top: 1px solid var(--line); background: #fff; }
-.bk__view { flex: 0 0 auto; }
+/* View basket hugs its label; Checkout takes the rest of the row for emphasis (the shared .btn--secondary rule
+   would otherwise split the row in half) */
+.bk__footer .bk__view { flex: 0 0 auto; }
 .bk__checkout { flex: 1; }
 .bk-row__add:focus-visible, .bk__view:focus-visible, .bk__checkout:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) {
@@ -959,7 +987,6 @@ html:has(body.has-strip) { scroll-padding-bottom: 77px; }
   .bk__header { padding: 16px 12px 16px 20px; }
   .bk__title { font-size: 22px; line-height: 28px; }
   .bk__body { gap: 24px; padding: 20px; }
-  .bk__group--pairs { padding-top: 24px; }
   .bk__footer { padding: 12px 20px 20px; }
   /* Key feature panel: full screen like the finish sheet */
   .kfp__header { padding: 16px 20px 20px; }

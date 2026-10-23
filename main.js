@@ -1237,9 +1237,16 @@ const MINUS_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
 const PLUS_SM_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>';
 const TRASH_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/></svg>';
 
-// What this page has put in the basket, one line per colour, finish and size; adding the same again tops it up.
-// The basket starts empty, so the header badge always matches what the slide-out lists.
-let basketLines = [];
+// What's in the basket, one line per colour, finish and size; adding the same again tops it up. The shopper arrives
+// with one tin already in it: Dutch Orange No. W76 (farrow-ball.com/paint/dutch-orange) in this page's Estate Emulsion
+// 2.5 L at the stepper's price. It is never "Just added"; what the page adds is listed above it. The orange is too
+// light for white text, so its chip number is ink.
+const alreadyInBasket = () => {
+  const pack = packs.find((p) => p.size === '2.5 L') || packs[0];
+  return { key: `Dutch Orange|Estate Emulsion|${pack.size}`, colour: 'Dutch Orange', no: 'No. W76', finish: 'Estate Emulsion', size: pack.size, price: pack.price, qty: 1, added: 0, bg: '#e69f43', fg: 'var(--ink)' };
+};
+let basketLines = [alreadyInBasket()];
+let basketAdds = 0; // each Add to Basket press gets a number, so lines sort newest first
 const lineTotal = () => basketLines.reduce((sum, l) => sum + (l.removed ? 0 : l.qty * l.price), 0);
 const lineTins = () => basketLines.reduce((n, l) => n + (l.removed ? 0 : l.qty), 0);
 
@@ -1250,18 +1257,20 @@ function addToBasketLines(lines) {
   const root = getComputedStyle(document.documentElement);
   basketLines = basketLines.filter((l) => !l.removed);
   basketLines.forEach((l) => { l.fresh = false; });
-  const added = [];
+  const added = ++basketAdds;
   lines.forEach(({ p, qty }) => {
     const key = `${colour}|${finish}|${p.size}`;
     let line = basketLines.find((l) => l.key === key);
     if (line) line.qty = Math.min(99, line.qty + qty);
     else {
       line = { key, colour, no, finish, size: p.size, price: p.price, qty, bg: root.getPropertyValue('--paint').trim(), fg: root.getPropertyValue('--on-paint').trim() };
-      added.push(line);
+      basketLines.push(line);
     }
     line.fresh = true;
+    line.added = added;
   });
-  basketLines = [...added, ...basketLines];
+  // Newest add first, so "Just added" is always at the top; topping up a line moves it up as well
+  basketLines.sort((a, b) => b.added - a.added);
 }
 
 function basketItem(l, i) {
@@ -1278,7 +1287,7 @@ function basketItem(l, i) {
       <span class="bk-item__swatch" style="background:${l.bg}; color:${l.fg}" aria-hidden="true"><span>${esc(l.no)}</span></span>
       <span class="bk-item__text">
         <span class="bk-item__name">${esc(l.colour)}${l.fresh ? `<span class="bk-tag">${TICK_SVG}Just added</span>` : ''}</span>
-        <span class="bk-item__desc">${esc(l.finish)}, ${esc(l.size)}</span>
+        <span class="bk-item__meta"><span class="bk-item__attr"><span class="bk-item__label">Finish:</span> ${esc(l.finish)}</span><span class="bk-item__attr"><span class="bk-item__label">Size:</span> ${esc(l.size)}</span></span>
         <span class="bk-item__actions">
           <span class="bk-qty">
             <button class="bk-qty__btn" type="button" data-step="-1" aria-label="Decrease ${label}"${l.qty <= 1 ? ' disabled' : ''}>${MINUS_SVG}</button>
@@ -1318,6 +1327,21 @@ function fillBasket() {
     const name = li.querySelector('.colour-row__name').textContent;
     return row(`<span class="${chip.className}" style="background:${chip.style.background}" aria-hidden="true"><span>${esc(chip.textContent.trim())}</span></span>`, name, 'Sample pot £9.95', `${name} sample pot`);
   }).join('');
+  // Empty basket (Figma 401:991): this colour's sample pot, then its live sample set. Only the reds have a matching
+  // live bundle, so the set row is left out for other colours rather than made up.
+  const colour = document.querySelector('[data-slot="name"]').textContent;
+  const no = document.querySelector('[data-slot="no"]').textContent;
+  const sample = (media, name, sub) => `
+    <div class="bk-row colour-row bk-sample">${media}<span class="colour-row__text"><b class="colour-row__name">${esc(name)}</b><span class="colour-row__sub">${esc(sub)}</span></span>
+      <button class="bk-row__add" type="button" data-proto>${PLUS_SVG}Add<span class="sr-only"> ${esc(name)}</span></button></div>`;
+  let samples = sample(`<span class="bk-sample__chip" aria-hidden="true"><span>${esc(no)}</span></span>`, `${colour} ${no}`, '100 ml sample pot, £9.95');
+  if (/reds$/i.test(document.querySelector('[data-slot="set-title"]').textContent.trim())) {
+    const set = [...document.querySelectorAll('[data-slot="set-list"] li')];
+    const names = set.map((li) => li.querySelector('.colour-row__name').textContent);
+    const chips = set.map((li) => `<i style="background:${li.querySelector('.colour-row__chip').style.background}"></i>`).join('');
+    samples += sample(`<span class="bk-sample__set" aria-hidden="true">${chips}</span>`, 'Sample our favourite reds', `${set.length} × 100 ml sample pots: ${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`);
+  }
+  document.getElementById('bk-samples').innerHTML = samples;
   const primerImg = document.querySelector('[data-slot="primer-img"] img');
   const primerName = document.querySelector('[data-slot="primer-text"] .pairing__name');
   document.getElementById('bk-primer').innerHTML = row(`<img class="bk-row__img" src="${primerImg.getAttribute('src')}" alt="">`, 'Primer & Undercoat', primerName ? primerName.textContent : '', 'Primer & Undercoat');
@@ -1389,6 +1413,8 @@ document.querySelectorAll('[data-open-basket]').forEach((b) => b.addEventListene
   stopAutoClose();
   openOverlay(basket, 'drawer-open', basketPanel);
 }));
+// On load the badges and the checkout total already count the tin that is in the basket
+syncBasket(false);
 
 addButton.closest('form').addEventListener('submit', async (e) => {
   e.preventDefault();

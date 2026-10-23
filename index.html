@@ -10,7 +10,7 @@
   <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="icon" href="assets/favicon-48.png" type="image/png" sizes="48x48">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=202610232000">
+  <link rel="stylesheet" href="styles.css?v=202610231629">
 </head>
 <body>
 <!-- Built from Figma file zBK5BOgn7VGEptzhet1s41, frame "PDP" 32:1690 (section "PDP - wip" 56:4766).
@@ -22,7 +22,7 @@
   <div class="m-actions">
     <a class="m-logo" href="#" aria-label="Farrow &amp; Ball home"><img src="assets/icons/m-logo.svg" width="154" height="18" alt="Farrow &amp; Ball"></a>
     <div class="m-actions__buttons">
-      <button class="m-icon-btn" type="button" data-open-basket aria-label="Basket, empty"><img src="assets/icons/bag.svg" width="24" height="24" alt=""><span class="m-badge" hidden>0</span></button>
+      <button class="m-icon-btn" type="button" data-open-basket aria-label="Basket, 1 item"><img src="assets/icons/bag.svg" width="24" height="24" alt=""><span class="m-badge">1</span></button>
       <button class="m-icon-btn" type="button" data-proto aria-label="Menu"><img src="assets/icons/m-menu.svg" width="24" height="24" alt=""></button>
     </div>
   </div>
@@ -32,7 +32,7 @@
 <div class="m-sticky-header m-only" aria-hidden="true" data-figma="151:2082">
   <a class="m-logo" href="#" tabindex="-1"><img src="assets/icons/m-logo.svg" width="154" height="18" alt=""></a>
   <div class="m-actions__buttons">
-    <button class="m-icon-btn" type="button" tabindex="-1" data-open-basket aria-label="Basket, empty"><img src="assets/icons/bag.svg" width="24" height="24" alt=""><span class="m-badge" hidden>0</span></button>
+    <button class="m-icon-btn" type="button" tabindex="-1" data-open-basket aria-label="Basket, 1 item"><img src="assets/icons/bag.svg" width="24" height="24" alt=""><span class="m-badge">1</span></button>
     <span class="m-icon-btn"><img src="assets/icons/m-menu.svg" width="24" height="24" alt=""></span>
   </div>
 </div>
@@ -80,9 +80,9 @@
       <div class="mainnav__actions">
         <button class="icon-btn" type="button" data-proto aria-label="Search"><img src="assets/icons/search.svg" width="24" height="24" alt=""></button>
         <button class="icon-btn" type="button" data-proto aria-label="Account"><img src="assets/icons/user.svg" width="24" height="24" alt=""></button>
-        <button class="icon-btn" type="button" data-open-basket aria-label="Basket, empty">
+        <button class="icon-btn" type="button" data-open-basket aria-label="Basket, 1 item">
           <img src="assets/icons/bag.svg" width="24" height="24" alt="">
-          <span class="icon-btn__badge" hidden>0</span>
+          <span class="icon-btn__badge">1</span>
         </button>
       </div>
     </div>
@@ -743,18 +743,34 @@
     <div class="bk__body">
       <p class="sr-only" id="bk-status" aria-live="polite"></p>
       <ul class="bk__items" id="bk-items"></ul>
+      <!-- Empty basket (Figma 401:991): a short message, then samples to start with; no footer -->
       <div class="bk__empty">
-        <p class="bk__empty-title">Your basket is empty</p>
-        <button class="btn btn--secondary" type="button" data-close>Continue shopping</button>
+        <svg class="bk__empty-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.331 8h11.339a2 2 0 0 1 1.977 2.304l-1.255 8.152a3 3 0 0 1 -2.966 2.544h-6.852a3 3 0 0 1 -2.965 -2.544l-1.255 -8.152a2 2 0 0 1 1.977 -2.304z"/><path d="M9 11v-5a3 3 0 0 1 6 0v5"/></svg>
+        <div class="bk__empty-text">
+          <p class="bk__empty-title">Your basket is empty</p>
+          <p class="bk__empty-copy">The best way to experience our colours before taking the plunge is with a true-to-colour paint sample.</p>
+        </div>
+        <button class="bk__empty-link" type="button" data-close>Continue shopping</button>
       </div>
-      <section class="bk__group bk__group--pairs" aria-labelledby="bk-pairs-title">
-        <h3 class="bk__h" id="bk-pairs-title">Pairs perfectly with</h3>
-        <div class="bk__rows" id="bk-pairs"></div>
+      <section class="bk__samples" aria-labelledby="bk-samples-title">
+        <h3 class="bk__h" id="bk-samples-title">Start with a sample</h3>
+        <div class="bk__rows" id="bk-samples"></div>
+        <a class="bk-browse" href="https://www.farrow-ball.com/paint-samples" data-proto>
+          <img src="assets/icons/palette.svg" width="24" height="24" alt="">
+          <span class="bk-browse__text"><span class="bk-browse__title">Browse all paint samples</span><span class="bk-browse__sub">True-to-colour 100 ml sample pots</span></span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6l-6 6"/></svg>
+        </a>
       </section>
-      <section class="bk__group" aria-labelledby="bk-primer-title">
-        <h3 class="bk__h" id="bk-primer-title">Recommended for the best finish</h3>
-        <div class="bk__rows" id="bk-primer"></div>
-      </section>
+      <div class="bk__groups">
+        <section class="bk__group" aria-labelledby="bk-pairs-title">
+          <h3 class="bk__h" id="bk-pairs-title">Pairs perfectly with</h3>
+          <div class="bk__rows" id="bk-pairs"></div>
+        </section>
+        <section class="bk__group" aria-labelledby="bk-primer-title">
+          <h3 class="bk__h" id="bk-primer-title">Recommended for the best finish</h3>
+          <div class="bk__rows" id="bk-primer"></div>
+        </section>
+      </div>
     </div>
     <div class="bk__footer">
       <button class="btn btn--secondary bk__view" type="button" data-proto>View basket</button>
@@ -1009,6 +1025,6 @@
   </div>
 </template>
 
-<script src="main.js?v=202610232000"></script>
+<script src="main.js?v=202610231629"></script>
 </body>
 </html>
