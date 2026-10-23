@@ -111,7 +111,6 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 
 /* Key features (363:991): colour chips, then the chosen finish's heading, copy and chips. Each chip opens the panel. */
 .kf { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
-.kf__group { font-weight: 500; font-size: 14px; line-height: 20px; color: var(--muted); }
 .kf__chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .kf-chip {
   max-width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px 14px 8px 12px; border: 1px solid var(--border); border-radius: 48px;
@@ -126,13 +125,22 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .kf__text { font-size: 15px; line-height: 22px; color: var(--ink); }
 .kf-chip:focus-visible, .kf__change:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
-/* Key feature panel (363:1058): the finish drawer's shell with an icon, a title, copy and a photo */
+/* Key feature panel (363:1058): the finish drawer's shell, one "Key features" title, then the feature name, copy and a photo */
 .kfp__header { display: flex; align-items: center; gap: 12px; padding: 32px 32px 24px; }
-.kfp__icon { flex: none; }
 .kfp__title { flex: 1; min-width: 0; margin: 0; font-weight: 400; font-size: 32px; line-height: 40px; }
 .kfp__body { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; padding: 0 32px 40px; font-size: 16px; line-height: 24px; }
-.kfp__intro:empty, .kfp__text:empty { display: none; }
-.kfp__photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px; }
+.kfp__lead { display: flex; flex-direction: column; gap: 8px; }
+.kfp__name { margin: 0; font-weight: 700; font-size: 20px; line-height: 28px; }
+.kfp__intro:empty, .kfp__text:empty, .kfp__media[hidden] { display: none; }
+.kfp__intro, .kfp__text { display: flex; flex-direction: column; gap: 12px; }
+.kfp__media { position: relative; border-radius: 8px; overflow: hidden; }
+.kfp__photo { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+/* Video placeholder: the live video's poster at 16:9 with a centred play button and a fullscreen mark */
+.kfp__media.is-video .kfp__photo { aspect-ratio: 16 / 9; }
+.kfp__play, .kfp__fullscreen { display: none; }
+.kfp__media.is-video .kfp__play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: grid; place-items: center; border-radius: 50%; }
+.kfp__media.is-video .kfp__fullscreen { position: absolute; right: 12px; bottom: 12px; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 18px; background: rgba(0, 0, 0, .35); }
+.kfp__play:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) {
   .kf-chip { transition: none; }
 }
@@ -860,9 +868,10 @@ body.notice-open { overflow: hidden; }
   .m-readmore { align-self: flex-start; font-weight: 700; text-decoration: underline; }
   /* Key feature panel: full screen like the finish sheet */
   .kfp__header { padding: 16px 20px 20px; }
-  .kfp__icon { width: 24px; height: 24px; }
+  .kfp__name { font-size: 18px; line-height: 26px; }
   .kfp__title { font-size: 22px; line-height: 28px; }
   .kfp__body { padding: 0 20px 32px; }
+  .kfp__play img { width: 56px; height: 56px; }
 
   /* Shared section type on mobile */
   .section-title, .section-title--32, .section-title--on-paint, .chapters__title, .safe__title {

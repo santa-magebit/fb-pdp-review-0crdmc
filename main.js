@@ -171,30 +171,488 @@ const featureIcon = (label) => {
   return 'sparkles';
 };
 const featureKey = (label) => label.toLowerCase().replace(/,.*$/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-const WATER_COPY = 'We’re proud to have been the first in the industry to transition to a completely water based range back in 2010. As a result, all of our finishes, including our tough trim and floor paints, are made with a low-odour, low-VOC water base that scores A+ for indoor air quality. Plus, our water based paint doesn’t discolour over time like solvent based paints can. So your spaces stay beautiful for longer.';
-// Panel copy from the live key feature panels. Features without captured copy fall back to the finish's description.
-const FEATURE_PANELS = {
-  depth: { title: 'Unmatchable depth of colour', intro: 'Packed with pigment for an extraordinary response to every kind of light. We add generous helpings of rich pigment to create our signature look – deep colours with complex undertones. The same space that feels bright and airy in morning sun, can feel cosy and intimate by evening. Our teams design each shade under every kind of light, so it will be perfectly balanced in every setting.' },
-  // Placeholder: the live panel copy for this feature wasn't captured, so it only restates the feature. Swap in the live text.
-  supply: { title: 'Audited and ethical supply chain', intro: 'Our supply chain is audited and ethical.' },
-  'water-a': { title: 'Water based', intro: WATER_COPY },
-  // The live footnote for the asterisk (from the finish details on farrow-ball.com)
-  scrub: { title: 'Finishes to last', intro: '100% of our colours are Scrub Class 1 rated*.', text: '*Excluding Estate Emulsion, Exterior Masonry, Soft Distemper, Casein Distemper and Limewash.' },
-  surfaces: { title: 'Interior and exterior finishes', intro: 'From walls, floors and furniture to radiators, skirtings and sheds, our range of paint finishes can help you transform almost any surface in your home (and outside it, too).', text: 'We even have multi-surface finishes like Dead Flat and Full Gloss, so you can tackle walls, woodwork and metal at the same time.' },
-  'very-matt': { title: 'Very matt', intro: 'Estate Emulsion is a very matt finish with a chalky 2% sheen.', text: 'Our deeper, richer colours are available in a range of finishes with different sheen levels. Sheen always affects how colour appears: the same shade in gloss can look very different in matt. That’s why we specifically adjust the formula for every finish to make sure the balance is exactly right and you get the colour you were expecting. Our colours and finishes are formulated together, so you simply can’t have one without the other.' },
-  'classic': { title: 'Classic, chalky look', intro: 'A true classic, Estate Emulsion is a distinctive, chalky finish that minimises imperfections and creates beautiful depth of colour. Due to this unique texture, it’s best suited to less-busy areas without a lot of traffic.' },
-  'for-walls-and-ceilings-in-low-traffic-areas': { title: 'For walls and ceilings in low-traffic areas', intro: 'Estate Emulsion is our classic finish for interior walls and ceilings in low-traffic areas. Gently wipeable but not washable.', text: 'From walls, floors and furniture to radiators, skirtings and sheds, our range of paint finishes can help you transform almost any surface in your home (and outside it, too). Browse our full selection of finishes to find the perfect paint for your project.' },
-  'water-based': { title: 'Water based', intro: WATER_COPY },
-  'toy-safe': { title: 'Toy safe', intro: 'This finish is independently tested and certified toy-safe in accordance with Safety of Toys Part 3: Migration of certain elements (EN 71-3:2019+A1:2021). That means you can add a splash of colour to toys, cribs and other surfaces little ones come into contact with. Our paints also have hardly any odour and don’t need any solvents to clean up, so you can breathe easy during application and beyond.' },
+// Panel copy and photos from the live key feature drawers on farrow-ball.com/paint/incarnadine/<finish> (2026-10-23).
+// Photos are copied into assets/img/kf. Where the live drawer has a video, its poster frame stands in (video: true)
+// with a play button; it doesn't play in this preview.
+const KF_LIVE = {
+ "colour": {
+  "depth": {
+   "intro": [
+    "Packed with pigment for an extraordinary response to every kind of light.",
+    "We add generous helpings of rich pigment to create our signature look – deep colours with complex undertones. The same space that feels bright and airy in morning sun, can feel cosy and intimate by evening. Our teams design each shade under every kind of light, so it will be perfectly balanced in every setting."
+   ],
+   "text": [],
+   "img": "assets/img/kf/KF-deeper-richer-colours.jpg"
+  },
+  "supply": {
+   "intro": [
+    "Making the very best paint and paper possible starts well before the factory. That’s why we’re meticulous about who we work with. From sourcing raw materials to delivery, all of our suppliers have to follow our strict Code of Conduct.",
+    "Being a manufacturer puts us in a privileged position: we know exactly what goes into our products and exactly where it comes from, all the way back to raw materials. Not all paint brands make paint from scratch, they buy a base paint and add a colour tint. These brands are one step further away from the process and have to try and investigate how their suppliers’ suppliers behave."
+   ],
+   "text": [],
+   "img": "assets/img/kf/Aerial-image.jpg"
+  },
+  "water-a": {
+   "intro": [
+    "We’re proud to have been the first in the industry to transition to a completely water based range back in 2010. As a result, all of our finishes, including our tough trim and floor paints, are made with a low-odour, low-VOC water base that scores A+ for indoor air quality.",
+    "Plus, our water based paint doesn’t discolour over time like solvent based paints can. So your spaces stay beautiful for longer."
+   ],
+   "text": [],
+   "img": "assets/img/kf/Key_features_air_quality_1.jpg"
+  },
+  "scrub": {
+   "intro": [],
+   "text": [
+    "For more information on individual finishes and their scrub ratings please see our product advice sheets.",
+    "*Excludes Estate Emulsion, Exterior Masonry, Soft Distemper, Casein Distemper & Limewash."
+   ],
+   "img": "assets/img/kf/Key-features-scrub.jpg"
+  },
+  "surfaces": {
+   "intro": [
+    "From walls, floors and furniture to radiators, skirtings and sheds, our range of paint finishes can help you transform almost any surface in your home (and outside it, too)."
+   ],
+   "text": [
+    "We even have multi-surface finishes like Dead Flat and Full Gloss, so you can tackle walls, woodwork and metal at the same time.",
+    "Our comprehensive range is comprised of paint finishes that not only look beautiful, but offer different practical benefits. Designed for a variety of different surfaces, each finish is compatible with our high-performance Primers & Undercoats to ensure exceptional coverage, adhesion and depth of colour."
+   ],
+   "img": "assets/img/kf/KF-PDP-int-exterior-finishes_1_.jpg"
+  }
+ },
+ "finish": {
+  "estate-emulsion": {
+   "Very matt": {
+    "intro": [
+     "Estate Emulsion is a very matt finish with a chalky 2% sheen."
+    ],
+    "text": [
+     "Our deeper, richer colours are available in a range of finishes with different sheen levels. Sheen always affects how colour appears: the same shade in gloss can look very different in matt. That’s why we specifically adjust the formula for every finish to make sure the balance is exactly right and you get the colour you were expecting. Our colours and finishes are formulated together, so you simply can’t have one without the other."
+    ],
+    "img": "assets/img/kf/KF-EEM-very-matt_1_.jpeg"
+   },
+   "Classic, chalky look": {
+    "intro": [
+     "A true classic, Estate Emulsion is a distinctive, chalky finish that minimises imperfections and creates beautiful depth of colour. Due to this unique texture, it’s best suited to less-busy areas without a lot of traffic."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-EEM-chalky-look_1_.jpeg"
+   },
+   "For walls and ceilings in low-traffic areas": {
+    "intro": [
+     "Estate Emulsion is our classic finish for interior walls and ceilings in low-traffic areas. Gently wipeable but not washable."
+    ],
+    "text": [
+     "From walls, floors and furniture to radiators, skirtings and sheds, our range of paint finishes can help you transform almost any surface in your home (and outside it, too). Browse our full selection of finishes to find the perfect paint for your project."
+    ],
+    "img": "assets/img/kf/KF-EEM-wallsandceilings-small.jpg"
+   },
+   "Water based": {
+    "intro": [
+     "We’re proud to have been the first in the industry to transition to a completely water based range back in 2010. As a result, all of our finishes, including our tough trim and floor paints, are made with a low-odour, low-VOC water base that scores A+ for indoor air quality.",
+     "Plus, our water based paint doesn’t discolour over time like solvent based paints can. So your spaces stay beautiful for longer."
+    ],
+    "text": []
+   },
+   "Toy safe": {
+    "intro": [
+     "This finish is independently tested and certified toy-safe in accordance with Safety of Toys Part 3: Migration of certain elements (EN 71-3:2019+A1:2021). That means you can add a splash of colour to toys, cribs and other surfaces little ones come into contact with. Our paints also have hardly any odour and don’t need any solvents to clean up, so you can breathe easy during application and beyond."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-toy-safe_4.jpg"
+   }
+  },
+  "modern-emulsion": {
+   "Matt": {
+    "intro": [
+     "Modern Emulsion is a beautiful, durable matt finish with 7% sheen."
+    ],
+    "text": [
+     "Our deeper, richer colours are available in a range of finishes with different sheen levels. Sheen always affects how colour appears: the same shade in gloss can look very different in matt. That’s why we specifically adjust the formula for every finish to make sure the balance is exactly right and you get the colour you were expecting. Our colours and finishes are formulated together, so you simply can’t have one without the other."
+    ],
+    "img": "assets/img/kf/KF-MEM-Matt2_1__1.jpeg"
+   },
+   "For interior walls and ceilings": {
+    "intro": [
+     "Modern Emulsion is our super-tough, matt finish for interior walls and ceilings."
+    ],
+    "text": [
+     "From walls, floors and furniture to radiators, skirtings and sheds, our range of paint finishes can help you transform almost any surface in your home (and outside it, too). Browse our full selection of finishes to find the perfect paint for your project."
+    ],
+    "img": "assets/img/kf/KF-MEM-walls-ceilings.jpg"
+   },
+   "Best choice for kitchens and bathrooms": {
+    "intro": [
+     "Our expert chemists add a preservative to Modern Emulsion that protects it from mould, keeping moisture-prone kitchens and bathrooms looking fresh. So, although it makes a wonderful addition to every room of your home, it’s the best finish option for these steamy spaces in particular."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-MEM-Kitchens-Bathrooms_1_.jpeg"
+   },
+   "Tough and easy-to-clean": {
+    "intro": [
+     "Our super-tough superstar for washable walls, Modern Emulsion has a high-performance formula that makes it easy to wipe away spills and marks – not paint. We use high-quality minerals and strong binders to make sure it’s also resistant to knocks and scrapes."
+    ],
+    "text": [],
+    "img": "assets/img/kf/video-youtube-3T6zIYMQ6OY.jpg",
+    "video": true
+   },
+   "Water based": {
+    "intro": [
+     "We’re proud to have been the first in the industry to transition to a completely water based range back in 2010. As a result, all of our finishes, including our tough trim and floor paints, are made with a low-odour, low-VOC water base that scores A+ for indoor air quality.",
+     "Plus, our water based paint doesn’t discolour over time like solvent based paints can. So your spaces stay beautiful for longer."
+    ],
+    "text": []
+   },
+   "Toy safe": {
+    "intro": [
+     "This finish is independently tested and certified toy-safe in accordance with Safety of Toys Part 3: Migration of certain elements (EN 71-3:2019+A1:2021). That means you can add a splash of colour to toys, cribs and other surfaces little ones come into contact with. Our paints also have hardly any odour and don’t need any solvents to clean up, so you can breathe easy during application and beyond."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-toy-safe_5.jpg"
+   }
+  },
+  "dead-flat": {
+   "Our most matt finish": {
+    "intro": [
+     "Our most matt finish yet, Dead Flat is ultra-matt from every angle.",
+     "With just a 2% sheen level, less light bounces off the surface of the paint, so you can fully enjoy the true depth of colour. Our signature rich colours seem even richer, especially our darker shades. So, you can enjoy the ultimate Farrow & Ball aesthetic. Plus, for the first time, you can achieve an ultra-matt look for your woodwork too."
+    ],
+    "text": [
+     "Our deeper, richer colours are available in a range of finishes with different sheen levels. Sheen always affects how colour appears: the same shade in gloss can look very different in matt. That’s why we specifically adjust the formula for every finish to make sure the balance is exactly right and you get the colour you were expecting. Our colours and finishes are formulated together, so you simply can’t have one without the other."
+    ],
+    "img": "assets/img/kf/video-vimeo-809114751.jpg",
+    "video": true
+   },
+   "Multi-surface": {
+    "intro": [
+     "Take Dead Flat across walls, woodwork and metal, for an effortless, full-room transformation with just one finish. Now you can spend less time fiddling with different finishes and more time admiring the finished result."
+    ],
+    "text": [],
+    "img": "assets/img/kf/video-vimeo-809114804.jpg",
+    "video": true
+   },
+   "For walls, interior wood and metal": {
+    "intro": [
+     "Suitable for use on walls, interior wood and metal."
+    ],
+    "text": [
+     "From walls, floors and furniture to radiators, skirtings and sheds, our range of paint finishes can help you transform almost any surface in your home (and outside it, too). Browse our full selection of finishes to find the perfect paint for your project."
+    ],
+    "img": "assets/img/kf/video-vimeo-805568116.jpg",
+    "video": true
+   },
+   "Scrubbable and protected against mould": {
+    "intro": [
+     "Dead Flat creates beautiful spaces that stay beautiful."
+    ],
+    "text": [
+     "It’s scuff-resistant and scrubbable, meaning you can easily wipe off marks without any paint transferring to your cloth. Protected against mould, Dead Flat is ideal for moisture-prone spaces such as kitchens and bathrooms, as well as a hallways, playrooms and other busy areas, so you can enjoy deep, durable colour throughout your home."
+    ],
+    "img": "assets/img/kf/video-vimeo-809114777.jpg",
+    "video": true
+   },
+   "Water based": {
+    "intro": [
+     "We’re proud to have been the first in the industry to transition to a completely water based range back in 2010. As a result, all of our finishes, including our tough trim and floor paints, are made with a low-odour, low-VOC water base that scores A+ for indoor air quality.",
+     "Plus, our water based paint doesn’t discolour over time like solvent based paints can. So your spaces stay beautiful for longer."
+    ],
+    "text": []
+   },
+   "Toy safe": {
+    "intro": [
+     "This finish is independently tested and certified toy-safe in accordance with Safety of Toys Part 3: Migration of certain elements (EN 71-3:2019+A1:2021). That means you can add a splash of colour to toys, cribs and other surfaces little ones come into contact with. Our paints also have hardly any odour and don’t need any solvents to clean up, so you can breathe easy during application and beyond."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-toy-safe_6.jpg"
+   }
+  },
+  "casein-distemper": {
+   "Very matt": {
+    "intro": [
+     "Casein Distemper offers a very flat matt finish with a breathable, permeable structure. 2% sheen."
+    ],
+    "text": [
+     "Our deeper, richer colours are available in a range of finishes with different sheen levels. Sheen always affects how colour appears: the same shade in gloss can look very different in matt. That’s why we specifically adjust the formula for every finish to make sure the balance is exactly right and you get the colour you were expecting. Our colours and finishes are formulated together, so you simply can’t have one without the other."
+    ],
+    "img": "assets/img/kf/KF-CAS-Verymatt_1_.jpeg"
+   },
+   "For interior lime-based plaster": {
+    "intro": [
+     "A traditional specialist finish formulated for use on interior lime-based plaster walls and ceilings in low traffic areas."
+    ],
+    "text": [
+     "From walls, floors and furniture to radiators, skirtings and sheds, our range of paint finishes can help you transform almost any surface in your home (and outside it, too). Browse our full selection of finishes to find the perfect paint for your project."
+    ],
+    "img": "assets/img/kf/KF-CAS-lime-based-plaster-small.jpg"
+   },
+   "Highly breathable": {
+    "intro": [
+     "Carefully sourced casein resins with unique open polymers let moisture pass through this flat matt finish, allowing interior plaster walls and ceiling to breathe."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-CAS-Highly-breathable-small.jpg"
+   },
+   "Water based": {
+    "intro": [
+     "We’re proud to have been the first in the industry to transition to a completely water based range back in 2010. As a result, all of our finishes, including our tough trim and floor paints, are made with a low-odour, low-VOC water base that scores A+ for indoor air quality.",
+     "Plus, our water based paint doesn’t discolour over time like solvent based paints can. So your spaces stay beautiful for longer."
+    ],
+    "text": []
+   }
+  },
+  "flat-eggshell": {
+   "Our flattest interior eggshell": {
+    "intro": [
+     "With just a 20% sheen, Flat Eggshell makes an understated statement on skirting boards, stairs and more."
+    ],
+    "text": [
+     "Our deeper, richer colours are available in a range of finishes with different sheen levels. Sheen always affects how colour appears: the same shade in gloss can look very different in matt. That’s why we specifically adjust the formula for every finish to make sure the balance is exactly right and you get the colour you were expecting. Our colours and finishes are formulated together, so you simply can’t have one without the other."
+    ],
+    "img": "assets/img/kf/226MEM_FEG_56FEG.jpg"
+   },
+   "Tough enough for floors": {
+    "intro": [
+     "Flat Eggshell is scrubbable, stain resistant and even tough enough for floors. With this super tough finish, you can decorate when you want to, not because you have to."
+    ],
+    "text": [
+     "From walls, floors and furniture to radiators, skirtings and sheds, our range of paint finishes can help you transform almost any surface in your home (and outside it, too). Browse our full selection of finishes to find the perfect paint for your project."
+    ],
+    "img": "assets/img/kf/2005MEM_318FEG.jpg"
+   },
+   "A classic choice": {
+    "intro": [
+     "Flat Eggshell brings a timeless look to skirting boards, door frames, windowsills and other trim. The long-lasting formula won’t yellow over time, so your transformation will stay picture perfect for years to come."
+    ],
+    "text": [],
+    "img": "assets/img/kf/317FEG_314FEG.jpg"
+   },
+   "Water based": {
+    "intro": [
+     "We’re proud to have been the first in the industry to transition to a completely water based range back in 2010. As a result, all of our finishes, including our tough trim and floor paints, are made with a low-odour, low-VOC water base that scores A+ for indoor air quality.",
+     "Plus, our water based paint doesn’t discolour over time like solvent based paints can. So your spaces stay beautiful for longer."
+    ],
+    "text": []
+   },
+   "Toy safe": {
+    "intro": [
+     "This finish is independently tested and certified toy-safe in accordance with Safety of Toys Part 3: Migration of certain elements (EN 71-3:2019+A1:2021). That means you can add a splash of colour to toys, cribs and other surfaces little ones come into contact with. Our paints also have hardly any odour and don’t need any solvents to clean up, so you can breathe easy during application and beyond."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-toy-safe_7.jpg"
+   }
+  },
+  "modern-eggshell": {
+   "Mid sheen": {
+    "intro": [
+     "Our super-tough mid shine finish with a 40% sheen."
+    ],
+    "text": [
+     "Our deeper, richer colours are available in a range of finishes with different sheen levels. Sheen always affects how colour appears: the same shade in gloss can look very different in matt. That’s why we specifically adjust the formula for every finish to make sure the balance is exactly right and you get the colour you were expecting. Our colours and finishes are formulated together, so you simply can’t have one without the other."
+    ],
+    "img": "assets/img/kf/KF-MEG-Midsheen-small.jpg"
+   },
+   "Tough enough for floors": {
+    "intro": [
+     "This ultra-durable eggshell is even tough enough for interior wooden and concrete floors."
+    ],
+    "text": [
+     "From walls, floors and furniture to radiators, skirtings and sheds, our range of paint finishes can help you transform almost any surface in your home (and outside it, too). Browse our full selection of finishes to find the perfect paint for your project."
+    ],
+    "img": "assets/img/kf/KF-MEG-Floors-small.jpg"
+   },
+   "Our most durable finish": {
+    "intro": [
+     "Modern Eggshell is our toughest finish — it’s even suitable for floors. Formulated by our experts using the finest ingredients, it’s washable, wipeable and stands up to scuffs or scrapes."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-MEG-toughest-finish.jpg"
+   },
+   "Water based": {
+    "intro": [
+     "We’re proud to have been the first in the industry to transition to a completely water based range back in 2010. As a result, all of our finishes, including our tough trim and floor paints, are made with a low-odour, low-VOC water base that scores A+ for indoor air quality.",
+     "Plus, our water based paint doesn’t discolour over time like solvent based paints can. So your spaces stay beautiful for longer."
+    ],
+    "text": []
+   },
+   "Toy safe": {
+    "intro": [
+     "This finish is independently tested and certified toy-safe in accordance with Safety of Toys Part 3: Migration of certain elements (EN 71-3:2019+A1:2021). That means you can add a splash of colour to toys, cribs and other surfaces little ones come into contact with. Our paints also have hardly any odour and don’t need any solvents to clean up, so you can breathe easy during application and beyond."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-toy-safe_7.jpg"
+   }
+  },
+  "full-gloss": {
+   "Our highest shine finish": {
+    "intro": [
+     "Our Ultra-high-gloss finish with 95% sheen is available in our full range of colours."
+    ],
+    "text": [
+     "Photo credit; Aaron Dougherty",
+     "Our deeper, richer colours are available in a range of finishes with different sheen levels. Sheen always affects how colour appears: the same shade in gloss can look very different in matt. That’s why we specifically adjust the formula for every finish to make sure the balance is exactly right and you get the colour you were expecting. Our colours and finishes are formulated together, so you simply can’t have one without the other."
+    ],
+    "img": "assets/img/kf/KF-FG-highest-shine-small.jpg"
+   },
+   "For interior and exterior wood and metal": {
+    "intro": [
+     "Full Gloss is an ultra-high-gloss water based finish suitable for use on both interior and exterior surfaces. It is mostly used on wood and metal trim, but it can also bring a touch of glamour to walls and ceilings, and is a popular choice for front doors."
+    ],
+    "text": [
+     "From walls, floors and furniture to radiators, skirtings and sheds, our range of paint finishes can help you transform almost any surface in your home (and outside it, too). Browse our full selection of finishes to find the perfect paint for your project."
+    ],
+    "img": "assets/img/kf/KF-FG-interior-exterior-wood-small.jpg"
+   },
+   "Durable and washable": {
+    "intro": [
+     "Full Gloss is a durable, washable finish so you can easily wipe away spills and marks – without wiping away paint. We use high-quality minerals and strong binders to make sure it’s also resistant to knocks and scrapes."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-FG-washable-durable.jpg"
+   },
+   "Lasts up to 6 years outside": {
+    "intro": [
+     "When applied according to our Product Advice Sheets, the resin-rich formula resists flaking, peeling and fading for up to six years. So, your exterior stays beautiful, no matter the weather."
+    ],
+    "text": [
+     "Photo credit; F&B X Collagerie"
+    ],
+    "img": "assets/img/kf/KF-FG-Lasts-6years-small.jpg"
+   },
+   "Water based": {
+    "intro": [
+     "We’re proud to have been the first in the industry to transition to a completely water based range back in 2010. As a result, all of our finishes, including our tough trim and floor paints, are made with a low-odour, low-VOC water base that scores A+ for indoor air quality.",
+     "Plus, our water based paint doesn’t discolour over time like solvent based paints can. So your spaces stay beautiful for longer."
+    ],
+    "text": []
+   },
+   "Toy safe": {
+    "intro": [
+     "This finish is independently tested and certified toy-safe in accordance with Safety of Toys Part 3: Migration of certain elements (EN 71-3:2019+A1:2021). That means you can add a splash of colour to toys, cribs and other surfaces little ones come into contact with. Our paints also have hardly any odour and don’t need any solvents to clean up, so you can breathe easy during application and beyond."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-toy-safe_3.jpg"
+   }
+  },
+  "exterior-masonry": {
+   "Very matt": {
+    "intro": [
+     "Exterior Masonry is our super-matt, long-lasting finish for exterior walls with a 2% sheen."
+    ],
+    "text": [
+     "Our deeper, richer colours are available in a range of finishes with different sheen levels. Sheen always affects how colour appears: the same shade in gloss can look very different in matt. That’s why we specifically adjust the formula for every finish to make sure the balance is exactly right and you get the colour you were expecting. Our colours and finishes are formulated together, so you simply can’t have one without the other"
+    ],
+    "img": "assets/img/kf/KF-EXM-verymatt-small.jpg"
+   },
+   "For exterior brick and render": {
+    "intro": [
+     "For exterior brick, render and concrete, Exterior Masonry brings super matt, long-lasting colour to exterior walls. Its water-resistant formula protects walls, while also offering the highest level of water vapour permeability to allow them to breathe."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-EXM-exterior-brick-render-small.jpg"
+   },
+   "Weather resistant and breathable": {
+    "intro": [
+     "The water-resistant formula protects walls from the weather, while also offering the highest level of water vapour permeability to allow them to breathe. So, you can transform your exterior with colour that lasts."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-EXM-weatherresistant-breathable-small.jpg"
+   },
+   "Protected from fungi and algae": {
+    "intro": [
+     "Our expert chemists have formulated Exterior Masonry with added protection against fungi and algae, so your outdoor spaces stay looking their best."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-EXM-fungi-protected-small.jpg"
+   },
+   "Lasts up to 15 years": {
+    "intro": [
+     "When applied according to our Product Advice Sheets, the resin-rich formula resists flaking, peeling and fading for up to 15 years. So, your exterior stays beautiful, no matter the weather."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-EXM-Lasts-15years_1_.jpg"
+   },
+   "Water based": {
+    "intro": [
+     "We’re proud to have been the first in the industry to transition to a completely water based range back in 2010. As a result, all of our finishes, including our tough trim and floor paints, are made with a low-odour, low-VOC water base that scores A+ for indoor air quality.",
+     "Plus, our water based paint doesn’t discolour over time like solvent based paints can. So your spaces stay beautiful for longer."
+    ],
+    "text": []
+   },
+   "Toy safe": {
+    "intro": [
+     "This finish is independently tested and certified toy-safe in accordance with Safety of Toys Part 3: Migration of certain elements (EN 71-3:2019+A1:2021). That means you can add a splash of colour to toys, cribs and other surfaces little ones come into contact with. Our paints also have hardly any odour and don’t need any solvents to clean up, so you can breathe easy during application and beyond."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-toy-safe_1.jpg"
+   }
+  },
+  "exterior-eggshell": {
+   "Low sheen": {
+    "intro": [
+     "The soft, low sheen satin finish of our Exterior Eggshell brings long-lasting colour to outdoor spaces. 20% sheen."
+    ],
+    "text": [
+     "Our deeper, richer colours are available in a range of finishes with different sheen levels. Sheen always affects how colour appears: the same shade in gloss can look very different in matt. That’s why we specifically adjust the formula for every finish to make sure the balance is exactly right and you get the colour you were expecting. Our colours and finishes are formulated together, so you simply can’t have one without the other."
+    ],
+    "img": "assets/img/kf/KF-EXE-low-sheen-small.jpg"
+   },
+   "For exterior wood and metal": {
+    "intro": [
+     "Suitable for exterior wood and metal, our Exterior Eggshell brings long-lasting colour to outdoor spaces with a finish that remains flexible once dry, protecting wood and metal surfaces through changing weather. Added preservatives help to prevent the growth of algae and fungi, and the resin-rich formula resists flaking, peeling, and fading for up to six years."
+    ],
+    "text": [
+     "From walls, floors and furniture to radiators, skirtings and sheds, our range of paint finishes can help you transform almost any surface in your home (and outside it, too). Browse our full selection of finishes to find the perfect paint for your project."
+    ],
+    "img": "assets/img/kf/KF-EXE-Exteriorwood-metal-small.jpg"
+   },
+   "Weather resistant and flexible": {
+    "intro": [
+     "This finish has been carefully designed to be water resistant and stay flexible once dry, protecting wood and metal surfaces through changing weather. At the same time, it also offers the highest level of water vapour permeability to allow them to breathe. So, you can transform your exterior with colour that lasts."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-EXE-weather-resistant-flexible-small.jpg"
+   },
+   "Protected from fungi and algae": {
+    "intro": [
+     "Our expert chemists have formulated Exterior Eggshell with added protection against fungi and algae, so your outdoor spaces stay looking their best."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-EXE-fungiandalgae-small.jpg"
+   },
+   "Lasts up to 6 years": {
+    "intro": [
+     "When applied according to our Product Advice Sheets, the resin-rich formula resists flaking, peeling and fading for up to six years. So, your exterior stays beautiful, no matter the weather."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-EXE-lasts-6years-small.jpg"
+   },
+   "Water based": {
+    "intro": [
+     "We’re proud to have been the first in the industry to transition to a completely water based range back in 2010. As a result, all of our finishes, including our tough trim and floor paints, are made with a low-odour, low-VOC water base that scores A+ for indoor air quality.",
+     "Plus, our water based paint doesn’t discolour over time like solvent based paints can. So your spaces stay beautiful for longer."
+    ],
+    "text": []
+   },
+   "Toy safe": {
+    "intro": [
+     "This finish is independently tested and certified toy-safe in accordance with Safety of Toys Part 3: Migration of certain elements (EN 71-3:2019+A1:2021). That means you can add a splash of colour to toys, cribs and other surfaces little ones come into contact with. Our paints also have hardly any odour and don’t need any solvents to clean up, so you can breathe easy during application and beyond."
+    ],
+    "text": [],
+    "img": "assets/img/kf/KF-toy-safe_2.jpg"
+   }
+  }
+ }
 };
-// Panel keys: Water based and Toy safe share one panel across finishes; Estate Emulsion's own features have captured
-// copy; any other finish's feature gets a finish-scoped key, so it falls back to that finish's description
-const finishFeatureKey = (f, label) => {
-  const k = featureKey(label);
-  if (k === 'water-based' || k === 'toy-safe') return k;
-  if (f.id === 'estate-emulsion') return k === 'very-matt' ? 'very-matt' : k;
-  return `${f.id}--${k}`;
-};
+// Panel lookup: colour chips by key, finish chips by their live drawer title (Estate Emulsion's "Very matt, 2% sheen"
+// is drawn with its sheen, so it falls back to the text before the comma)
+function featurePanel(chip) {
+  const label = chip.querySelector('span').textContent;
+  if (chip.closest('#kf-colour')) return { title: label, ...KF_LIVE.colour[chip.dataset.feature] };
+  const live = KF_LIVE.finish[currentFinish] || {};
+  const title = live[label] ? label : label.split(',')[0];
+  if (live[title]) return { title, ...live[title] };
+  const f = byId(currentFinish);
+  return { title: label, intro: [(FINISH_FEATURES[f.id] && FINISH_FEATURES[f.id].about) || f.text], text: [] };
+}
 const chipHtml = (key, icon, label) => `<button class="kf-chip" type="button" aria-haspopup="dialog" aria-controls="kf-panel" data-feature="${key}"><img src="assets/icons/${icon}.svg" width="20" height="20" alt=""><span>${esc(label)}</span></button>`;
 const kfFinishChips = document.getElementById('kf-finish');
 
@@ -209,10 +667,10 @@ addEventListener('resize', markWrappedChips);
 
 function renderFinishFeatures(f) {
   const data = FINISH_FEATURES[f.id];
-  document.getElementById('kf-finish-name').textContent = f.name;
+  document.getElementById('kf-finish-name').textContent = `${f.name} features`;
   document.getElementById('kf-finish-text').textContent = (data && data.about) || f.text;
   if (data) {
-    kfFinishChips.innerHTML = data.features.map((label) => chipHtml(finishFeatureKey(f, label), featureIcon(label), label)).join('');
+    kfFinishChips.innerHTML = data.features.map((label) => chipHtml(featureKey(label), featureIcon(label), label)).join('');
   }
   markWrappedChips();
 }
@@ -337,20 +795,18 @@ drawer.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeDrawer();
   else if (e.key === 'Tab') trapTab(e, drawer, 'button, a[href]');
 });
-// Key feature panel (363:1058): every Key features chip opens it with that feature's icon, title and copy
+// Key feature panel (363:1058): titled "Key features" for every chip; the chip's feature name and copy fill the body
 const kfPanel = document.getElementById('kf-panel');
 function openFeature(chip) {
-  const label = chip.querySelector('span').textContent;
-  const p = FEATURE_PANELS[chip.dataset.feature]
-    || { title: label, intro: (FINISH_FEATURES[currentFinish] && FINISH_FEATURES[currentFinish].about) || byId(currentFinish).text };
-  document.getElementById('kfp-icon').src = chip.querySelector('img').src;
-  document.getElementById('kfp-title').textContent = p.title;
-  document.getElementById('kfp-intro').textContent = p.intro || '';
-  document.getElementById('kfp-text').textContent = p.text || '';
-  // Stand-in photo: the current colour's first room photo (the live panels use F&B-hosted images)
-  const photo = document.getElementById('kfp-photo');
-  photo.src = GALLERY[0].src;
-  photo.alt = `${lbPaintName} in a ${GALLERY[0].room.toLowerCase()}`;
+  const p = featurePanel(chip);
+  const paras = (list) => (list || []).map((t) => `<p>${esc(t)}</p>`).join('');
+  document.getElementById('kfp-name').textContent = p.title;
+  document.getElementById('kfp-intro').innerHTML = paras(p.intro);
+  document.getElementById('kfp-text').innerHTML = paras(p.text);
+  const media = document.getElementById('kfp-media');
+  media.hidden = !p.img;
+  media.classList.toggle('is-video', !!p.video);
+  if (p.img) document.getElementById('kfp-photo').src = p.img;
   kfPanel.querySelector('.kfp__body').scrollTop = 0;
   openOverlay(kfPanel, 'drawer-open', kfPanel.querySelector('.drawer__panel'));
 }
