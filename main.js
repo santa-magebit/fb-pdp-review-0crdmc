@@ -2,7 +2,7 @@
 // paint calculator, primer picker, favourite, chapters accordion, carousels, sticky strip, prototype notice and the
 // colour preview switcher.
 
-const money = (n) => `$${n.toFixed(2)}`;
+const money = (n) => `£${n.toFixed(2)}`;
 const esc = (s) => s.replace(/&/g, '&amp;');
 const mobile = window.matchMedia('(max-width: 767px)');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -321,7 +321,7 @@ function updateTotal() {
   updateBasketBar(total);
 }
 
-// Sticky strip summary (Figma 340:958): desktop "Finish, N tins, $total"; mobile drops the finish
+// Sticky strip summary (Figma 340:958): desktop "Finish, N tins, £total"; mobile drops the finish
 const stripSumD = document.getElementById('strip-sum-d');
 const stripSumM = document.getElementById('strip-sum-m');
 function updateBasketBar(total) {
