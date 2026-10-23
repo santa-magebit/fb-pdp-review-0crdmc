@@ -644,6 +644,12 @@ const KF_LIVE = {
 };
 // Panel lookup: colour chips by key, finish chips by their live drawer title (Estate Emulsion's "Very matt, 2% sheen"
 // is drawn with its sheen, so it falls back to the text before the comma)
+// Free stock photos (Unsplash licence) for panels whose live drawer has no photo or video; labelled "Stock image".
+// zcGe4MHffL4: brush in a white paint bucket (hamid sedaghat). i3NR1cnwqUo: white wooden kitchen cabinets (Julia).
+const KF_STOCK = {
+  'Water based': 'assets/img/kf/stock-unsplash-zcGe4MHffL4.jpg',
+  'For interior wood, metal and concrete': 'assets/img/kf/stock-unsplash-i3NR1cnwqUo.jpg',
+};
 function featurePanel(chip) {
   const label = chip.querySelector('span').textContent;
   if (chip.closest('#kf-colour')) return { title: label, ...KF_LIVE.colour[chip.dataset.feature] };
@@ -803,10 +809,12 @@ function openFeature(chip) {
   document.getElementById('kfp-name').textContent = p.title;
   document.getElementById('kfp-intro').innerHTML = paras(p.intro);
   document.getElementById('kfp-text').innerHTML = paras(p.text);
+  const stock = !p.img && KF_STOCK[p.title];
   const media = document.getElementById('kfp-media');
-  media.hidden = !p.img;
+  media.hidden = !(p.img || stock);
   media.classList.toggle('is-video', !!p.video);
-  if (p.img) document.getElementById('kfp-photo').src = p.img;
+  media.classList.toggle('is-stock', !!stock);
+  if (p.img || stock) document.getElementById('kfp-photo').src = p.img || stock;
   kfPanel.querySelector('.kfp__body').scrollTop = 0;
   openOverlay(kfPanel, 'drawer-open', kfPanel.querySelector('.drawer__panel'));
 }

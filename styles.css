@@ -137,7 +137,9 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .kfp__photo { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
 /* Video placeholder: the live video's poster at 16:9 with a centred play button and a fullscreen mark */
 .kfp__media.is-video .kfp__photo { aspect-ratio: 16 / 9; }
-.kfp__play, .kfp__fullscreen { display: none; }
+.kfp__play, .kfp__fullscreen, .kfp__stock { display: none; }
+/* Watermark on stand-in stock photos so the client can tell them from the live images */
+.kfp__media.is-stock .kfp__stock { position: absolute; left: 12px; top: 12px; display: block; padding: 4px 10px; border-radius: 48px; background: rgba(255, 255, 255, .8); font-size: 12px; line-height: 16px; color: var(--ink); }
 .kfp__media.is-video .kfp__play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: grid; place-items: center; border-radius: 50%; }
 .kfp__media.is-video .kfp__fullscreen { position: absolute; right: 12px; bottom: 12px; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 18px; background: rgba(0, 0, 0, .35); }
 .kfp__play:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
