@@ -122,7 +122,6 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .kf-chip.is-wrapped { width: 100%; border-radius: 24px; }
 .kf__finish-head { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; }
 /* The chosen finish is a plain label, not a heading; only the block has a title ("Key features") */
-.kf__finish { font-weight: 500; font-size: 14px; line-height: 20px; color: var(--muted); }
 .kf__change { font-weight: 500; font-size: 14px; line-height: 20px; color: var(--ink); text-decoration: underline; }
 .kf__text { font-size: 15px; line-height: 22px; color: var(--ink); }
 .kf-chip:focus-visible, .kf__change:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
@@ -161,7 +160,13 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 /* Basket slide-out (379:1065): 480px, the item first, then two short suggestion lists, checkout always in reach */
 .drawer--basket .drawer__scrim { background: rgba(0, 0, 0, .4); }
 .drawer--basket .drawer__panel { width: 480px; border-left: 1px solid var(--line); }
-.bk__header { display: flex; align-items: center; gap: 12px; padding: 28px 24px 20px 32px; border-bottom: 1px solid var(--line); }
+.bk__header { position: relative; display: flex; align-items: center; gap: 12px; padding: 28px 24px 20px 32px; border-bottom: 1px solid var(--line); }
+/* Auto-close countdown: a line over the header's bottom border that runs out as the slide-out closes itself */
+.bk__timer { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--ink); transform-origin: left; transform: scaleX(0); transition: opacity .2s ease; }
+.bk__timer.is-running { animation: bk-timer linear forwards; }
+.bk__timer.is-paused { animation-play-state: paused; }
+.bk__timer.is-off { opacity: 0; }
+@keyframes bk-timer { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 .bk__title { flex: 1; min-width: 0; margin: 0; font-weight: 400; font-size: 24px; line-height: 32px; }
 .bk__body { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 32px; padding: 32px; }
 .bk__items { display: flex; flex-direction: column; gap: 16px; margin: 0; padding: 0; list-style: none; }
@@ -188,7 +193,7 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .bk__checkout { flex: 1; }
 .bk-row__add:focus-visible, .bk__view:focus-visible, .bk__checkout:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) {
-  #add-to-basket, .atb-state, .atb-spinner, .icon-btn__badge.is-bump, .m-badge.is-bump { transition: none; animation: none; }
+  #add-to-basket, .atb-state, .atb-spinner, .icon-btn__badge.is-bump, .m-badge.is-bump, .bk__timer { transition: none; animation: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .kf-chip { transition: none; }
@@ -340,13 +345,18 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .scheme__room i:nth-child(2) { left: 66.12%; top: -2px; right: 0; height: 238px; background: var(--accent); }
 .scheme__room i:nth-child(3) { left: 0; right: 0; bottom: -1px; height: 67px; background: var(--skirting); }
 .scheme__colours { display: flex; flex-direction: column; gap: 12px; padding-bottom: 16px; }
-.scheme__colours li { display: flex; align-items: center; gap: 16px; }
 .scheme__colours li + li { position: relative; margin-top: 13px; }
 .scheme__colours li + li::before { content: ""; position: absolute; left: 0; right: 0; top: -13px; height: 1px; background: var(--line); }
-.scheme__swatch { width: 40px; height: 40px; flex: none; border-radius: 20px; }
-.scheme__text { flex: 1; min-width: 0; display: flex; flex-direction: column; font-size: 14px; line-height: 20px; }
-.scheme__text span:last-child { white-space: nowrap; }
-.scheme__text b { font-size: 16px; line-height: 24px; margin-right: 4px; }
+
+/* Colour row: a chip with the colour number inside (like the sample swatch in the order card), the name, and one
+   secondary line (a short description, or the colour's role in a scheme). Shared by "In this set" and the scheme cards. */
+.colour-row { display: flex; align-items: center; gap: 16px; }
+.colour-row__chip { position: relative; width: 64px; height: 64px; flex: none; border-radius: 8px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08); }
+.colour-row__chip span { position: absolute; left: 6px; bottom: 6px; font-weight: 700; font-size: 12px; line-height: 16px; color: #fff; white-space: nowrap; }
+.colour-row__chip.is-pale span { color: var(--ink); }
+.colour-row__text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.colour-row__name { display: block; font-weight: 700; font-size: 16px; line-height: 24px; }
+.colour-row__sub { display: block; font-size: 14px; line-height: 20px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .scheme__video { position: relative; display: block; width: 100%; height: 200px; border-radius: 8px; overflow: hidden; }
 .scheme__video > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .scheme__play {
@@ -370,13 +380,10 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
   background: #fff; color: var(--ink);
 }
 .reds__content { display: flex; flex-direction: column; gap: 24px; }
-.reds__kicker { margin-bottom: 12px; font-weight: 700; }
-.reds__list li { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.reds__kicker { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; font-weight: 700; }
+.reds__kicker-sub { font-weight: 400; font-size: 14px; line-height: 20px; color: var(--muted); white-space: nowrap; }
+.reds__list li { padding: 12px 0; border-bottom: 1px solid var(--line); }
 .reds__list li:first-child { border-top: 1px solid var(--line); }
-.reds__swatch { width: 40px; height: 40px; flex: none; border-radius: 20px; }
-.reds__text { flex: 1; min-width: 0; display: flex; flex-direction: column; font-size: 14px; line-height: 20px; }
-.reds__text span:last-child { white-space: nowrap; }
-.reds__text b { font-size: 16px; line-height: 24px; margin-right: 4px; }
 
 /* ---------- Why choose: chapters (113:4901) ---------- */
 .chapters { padding: 80px 0; }
@@ -763,18 +770,30 @@ body.notice-open { overflow: hidden; }
 .footer__art { height: 52px; background: url("assets/img/bottom-bar.png") 0 0 / 100% 100% no-repeat; }
 
 /* ---------- Sticky strip (Figma 340:958, desktop 340:964) ----------
-   Shown once the order card's Add to Basket scrolls away. Pinned to the top on desktop, a hairline instead of a shadow. */
+   Shown once the order card's Add to Basket scrolls away. Pinned to the bottom on both breakpoints, a hairline on top
+   instead of a shadow; slides up from below. */
 .strip {
-  position: fixed; z-index: 60; left: 0; right: 0; top: 0; background: #fff; border-bottom: 1px solid var(--line);
-  transform: translateY(-110%); transition: transform .25s ease;
+  position: fixed; z-index: 60; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid var(--line);
+  transform: translateY(110%); transition: transform .25s ease;
 }
+/* While it shows, the end of the page stays clear of it (77px = 76 + the 1px hairline) */
+body.has-strip { padding-bottom: 77px; }
+html:has(body.has-strip) { scroll-padding-bottom: 77px; }
 .strip.is-visible { transform: none; }
 .strip__inner { height: 76px; display: flex; align-items: center; gap: 16px; padding: 12px 0; }
 .strip__chip { width: 48px; height: 48px; flex: none; border-radius: 6px; background: var(--paint); }
 .strip__text { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .strip__name { font-weight: 700; font-size: 16px; line-height: 22px; white-space: nowrap; }
 .strip__summary { overflow: hidden; text-overflow: ellipsis; font-size: 14px; line-height: 19px; color: var(--muted); white-space: nowrap; }
+.strip__summary:empty { display: none; }
+.strip__price { font-weight: 700; font-size: 18px; line-height: 24px; white-space: nowrap; }
+/* Total, right-aligned before the heart; hidden while no size is chosen */
+.strip__total { flex: none; margin: 0 8px 0 auto; display: flex; flex-direction: column; align-items: flex-end; }
+.strip__total[hidden] { display: none; }
+.strip__total span { font-size: 13px; line-height: 18px; color: var(--muted); }
+.strip__total strong { font-weight: 700; font-size: 22px; line-height: 28px; white-space: nowrap; }
 .strip__fav { margin-left: auto; }
+.strip__total:not([hidden]) + .strip__fav { margin-left: 0; }
 .strip__btn { flex: none; margin-left: auto; padding: 0 32px; }
 .strip__fav + .strip__btn { margin-left: 0; }
 @media (prefers-reduced-motion: reduce) {
@@ -964,7 +983,6 @@ body.notice-open { overflow: hidden; }
   .scheme__room i:nth-child(2) { top: 0; left: 180px; width: 92px; height: 160px; }
   .scheme__room i:nth-child(3) { top: 112px; bottom: auto; height: 48px; background: var(--trim); }
   .scheme__colours { padding-bottom: 0; }
-  .scheme__swatch { border: 1px solid var(--line); }
   .scheme__video { height: 160px; }
   /* 60px play icon centred on the 272 × 160 video card; it's a direct img child, so undo the cover-photo sizing */
   .scheme__video > .scheme__play-m { inset: auto; left: 106px; top: 50px; width: 60px; height: 60px; object-fit: contain; }
@@ -978,6 +996,7 @@ body.notice-open { overflow: hidden; }
   .reds__intro { font-family: var(--verlag); line-height: 26px; }
   /* Sentence case, like desktop: no all-caps labels anywhere (Figma 148:800) */
   .reds__kicker { font-family: var(--verlag); font-weight: 700; font-size: 16px; line-height: 24px; color: var(--ink); }
+  .colour-row__sub { white-space: normal; overflow: visible; }
 
   /* Why choose: chapters (149:772) */
   .chapters { padding: 32px 0; }
@@ -1135,14 +1154,13 @@ body.notice-open { overflow: hidden; }
   .calc__footer { gap: 12px; padding: 16px 20px 24px; }
   .calc__space { width: auto; flex: 1; }
 
-  /* Sticky strip on mobile (340:1023): at the bottom, no heart, finish left out of the summary */
-  .strip { top: auto; bottom: 0; border-bottom: 0; border-top: 1px solid var(--line); transform: translateY(110%); }
+  /* Sticky strip on mobile (340:1023): price first, then sizes and coverage; no heart, no finish name */
   /* 12px all round (340:1023): 12 + 52 button + 12 = 76, plus the home-indicator inset on phones that have one */
   .strip__inner { height: auto; margin: 0; gap: 12px; padding: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
   .strip__chip { width: 36px; height: 36px; }
   .strip__text { flex: 1; }
-  .strip__name { font-size: 15px; line-height: 21px; }
   .strip__summary { font-size: 13px; line-height: 18px; }
+  body.has-strip { padding-bottom: calc(77px + env(safe-area-inset-bottom)); }
   .strip__btn { padding: 0 20px; font-weight: 700; }
 }
 
@@ -1162,6 +1180,9 @@ body.notice-open { overflow: hidden; }
 }
 
 .pswitch { position: fixed; z-index: 95; left: 24px; bottom: 24px; font-family: var(--verlag); color: var(--ink); }
+/* Rides 24px above the sticky strip while it shows (77px tall) */
+.pswitch { transition: bottom .25s ease; }
+.strip.is-visible ~ .pswitch { bottom: 101px; }
 .pswitch__pill {
   height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 18px 0 8px; border-radius: 22px; background: #fff;
   box-shadow: 0 4px 24px rgba(0, 0, 0, .16); font-weight: 500; font-size: 15px; line-height: 20px; white-space: nowrap;

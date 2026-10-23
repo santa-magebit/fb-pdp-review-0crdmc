@@ -893,15 +893,26 @@ function updateTotal() {
   updateBasketBar(total);
 }
 
-// Sticky strip summary (Figma 340:958): desktop "Finish, N tins, £total"; mobile drops the finish
+// Sticky strip summary (Figma 340:958): says what is selected and what it covers; the price sits apart.
+// Desktop: "Estate Emulsion, 2.5 L × 1 and 750 ml × 3, covers approx. 39 m²" + a Total block.
+// Mobile: the total first, then "2.5 L × 1, 30 m²" (or "4 tins, 62 m²" for several sizes), no finish name.
 const stripSumD = document.getElementById('strip-sum-d');
 const stripSumM = document.getElementById('strip-sum-m');
+const stripPriceM = document.getElementById('strip-price-m');
+const stripTotal = document.getElementById('strip-total');
+const stripTotalV = document.getElementById('strip-total-v');
 function updateBasketBar(total) {
-  const tins = packs.reduce((n, p) => n + qtyOf(p), 0);
+  const chosen = packs.map((p) => [p, qtyOf(p)]).filter(([, q]) => q > 0).sort((a, b) => b[0].covers - a[0].covers);
+  const tins = chosen.reduce((n, [, q]) => n + q, 0);
+  const covers = chosen.reduce((n, [p, q]) => n + p.covers * q, 0);
+  const parts = chosen.map(([p, q]) => `${p.size} × ${q}`);
+  const sizes = parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}` : parts[0];
   const finish = byId(currentFinish).name;
-  const tinsText = `${tins} tin${tins === 1 ? '' : 's'}, ${money(total)}`;
-  stripSumD.textContent = tins ? `${finish}, ${tinsText}` : `${finish}, no size chosen`;
-  stripSumM.textContent = tins ? tinsText : 'No size chosen';
+  stripSumD.textContent = tins ? `${finish}, ${sizes}, covers approx. ${covers} m²` : `${finish}, no size chosen`;
+  stripPriceM.textContent = tins ? money(total) : 'No size chosen';
+  stripSumM.textContent = !tins ? '' : chosen.length === 1 ? `${sizes}, ${covers} m²` : `${tins} tins, ${covers} m²`;
+  stripTotal.hidden = !tins;
+  stripTotalV.textContent = money(total);
 }
 
 packs.forEach(({ stepper }) => {
@@ -1143,7 +1154,9 @@ function setVisible(el, on) {
 }
 function updateSticky() {
   setVisible(stickyHeader, mobile.matches && mHeader.getBoundingClientRect().bottom < 0);
-  setVisible(strip, addButton.getBoundingClientRect().bottom < 0);
+  const stripOn = addButton.getBoundingClientRect().bottom < 0;
+  setVisible(strip, stripOn);
+  document.body.classList.toggle('has-strip', stripOn);
 }
 window.addEventListener('scroll', updateSticky, { passive: true });
 mobile.addEventListener('change', updateSticky);
@@ -1225,8 +1238,8 @@ function fillBasket(lines, total) {
     <div class="bk-row">${media}<span class="bk-row__text"><span class="bk-row__name">${esc(name)}</span><span class="bk-row__sub">${esc(sub)}</span></span>
       <button class="bk-row__add" type="button" data-proto>${PLUS_SVG}Add<span class="sr-only"> ${esc(name)}</span></button></div>`;
   document.getElementById('bk-pairs').innerHTML = [...document.querySelectorAll('[data-slot="scheme-1"] .scheme__colours li')].map((li) => {
-    const bg = li.querySelector('.scheme__swatch').style.background;
-    const number = li.querySelector('.scheme__text > span').textContent.replace(/^No\.?\s*/, 'No. ');
+    const bg = li.querySelector('.colour-row__chip').style.background;
+    const number = li.querySelector('.colour-row__chip span').textContent.replace(/^No\.?\s*/, 'No. ');
     return row(`<span class="bk-row__swatch" style="background:${bg}" aria-hidden="true"></span>`, li.querySelector('b').textContent, number);
   }).join('');
   const primerImg = document.querySelector('[data-slot="primer-img"] img');
@@ -1264,16 +1277,65 @@ addButton.closest('form').addEventListener('submit', async (e) => {
   await wait(300);
   fillBasket(lines, total);
   openOverlay(basket, 'drawer-open', basketPanel);
+  startAutoClose();
   // Behind the drawer the order card clears for the next add; the finish stays
   packs.forEach((p) => { p.stepper.querySelector('.stepper__value').value = '0'; });
   updateTotal();
   adding = false;
 });
-const closeBasket = () => closeOverlay(basket, 'drawer-open');
+
+// Like Venta's add to cart confirmation, the slide-out closes by itself after 5 s; the line under the header runs
+// out with it. Moving the mouse over it pauses the countdown until the mouse leaves; a click, a key or a scroll
+// inside means the shopper is using it, so it then stays open until they close it.
+const BASKET_AUTO_CLOSE = 5000;
+const basketTimer = basket.querySelector('.bk__timer');
+let closeTimer = null;
+let closeAt = 0;
+let closeLeft = 0;
+function runAutoClose() {
+  closeAt = Date.now() + closeLeft;
+  closeTimer = setTimeout(closeBasket, closeLeft);
+  basketTimer.classList.remove('is-paused');
+}
+function startAutoClose() {
+  closeLeft = BASKET_AUTO_CLOSE;
+  basketTimer.classList.remove('is-running', 'is-paused', 'is-off');
+  void basketTimer.offsetWidth; // restart the line on a second add
+  basketTimer.style.animationDuration = `${BASKET_AUTO_CLOSE}ms`;
+  basketTimer.classList.add('is-running');
+  runAutoClose();
+}
+function pauseAutoClose() {
+  if (!closeTimer) return;
+  clearTimeout(closeTimer);
+  closeTimer = null;
+  closeLeft = closeAt - Date.now();
+  basketTimer.classList.add('is-paused');
+}
+function stopAutoClose() {
+  clearTimeout(closeTimer);
+  closeTimer = null;
+  closeLeft = 0;
+  basketTimer.classList.add('is-off');
+}
+// Only a real mouse move counts as hovering: the panel sliding in under a still pointer doesn't pause it
+basketPanel.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse' && (e.movementX || e.movementY)) pauseAutoClose(); });
+basketPanel.addEventListener('pointerleave', () => { if (closeLeft > 0 && !closeTimer) runAutoClose(); });
+basketPanel.addEventListener('pointerdown', stopAutoClose);
+basketPanel.addEventListener('wheel', stopAutoClose, { passive: true });
+basketPanel.addEventListener('touchmove', stopAutoClose, { passive: true });
+
+const closeBasket = () => {
+  stopAutoClose();
+  closeOverlay(basket, 'drawer-open');
+};
 basket.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeBasket));
 basket.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeBasket();
-  else if (e.key === 'Tab') trapTab(e, basket, 'button, a[href]');
+  else {
+    stopAutoClose();
+    if (e.key === 'Tab') trapTab(e, basket, 'button, a[href]');
+  }
 });
 
 // ---------- Gallery popup: grid (Figma 255:603) and photo view (257:603) ----------

@@ -10,7 +10,7 @@
   <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="icon" href="assets/favicon-48.png" type="image/png" sizes="48x48">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=202610231800">
+  <link rel="stylesheet" href="styles.css?v=202610231900">
 </head>
 <body>
 <!-- Built from Figma file zBK5BOgn7VGEptzhet1s41, frame "PDP" 32:1690 (section "PDP - wip" 56:4766).
@@ -160,7 +160,7 @@
               <button class="kf-chip" type="button" aria-haspopup="dialog" aria-controls="kf-panel" data-feature="surfaces"><img src="assets/icons/home.svg" width="20" height="20" alt=""><span>Interior and exterior finishes</span></button>
             </div>
             <div class="kf__finish-head">
-              <p class="kf__finish" id="kf-finish-name">Estate Emulsion</p>
+              <h3 class="label" id="kf-finish-name">Estate Emulsion</h3>
               <button class="kf__change" type="button" data-open-finishes aria-haspopup="dialog" aria-controls="finish-drawer">Change</button>
             </div>
             <p class="kf__text" id="kf-finish-text">Estate Emulsion is a classic choice for low-traffic interior walls and ceilings. Very matt with a distinctive, chalky finish, it minimises imperfections and creates a beautiful depth of colour.</p>
@@ -332,22 +332,22 @@
         <div class="scheme" data-slot="scheme-1">
           <div class="scheme__room" style="--accent:#d1dadb; --trim:#c3c1bb" aria-hidden="true"><i></i><i></i><i></i></div>
           <ul class="scheme__colours">
-            <li><span class="scheme__swatch" style="background:#c3c1bb"></span><span class="scheme__text"><span>No.242</span><span><b>Pavilion Gray</b> (Trim)</span></span></li>
-            <li><span class="scheme__swatch" style="background:#d1dadb"></span><span class="scheme__text"><span>No.235</span><span><b>Borrowed Light</b> (Accent)</span></span></li>
+            <li class="colour-row"><span class="colour-row__chip is-pale" style="background:#c3c1bb"><span>No. 242</span></span><span class="colour-row__text"><b class="colour-row__name">Pavilion Gray</b><span class="colour-row__sub">Trim</span></span></li>
+            <li class="colour-row"><span class="colour-row__chip is-pale" style="background:#d1dadb"><span>No. 235</span></span><span class="colour-row__text"><b class="colour-row__name">Borrowed Light</b><span class="colour-row__sub">Accent</span></span></li>
           </ul>
         </div>
         <div class="scheme" data-slot="scheme-2">
           <div class="scheme__room" style="--accent:#465172; --trim:#3d3c3c" aria-hidden="true"><i></i><i></i><i></i></div>
           <ul class="scheme__colours">
-            <li><span class="scheme__swatch" style="background:#3d3c3c"></span><span class="scheme__text"><span>No.256</span><span><b>Pitch Black</b> (Trim)</span></span></li>
-            <li><span class="scheme__swatch" style="background:#465172"></span><span class="scheme__text"><span>No.253</span><span><b>Drawing Room Blue</b> (Accent)</span></span></li>
+            <li class="colour-row"><span class="colour-row__chip" style="background:#3d3c3c"><span>No. 256</span></span><span class="colour-row__text"><b class="colour-row__name">Pitch Black</b><span class="colour-row__sub">Trim</span></span></li>
+            <li class="colour-row"><span class="colour-row__chip" style="background:#465172"><span>No. 253</span></span><span class="colour-row__text"><b class="colour-row__name">Drawing Room Blue</b><span class="colour-row__sub">Accent</span></span></li>
           </ul>
         </div>
         <div class="scheme" data-slot="scheme-3">
           <div class="scheme__room" style="--accent:#f6f6f2; --trim:#dbdbda" aria-hidden="true"><i></i><i></i><i></i></div>
           <ul class="scheme__colours">
-            <li><span class="scheme__swatch" style="background:#dbdbda"></span><span class="scheme__text"><span>No.2011</span><span><b>Blackened</b> (Trim)</span></span></li>
-            <li><span class="scheme__swatch" style="background:#f6f6f2"></span><span class="scheme__text"><span>No.2005</span><span><b>All White</b> (Accent)</span></span></li>
+            <li class="colour-row"><span class="colour-row__chip is-pale" style="background:#dbdbda"><span>No. 2011</span></span><span class="colour-row__text"><b class="colour-row__name">Blackened</b><span class="colour-row__sub">Trim</span></span></li>
+            <li class="colour-row"><span class="colour-row__chip is-pale" style="background:#f6f6f2"><span>No. 2005</span></span><span class="colour-row__text"><b class="colour-row__name">All White</b><span class="colour-row__sub">Accent</span></span></li>
           </ul>
         </div>
         <div class="scheme scheme--consult">
@@ -358,7 +358,7 @@
           <div class="scheme__consult">
             <p class="scheme__consult-title">Need help choosing?</p>
             <p class="scheme__consult-text">Our expert Colour Consultants are ready and waiting to help bring your style to life.</p>
-            <p class="scheme__links"><a href="#">Watch the video</a><a href="#">Contact Us</a></p>
+            <p class="scheme__links"><a href="#">Contact Us</a></p>
           </div>
         </div>
       </div>
@@ -374,11 +374,11 @@
           <div class="reds__content">
             <p class="reds__intro" data-slot="set-intro">The best way to experience our colours before taking the plunge is with a true-to-colour paint sample. To help you narrow down your shortlist of shades, we've curated three of our most popular red shades to help you find your perfect match.</p>
             <div class="reds__set">
-              <p class="reds__kicker">In this set</p>
+              <p class="reds__kicker"><span>In this set</span><span class="reds__kicker-sub">3 × 100 ml sample pots</span></p>
               <ul class="reds__list" data-slot="set-list">
-                <li><span class="reds__swatch" style="background:#9a4a42"></span><span class="reds__text"><span>No. 42</span><span><b>Picture Gallery Red</b> (100 ml)</span></span></li>
-                <li><span class="reds__swatch" style="background:#a8333a"></span><span class="reds__text"><span>No. 217</span><span><b>Rectory Red</b> (100 ml)</span></span></li>
-                <li><span class="reds__swatch" style="background:#6f2a2e"></span><span class="reds__text"><span>No. 297</span><span><b>Preference Red</b> (100 ml)</span></span></li>
+                <li class="colour-row"><span class="colour-row__chip" style="background:#9a4a42"><span>No. 42</span></span><span class="colour-row__text"><b class="colour-row__name">Picture Gallery Red</b><span class="colour-row__sub">A rich, timeless red with a brown base.</span></span></li>
+                <li class="colour-row"><span class="colour-row__chip" style="background:#a8333a"><span>No. 217</span></span><span class="colour-row__text"><b class="colour-row__name">Rectory Red</b><span class="colour-row__sub">A rich, sophisticated, clean red.</span></span></li>
+                <li class="colour-row"><span class="colour-row__chip" style="background:#6f2a2e"><span>No. 297</span></span><span class="colour-row__text"><b class="colour-row__name">Preference Red</b><span class="colour-row__sub">The deepest of our reds.</span></span></li>
               </ul>
             </div>
           </div>
@@ -667,10 +667,12 @@
 <div class="strip" id="strip" aria-hidden="true" data-figma="340:964 / 340:1023">
   <div class="wrap strip__inner">
     <span class="strip__chip" aria-hidden="true"></span>
-    <div class="strip__text">
-      <p class="strip__name"><span data-slot="name">Incarnadine</span><span class="d-only"> <span data-slot="no">No. 248</span></span></p>
-      <p class="strip__summary" aria-live="polite"><span class="d-only" id="strip-sum-d">Estate Emulsion, 1 tin, £81.00</span><span class="m-only" id="strip-sum-m">1 tin, £81.00</span></p>
+    <div class="strip__text" aria-live="polite">
+      <p class="strip__name d-only"><span data-slot="name">Incarnadine</span> <span data-slot="no">No. 248</span></p>
+      <p class="strip__price m-only" id="strip-price-m">£81.00</p>
+      <p class="strip__summary"><span class="d-only" id="strip-sum-d">Estate Emulsion, 2.5 L × 1, covers approx. 30 m²</span><span class="m-only" id="strip-sum-m">2.5 L × 1, 30 m²</span></p>
     </div>
+    <div class="strip__total d-only" id="strip-total"><span>Total</span><strong id="strip-total-v">£81.00</strong></div>
     <button class="fav strip__fav d-only" type="button" aria-pressed="false" aria-label="Add to favourites" tabindex="-1"><svg class="fav__icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5013 12.5717L12.0013 19.9997L4.50128 12.5717C4.00658 12.0903 3.61692 11.5117 3.35683 10.8723C3.09673 10.2329 2.97184 9.54664 2.99002 8.85662C3.00819 8.1666 3.16904 7.48782 3.46244 6.86303C3.75583 6.23823 4.17541 5.68094 4.69476 5.22627C5.21411 4.77159 5.82198 4.42938 6.48009 4.22117C7.1382 4.01296 7.83228 3.94327 8.51865 4.01649C9.20501 4.08971 9.86878 4.30425 10.4682 4.64659C11.0675 4.98894 11.5895 5.45169 12.0013 6.00569C12.4148 5.45571 12.9374 4.99701 13.5364 4.65829C14.1353 4.31958 14.7978 4.10814 15.4822 4.03721C16.1666 3.96628 16.8584 4.03739 17.5141 4.24608C18.1697 4.45477 18.7753 4.79656 19.2928 5.25005C19.8104 5.70354 20.2287 6.25897 20.5217 6.88158C20.8147 7.50419 20.976 8.18057 20.9956 8.8684C21.0152 9.55622 20.8925 10.2407 20.6354 10.8789C20.3783 11.5172 19.9922 12.0955 19.5013 12.5777" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <button class="btn btn--primary strip__btn" type="button" id="strip-go" tabindex="-1">Choose finish &amp; size</button>
   </div>
@@ -736,6 +738,7 @@
     <div class="bk__header">
       <h2 class="bk__title" id="bk-title">Basket</h2>
       <button class="drawer__close" type="button" data-close aria-label="Close"><img src="assets/icons/close.svg" width="20" height="20" alt=""></button>
+      <span class="bk__timer" aria-hidden="true"></span>
     </div>
     <div class="bk__body">
       <p class="sr-only" id="bk-status" aria-live="polite"></p>
@@ -948,31 +951,31 @@
   <div data-slot="scheme-1">
     <div class="scheme__room" style="--accent:#acbeb3; --trim:#58686a" aria-hidden="true"><i></i><i></i><i></i></div>
     <ul class="scheme__colours">
-      <li><span class="scheme__swatch" style="background:#58686a"></span><span class="scheme__text"><span>No.289</span><span><b>Inchyra Blue</b> (Trim)</span></span></li>
-      <li><span class="scheme__swatch" style="background:#acbeb3"></span><span class="scheme__text"><span>No.84</span><span><b>Green Blue</b> (Accent)</span></span></li>
+      <li class="colour-row"><span class="colour-row__chip" style="background:#58686a"><span>No. 289</span></span><span class="colour-row__text"><b class="colour-row__name">Inchyra Blue</b><span class="colour-row__sub">Trim</span></span></li>
+      <li class="colour-row"><span class="colour-row__chip is-pale" style="background:#acbeb3"><span>No. 84</span></span><span class="colour-row__text"><b class="colour-row__name">Green Blue</b><span class="colour-row__sub">Accent</span></span></li>
     </ul>
   </div>
   <div data-slot="scheme-2">
     <div class="scheme__room" style="--accent:#e0e6dd; --trim:#d5dad1" aria-hidden="true"><i></i><i></i><i></i></div>
     <ul class="scheme__colours">
-      <li><span class="scheme__swatch" style="background:#d5dad1"></span><span class="scheme__text"><span>No.204</span><span><b>Pale Powder</b> (Trim)</span></span></li>
-      <li><span class="scheme__swatch" style="background:#e0e6dd"></span><span class="scheme__text"><span>No.252</span><span><b>Pavilion Blue</b> (Accent)</span></span></li>
+      <li class="colour-row"><span class="colour-row__chip is-pale" style="background:#d5dad1"><span>No. 204</span></span><span class="colour-row__text"><b class="colour-row__name">Pale Powder</b><span class="colour-row__sub">Trim</span></span></li>
+      <li class="colour-row"><span class="colour-row__chip is-pale" style="background:#e0e6dd"><span>No. 252</span></span><span class="colour-row__text"><b class="colour-row__name">Pavilion Blue</b><span class="colour-row__sub">Accent</span></span></li>
     </ul>
   </div>
   <div data-slot="scheme-3">
     <div class="scheme__room" style="--accent:#efe9d8; --trim:#e9e7d8" aria-hidden="true"><i></i><i></i><i></i></div>
     <ul class="scheme__colours">
-      <li><span class="scheme__swatch" style="background:#e9e7d8"></span><span class="scheme__text"><span>No.2010</span><span><b>James White</b> (Trim)</span></span></li>
-      <li><span class="scheme__swatch" style="background:#efe9d8"></span><span class="scheme__text"><span>No.2002</span><span><b>White Tie</b> (Accent)</span></span></li>
+      <li class="colour-row"><span class="colour-row__chip is-pale" style="background:#e9e7d8"><span>No. 2010</span></span><span class="colour-row__text"><b class="colour-row__name">James White</b><span class="colour-row__sub">Trim</span></span></li>
+      <li class="colour-row"><span class="colour-row__chip is-pale" style="background:#efe9d8"><span>No. 2002</span></span><span class="colour-row__text"><b class="colour-row__name">White Tie</b><span class="colour-row__sub">Accent</span></span></li>
     </ul>
   </div>
   <i data-slot="set-title">Sample Our Favourite Greens</i>
   <div data-slot="set-image"><img src="assets/img/teresas-green/favourite-greens.jpg" alt="Open sample pots of green paint on a blue painted table"></div>
   <i data-slot="set-intro">The best way to experience our colours before taking the plunge is with a true-to-colour paint sample. To help you narrow down your shortlist of shades, we've curated three of our most popular green shades to help you find your perfect match.</i>
   <ul data-slot="set-list">
-    <li><span class="reds__swatch" style="background:#b0af9b"></span><span class="reds__text"><span>No. 18</span><span><b>French Gray</b> (100 ml)</span></span></li>
-    <li><span class="reds__swatch" style="background:#6f7b71"></span><span class="reds__text"><span>No. 47</span><span><b>Green Smoke</b> (100 ml)</span></span></li>
-    <li><span class="reds__swatch" style="background:#464d4a"></span><span class="reds__text"><span>No. 93</span><span><b>Studio Green</b> (100 ml)</span></span></li>
+    <li class="colour-row"><span class="colour-row__chip is-pale" style="background:#b0af9b"><span>No. 18</span></span><span class="colour-row__text"><b class="colour-row__name">French Gray</b><span class="colour-row__sub">More green than grey, shifting with the light.</span></span></li>
+    <li class="colour-row"><span class="colour-row__chip" style="background:#6f7b71"><span>No. 47</span></span><span class="colour-row__text"><b class="colour-row__name">Green Smoke</b><span class="colour-row__sub">A deep green, calm and serene indoors.</span></span></li>
+    <li class="colour-row"><span class="colour-row__chip" style="background:#464d4a"><span>No. 93</span></span><span class="colour-row__text"><b class="colour-row__name">Studio Green</b><span class="colour-row__sub">Our darkest green, almost black in low light.</span></span></li>
   </ul>
   <div data-slot="similar-1"><span class="swatch-card__img"><img src="assets/img/teresas-green/ballroom-blue.jpg" alt=""></span><span class="swatch-card__name">Ballroom Blue</span><span class="swatch-card__no">No. 24</span></div>
   <div data-slot="similar-2"><span class="swatch-card__img"><img src="assets/img/teresas-green/dix-blue.jpg" alt=""></span><span class="swatch-card__name">Dix Blue</span><span class="swatch-card__no">No. 82</span></div>
@@ -1002,6 +1005,6 @@
   </div>
 </template>
 
-<script src="main.js?v=202610231800"></script>
+<script src="main.js?v=202610231900"></script>
 </body>
 </html>
