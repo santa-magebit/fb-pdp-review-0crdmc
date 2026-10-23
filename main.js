@@ -673,7 +673,7 @@ addEventListener('resize', markWrappedChips);
 
 function renderFinishFeatures(f) {
   const data = FINISH_FEATURES[f.id];
-  document.getElementById('kf-finish-name').textContent = `${f.name} features`;
+  document.getElementById('kf-finish-name').textContent = f.name;
   document.getElementById('kf-finish-text').textContent = (data && data.about) || f.text;
   if (data) {
     kfFinishChips.innerHTML = data.features.map((label) => chipHtml(featureKey(label), featureIcon(label), label)).join('');

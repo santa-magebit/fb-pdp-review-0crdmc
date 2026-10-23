@@ -121,6 +121,8 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 /* A chip too long for its row wraps its text and takes the full width (set from main.js) */
 .kf-chip.is-wrapped { width: 100%; border-radius: 24px; }
 .kf__finish-head { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; }
+/* The chosen finish is a plain label, not a heading; only the block has a title ("Key features") */
+.kf__finish { font-weight: 500; font-size: 14px; line-height: 20px; color: var(--muted); }
 .kf__change { font-weight: 500; font-size: 14px; line-height: 20px; color: var(--ink); text-decoration: underline; }
 .kf__text { font-size: 15px; line-height: 22px; color: var(--ink); }
 .kf-chip:focus-visible, .kf__change:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
