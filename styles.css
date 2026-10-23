@@ -172,13 +172,13 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .bk__body { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 32px; }
 .bk__items { display: flex; flex-direction: column; gap: 16px; margin: 0; padding: 0; list-style: none; }
 /* Nothing added yet: a short empty state instead of the items, suggestions and checkout */
-.bk__empty { display: none; flex-direction: column; align-items: center; gap: 16px; padding-top: 24px; text-align: center; }
+.bk__empty { display: none; flex: 1 0 auto; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; }
 .bk__empty-icon { flex: none; color: var(--muted); }
 .bk__empty-text { display: flex; flex-direction: column; gap: 6px; }
 .bk__empty-title { margin: 0; font-size: 20px; line-height: 28px; }
 .bk__empty-copy { margin: 0; font-size: 15px; line-height: 22px; color: var(--muted); }
 .bk__empty .bk__empty-cta { flex: none; }
-.bk.is-empty .bk__empty, .bk.is-empty .bk-offer, .bk.is-empty .bk-browse { display: flex; }
+.bk.is-empty .bk__empty, .bk.is-empty .bk-offer { display: flex; }
 .bk.is-empty .bk__items, .bk.is-empty .bk__groups, .bk.is-empty .bk__footer { display: none; }
 .bk.is-empty .bk__body { gap: 32px; }
 /* Sample pots: chip with the number on it, name, then the pot and price */
@@ -187,17 +187,14 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .bk-sample .colour-row__name { font-size: 15px; line-height: 22px; }
 .bk-sample .colour-row__sub { white-space: normal; }
 /* Free Colour Card: a small card of chips stands in for the product photo */
-.bk-offer { display: none; padding: 12px; border: 1px solid var(--line); border-radius: 8px; }
+.bk-offer { display: none; flex: none; gap: 12px; padding: 12px; border-radius: 8px; background: var(--cream); }
 .bk-offer .colour-row__name { font-size: 15px; line-height: 22px; }
 .bk-offer .colour-row__sub { white-space: normal; }
-.bk-offer__card { width: 56px; height: 56px; flex: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; padding: 6px; border: 1px solid var(--border); border-radius: 6px; background: #fff; }
-.bk-offer__card i { border-radius: 2px; }
-.bk-browse { display: none; align-items: center; gap: 12px; padding: 16px 14px 16px 16px; border-radius: 8px; background: var(--cream); color: var(--ink); }
-.bk-browse img, .bk-browse svg { flex: none; }
-.bk-browse__text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.bk-browse__title { font-weight: 700; font-size: 15px; line-height: 22px; }
-.bk-browse__sub { font-size: 14px; line-height: 20px; color: var(--muted); }
-.bk-browse:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.bk-offer__img { width: 70px; height: 77px; flex: none; object-fit: contain; }
+.bk-offer .colour-row__text { flex: 1; min-width: 0; }
+/* Round, icon-only add (Figma 417:3932) */
+.bk-offer__add { width: 52px; height: 52px; flex: none; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 50%; background: #fff; color: var(--ink); }
+.bk-offer__add:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .bk-item { display: flex; align-items: flex-start; gap: 16px; }
 .bk-item__swatch { position: relative; width: 72px; height: 72px; flex: none; border-radius: 11px; background: var(--paint); color: var(--on-paint); }
 .bk-item__swatch span { position: absolute; left: 6px; bottom: 6px; font-weight: 700; font-size: 14px; line-height: 20px; white-space: nowrap; }
@@ -301,6 +298,8 @@ button { background: none; border: 0; padding: 0; cursor: pointer; }
 .order-card__add { display: flex; align-items: stretch; gap: 12px; }
 .btn { display: flex; align-items: center; justify-content: center; gap: 8px; height: 52px; padding: 0 32px; border-radius: 48px; font-size: 16px; line-height: normal; white-space: nowrap; }
 .btn--primary { flex: 1; min-width: 0; background: var(--paint); color: var(--on-paint); }
+/* In the basket the main action is the house primary (ink), not the colour on the page */
+.bk .btn--primary { background: var(--ink); color: #fff; }
 .btn--primary[aria-disabled="true"] { opacity: .4; cursor: default; }
 .btn--secondary { flex: 1; min-width: 0; background: #fff; border: 1px solid var(--border); color: var(--ink); }
 .fav { width: 52px; height: 52px; flex: none; -webkit-tap-highlight-color: transparent; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 26px; background: #fff; }
@@ -990,7 +989,6 @@ html:has(body.has-strip) { scroll-padding-bottom: 77px; }
   .bk__title { font-size: 22px; line-height: 28px; }
   .bk__body { gap: 24px; padding: 20px; }
   .bk.is-empty .bk__body { gap: 24px; }
-  .bk__empty { padding-top: 8px; }
   .bk__footer { padding: 12px 20px 20px; }
   /* Key feature panel: full screen like the finish sheet */
   .kfp__header { padding: 16px 20px 20px; }

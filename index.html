@@ -10,7 +10,7 @@
   <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="icon" href="assets/favicon-48.png" type="image/png" sizes="48x48">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=20261023164816">
+  <link rel="stylesheet" href="styles.css?v=20261023165842">
 </head>
 <body>
 <!-- Built from Figma file zBK5BOgn7VGEptzhet1s41, frame "PDP" 32:1690 (section "PDP - wip" 56:4766).
@@ -743,8 +743,8 @@
     <div class="bk__body">
       <p class="sr-only" id="bk-status" aria-live="polite"></p>
       <ul class="bk__items" id="bk-items"></ul>
-      <!-- Empty basket (Figma 401:991, options 418:1273): an action-led message with one clear next step, then only
-           the free colour card and the samples page with its live free delivery offer; no footer -->
+      <!-- Empty basket (Figma 417:3902): the message centred in the free space with one clear next step, and only
+           the free colour card at the bottom; no footer -->
       <div class="bk__empty">
         <svg class="bk__empty-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.331 8h11.339a2 2 0 0 1 1.977 2.304l-1.255 8.152a3 3 0 0 1 -2.966 2.544h-6.852a3 3 0 0 1 -2.965 -2.544l-1.255 -8.152a2 2 0 0 1 1.977 -2.304z"/><path d="M9 11v-5a3 3 0 0 1 6 0v5"/></svg>
         <div class="bk__empty-text">
@@ -753,17 +753,13 @@
         </div>
         <a class="btn btn--primary bk__empty-cta" href="#">Explore paint colours</a>
       </div>
-      <!-- Live "Free Colour Card" (farrow-ball.com/paint/free-colour-card): free, so it's added like any product -->
+      <!-- Live "Free Colour Card" (farrow-ball.com/paint/free-colour-card), pinned to the bottom of the empty basket
+           (Figma 417:3902): free, so it's added like any product -->
       <div class="bk-row colour-row bk-offer">
-        <span class="bk-offer__card" aria-hidden="true"><i style="background:#676A49"></i><i style="background:#805348"></i><i style="background:#7295A1"></i><i style="background:#9C4547"></i><i style="background:#C3C1BB"></i><i style="background:#D1DADB"></i></span>
-        <span class="colour-row__text"><b class="colour-row__name">Free Colour Card</b><span class="colour-row__sub">The perfect tool for starting your home transformation</span></span>
-        <button class="bk-row__add" type="button" data-proto><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Add<span class="sr-only"> Free Colour Card</span></button>
+        <img class="bk-offer__img" src="assets/img/colour-card.png" width="70" height="77" alt="">
+        <span class="colour-row__text"><b class="colour-row__name">Free Colour Card</b><span class="colour-row__sub">Compare all our signature shades at home.</span></span>
+        <button class="bk-offer__add" type="button" data-proto aria-label="Add Free Colour Card"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></button>
       </div>
-      <a class="bk-browse" href="https://www.farrow-ball.com/paint/sample-pots" data-proto>
-        <img src="assets/icons/palette.svg" width="24" height="24" alt="">
-        <span class="bk-browse__text"><span class="bk-browse__title">Browse paint samples</span><span class="bk-browse__sub">True-to-colour 100 ml sample pots with free delivery</span></span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6l-6 6"/></svg>
-      </a>
       <div class="bk__groups">
         <section class="bk__group" aria-labelledby="bk-pairs-title">
           <h3 class="bk__h" id="bk-pairs-title">Pairs perfectly with</h3>
@@ -1031,6 +1027,6 @@
   </div>
 </template>
 
-<script src="main.js?v=20261023164816"></script>
+<script src="main.js?v=20261023165842"></script>
 </body>
 </html>
