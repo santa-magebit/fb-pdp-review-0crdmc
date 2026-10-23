@@ -703,6 +703,13 @@ lbTabBar.addEventListener('click', (e) => {
   const tab = e.target.closest('.lb-tab');
   if (tab) setRoom(tab.dataset.room);
 });
+// Room tabs: the live page's filters, in its order, but only the rooms that have photos here (no empty tabs)
+function renderTabs(photos, liveRooms) {
+  const rooms = liveRooms.filter((room) => photos.some((p) => p.room === room));
+  lbTabBar.innerHTML = ['All', ...rooms]
+    .map((room, i) => `<button class="lb-tab${i ? '' : ' is-active'}" type="button" role="tab" aria-selected="${!i}" data-room="${i ? room : 'all'}">${room}</button>`)
+    .join('');
+}
 
 function showPhoto(i) {
   const items = lbItems();
@@ -806,7 +813,8 @@ function applyPaint(paint) {
 const GALLERIES = {
   incarnadine: {
     photos: GALLERY,
-    tabs: lbTabBar.innerHTML,
+    // Room filters as on the live page (capture 4:107-4:117); Exterior has no photo here, so it isn't shown
+    tabs: ['Bathroom', 'Bedroom', 'Child Room', 'Dining Room', 'Exterior', 'Living Room'],
     hero: ['assets/img/gallery-3.jpg', 'assets/img/gallery-1.png', 'assets/img/gallery-2.jpg'],
     heroAlt: galleryMain.alt,
   },
@@ -830,6 +838,7 @@ const GALLERIES = {
     heroAlt: 'Teresa\'s Green on the walls of a living room with a brick gable',
   },
 };
+renderTabs(GALLERIES.incarnadine.photos, GALLERIES.incarnadine.tabs);
 const slotEls = [...document.querySelectorAll('[data-slot]')];
 const slotOriginals = {};
 slotEls.forEach((el) => {
@@ -850,9 +859,7 @@ function applyContent(id) {
 
   const g = GALLERIES[id];
   GALLERY = g.photos;
-  lbTabBar.innerHTML = typeof g.tabs === 'string' ? g.tabs : ['All', ...g.tabs]
-    .map((room, i) => `<button class="lb-tab${i ? '' : ' is-active'}" type="button" role="tab" aria-selected="${!i}" data-room="${i ? room : 'all'}">${room}</button>`)
-    .join('');
+  renderTabs(g.photos, g.tabs);
   galleryMain.src = g.hero[0];
   galleryMain.alt = g.heroAlt;
   document.querySelectorAll('.gallery__thumb').forEach((t, i) => {
