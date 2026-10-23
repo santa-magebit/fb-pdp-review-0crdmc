@@ -895,7 +895,8 @@ body.notice-open { overflow: hidden; }
   .scheme__colours { padding-bottom: 0; }
   .scheme__swatch { border: 1px solid var(--line); }
   .scheme__video { height: 160px; }
-  .scheme__play-m { position: absolute; left: 106px; top: 50px; }
+  /* 60px play icon centred on the 272 × 160 video card; it's a direct img child, so undo the cover-photo sizing */
+  .scheme__video > .scheme__play-m { inset: auto; left: 106px; top: 50px; width: 60px; height: 60px; object-fit: contain; }
   .scheme__links { gap: 24px; margin-top: 12px; line-height: 22px; color: var(--ink); }
 
   /* Favourite reds (148:790) */
@@ -941,10 +942,8 @@ body.notice-open { overflow: hidden; }
   .similar .wrap, .inspo .wrap { margin-right: 0; }
   /* Tracks run to both screen edges, so cards slide off the edge instead of being cut at the 20px gutter */
   .carousel__track { margin-left: -20px; padding: 0 20px; scroll-padding-inline: 20px; }
-  /* No progress bar on phones: the peeking next card already says it scrolls (Figma 149:889, 213:1501) */
-  .carousel-nav { justify-content: flex-end; margin-top: 24px; padding-right: 20px; }
-  .carousel-nav__progress { display: none; }
-  .carousel-nav__counter { font-family: var(--verlag); font-weight: 700; }
+  /* No carousel controls on phones (no bar, arrows or counter): the peeking next card already says it scrolls, and people swipe */
+  .carousel-nav { display: none; }
   /* Starts at the 20px gutter; keeps the desktop 307.2px progress bar */
   .similar__track { scroll-snap-type: none; }
   /* Images have square corners, as drawn */
@@ -1067,7 +1066,8 @@ body.notice-open { overflow: hidden; }
 
   /* Sticky strip on mobile (340:1023): at the bottom, no heart, finish left out of the summary */
   .strip { top: auto; bottom: 0; border-bottom: 0; border-top: 1px solid var(--line); transform: translateY(110%); }
-  .strip__inner { height: auto; margin: 0; gap: 12px; padding: 12px 16px 24px; }
+  /* 12px all round (340:1023): 12 + 52 button + 12 = 76, plus the home-indicator inset on phones that have one */
+  .strip__inner { height: auto; margin: 0; gap: 12px; padding: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
   .strip__chip { width: 36px; height: 36px; }
   .strip__text { flex: 1; }
   .strip__name { font-size: 15px; line-height: 21px; }
@@ -1121,5 +1121,6 @@ body.drawer-open .pswitch, body.notice-open .pswitch { display: none; }
   .pswitch__panel { width: auto; }
   .pswitch__swatch { width: 28px; height: 28px; }
   /* Sits above the sticky strip while it's showing */
-  .strip.is-visible ~ .pswitch { bottom: 108px; }
+  /* 12px above the 77px strip (76 + 1px top border) */
+  .strip.is-visible ~ .pswitch { bottom: calc(89px + env(safe-area-inset-bottom)); }
 }
