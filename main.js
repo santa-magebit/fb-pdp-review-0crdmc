@@ -1320,21 +1320,6 @@ function fillBasket() {
     const name = li.querySelector('.colour-row__name').textContent;
     return row(`<span class="${chip.className}" style="background:${chip.style.background}" aria-hidden="true"><span>${esc(chip.textContent.trim())}</span></span>`, name, 'Sample pot £9.95', `${name} sample pot`);
   }).join('');
-  // Empty basket (Figma 401:991): this colour's sample pot, then its live sample set. Only the reds have a matching
-  // live bundle, so the set row is left out for other colours rather than made up.
-  const colour = document.querySelector('[data-slot="name"]').textContent;
-  const no = document.querySelector('[data-slot="no"]').textContent;
-  const sample = (media, name, sub) => `
-    <div class="bk-row colour-row bk-sample">${media}<span class="colour-row__text"><b class="colour-row__name">${esc(name)}</b><span class="colour-row__sub">${esc(sub)}</span></span>
-      <button class="bk-row__add" type="button" data-proto>${PLUS_SVG}Add<span class="sr-only"> ${esc(name)}</span></button></div>`;
-  let samples = sample(`<span class="bk-sample__chip" aria-hidden="true"><span>${esc(no)}</span></span>`, `${colour} ${no}`, '100 ml sample pot, £9.95');
-  if (/reds$/i.test(document.querySelector('[data-slot="set-title"]').textContent.trim())) {
-    const set = [...document.querySelectorAll('[data-slot="set-list"] li')];
-    const names = set.map((li) => li.querySelector('.colour-row__name').textContent);
-    const chips = set.map((li) => `<i style="background:${li.querySelector('.colour-row__chip').style.background}"></i>`).join('');
-    samples += sample(`<span class="bk-sample__set" aria-hidden="true">${chips}</span>`, 'Sample our favourite reds', `${set.length} × 100 ml sample pots: ${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`);
-  }
-  document.getElementById('bk-samples').innerHTML = samples;
   const primerImg = document.querySelector('[data-slot="primer-img"] img');
   const primerName = document.querySelector('[data-slot="primer-text"] .pairing__name');
   document.getElementById('bk-primer').innerHTML = row(`<img class="bk-row__img" src="${primerImg.getAttribute('src')}" alt="">`, 'Primer & Undercoat', primerName ? primerName.textContent : '', 'Primer & Undercoat');
